@@ -63,4 +63,3 @@ jobs:
             
             echo "🧹 Cleaning up unused Docker resources..."
             docker system prune -f
-            
