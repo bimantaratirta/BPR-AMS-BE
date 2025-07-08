@@ -139,8 +139,8 @@ class KMSController {
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
       const tanggal1 = new Date(dbData.tanggal_surat_persetujuan_kredit);
       const tanggal2 = new Date(dbData.tanggal_lahir_penjamin);
-      const tanggal3 = new Date(dbData.tanggal_mengangsur_terakhir);
-      const tanggal4 = new Date(dbData.tanggal_mengangsur_pertama);
+      const tanggal3 = new Date(dbData.tanggal_angsuran_terakhir);
+      const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const bulanIndonesia = [
         'Januari',
         'Februari',
@@ -347,8 +347,8 @@ class KMSController {
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
       const tanggal1 = new Date(dbData.tanggal_surat_persetujuan_kredit);
       const tanggal2 = new Date(dbData.tanggal_lahir_penjamin);
-      const tanggal3 = new Date(dbData.tanggal_mengangsur_terakhir);
-      const tanggal4 = new Date(dbData.tanggal_mengangsur_pertama);
+      const tanggal3 = new Date(dbData.tanggal_angsuran_terakhir);
+      const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const bulanIndonesia = [
         'Januari',
         'Februari',

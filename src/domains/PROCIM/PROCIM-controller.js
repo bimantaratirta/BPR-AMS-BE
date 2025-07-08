@@ -8,6 +8,7 @@ import fs from 'fs';
 import { formatRupiahDenganHuruf } from '../../utils/formatTerbilangRupiah.js';
 import { formatRupiah } from '../../utils/formatRupiah.js';
 import { getHariDalamBahasaIndonesia } from '../../utils/getHariDalamBahasaIndonesia.js';
+import getYear from '../../utils/getYear.js';
 
 class PROCIMController {
   async get(req, res) {

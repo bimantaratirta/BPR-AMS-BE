@@ -8,6 +8,7 @@ import { exec } from 'child_process';
 import { __dirname, __filename } from '../../utils/path.js';
 import { formatRupiahDenganHuruf } from '../../utils/formatTerbilangRupiah.js';
 import { formatRupiah } from '../../utils/formatRupiah.js';
+import { getHariDalamBahasaIndonesia } from '../../utils/getHariDalamBahasaIndonesia.js';
 
 class KARController {
   async get(req, res) {
@@ -198,6 +199,7 @@ class KARController {
       const formatNotarisNominal = `${formatRupiah(dbData.notaris_nominal)}`;
 
       const data = {
+        hari: getHariDalamBahasaIndonesia(formattedTanggal1),
         nama: dbData.nama,
         jabatan: dbData.jabatan,
         nama_debitur: dbData.nama_debitur,
@@ -407,6 +409,7 @@ class KARController {
       const formatNotarisNominal = `${formatRupiah(dbData.notaris_nominal)}`;
 
       const data = {
+        hari: getHariDalamBahasaIndonesia(formattedTanggal1),
         nama: dbData.nama,
         jabatan: dbData.jabatan,
         nama_debitur: dbData.nama_debitur,
@@ -493,12 +496,10 @@ class KARController {
       res.send(buf);
     } catch (err) {
       console.error('Gagal generate DOCX:', err);
-      res
-        .status(500)
-        .json({
-          error: 'Failed to generate Word document',
-          message: err.message,
-        });
+      res.status(500).json({
+        error: 'Failed to generate Word document',
+        message: err.message,
+      });
     }
   }
 
