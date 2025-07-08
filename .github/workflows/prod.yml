@@ -61,5 +61,6 @@ jobs:
             echo "🔄 Running Prisma migrations..."
             docker exec bpr-api-prod npx prisma migrate deploy --preview-feature
             
+            
             echo "🧹 Cleaning up unused Docker resources..."
             docker system prune -f
