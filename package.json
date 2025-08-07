@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development && nodemon src/server.js",
     "start": "cross-env NODE_ENV=production && node dist/server.js",
-    "build": "npx babel src --out-dir dist --extensions \".js,.jsx\"",
+    "build": "rm -rf dist && npx babel src --out-dir dist --extensions \".js,.jsx\" --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
     "make:domain": "node src/utils/cli make:domain"
   },
