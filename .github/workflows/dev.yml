@@ -10,15 +10,9 @@
 #     runs-on: ubuntu-latest
 #     environment: Development
 
-<<<<<<< HEAD
-    steps:
-      - name: 📦 Checkout Code
-        uses: actions/checkout@v4.2.2
-=======
 #     steps:
 #       - name: 📦 Checkout Code
 #         uses: actions/checkout@v4
->>>>>>> 1a0b52e53d6e1ea858127cd2228886e08643d7c1
 
 #       - name: 🧰 Setup Node.js v20
 #         uses: actions/setup-node@v4
@@ -31,13 +25,8 @@
 #       - name: 🔐 Docker Login
 #         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-<<<<<<< HEAD
-      - name: 🛠 Build Docker Image
-        run: docker build --no-cache -t nevmock/bpr-api-dev:latest .
-=======
 #       - name: 🛠 Build Docker Image
 #         run: docker build -t nevmock/bpr-api-dev:latest .
->>>>>>> 1a0b52e53d6e1ea858127cd2228886e08643d7c1
 
 #       - name: 📤 Push Docker Image
 #         run: docker push nevmock/bpr-api-dev:latest
@@ -72,10 +61,5 @@
 #             echo "🔄 Running Prisma migrations..."
 #             docker exec bpr-api-dev npx prisma migrate deploy --preview-feature
             
-<<<<<<< HEAD
-            echo "🧹 Cleaning up unused Docker resources..."
-            docker system prune -f
-=======
 #             echo "🧹 Cleaning up unused Docker resources..."
 #             docker system prune -f
->>>>>>> 1a0b52e53d6e1ea858127cd2228886e08643d7c1
