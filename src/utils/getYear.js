@@ -1,4 +1,5 @@
 function getYear(dateInput) {
+  console.log(dateInput)
   const monthMap = {
     Januari: 'January',
     Februari: 'February',
