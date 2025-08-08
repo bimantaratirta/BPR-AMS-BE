@@ -377,7 +377,7 @@ class KSSController {
         bulanIndonesia[tanggal4.getMonth()]
       } ${tanggal4.getFullYear()}`;
 
-      const formatNominalPinjaman = `${formatRupiahDenganHurufiahDenganHuruf(
+      const formatNominalPinjaman = `${formatRupiahDenganHuruf(
         dbData.nominal_pinjaman
       )}`;
       const formatHutangKeseluruhan = `${formatRupiahDenganHuruf(

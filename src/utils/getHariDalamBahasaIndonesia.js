@@ -1,4 +1,5 @@
 export function getHariDalamBahasaIndonesia(tanggal) {
+  console.log('tanggal:', tanggal);
   const hariIndonesia = [
     'Minggu',
     'Senin',
