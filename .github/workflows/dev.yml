@@ -28,7 +28,9 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: 🛠 Build Docker Image
-        run: docker build --no-cache -t nevmock/bpr-api-dev:${{ github.sha }} -t nevmock/bpr-api-dev:latest .
+        run: docker build --label project=bpr-api-dev --no-cache \
+          -t nevmock/bpr-api-dev:${{ github.sha }} \
+          -t nevmock/bpr-api-dev:latest .
 
       - name: 📤 Push Docker Image
         run: |
@@ -43,7 +45,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "🧹 Cleaning old images..."
-            docker image prune -af
+            docker image prune -af --filter "label=project=bpr-api-dev"
 
             echo "🔁 Pulling latest Docker image..."
             docker pull nevmock/bpr-api-dev:latest
