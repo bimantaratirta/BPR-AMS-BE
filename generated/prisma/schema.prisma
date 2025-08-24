@@ -15,25 +15,35 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  username String   @unique
-  password String
-  KSSM     KSSM[]
-  KSS      KSS[]
-  PINEK    PINEK[]
-  FLEKSI   FLEKSI[]
-  PROCIM   PROCIM[]
-  KSM      KSM[]
-  KMSM     KMSM[]
-  KRS      KRS[]
-  KMM      KMM[]
-  KMS      KMS[]
-  KEF      KEF[]
-  KAR      KAR[]
-  role     String   @default("PIC")
+  id            String   @id @default(uuid())
+  name          String?
+  username      String   @unique
+  password      String
+  region_id     String?
+  branch_id     String?
+  supervisor_id String?
+  KSSM          KSSM[]
+  KSS           KSS[]
+  PINEK         PINEK[]
+  FLEKSI        FLEKSI[]
+  PROCIM        PROCIM[]
+  KSM           KSM[]
+  KMSM          KMSM[]
+  KRS           KRS[]
+  KMM           KMM[]
+  KMS           KMS[]
+  KEF           KEF[]
+  KAR           KAR[]
+  role          String   @default("PIC")
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  region       Region? @relation("UserRegions", fields: [region_id], references: [id])
+  branch       Branch? @relation("UserBranches", fields: [branch_id], references: [id])
+  supervisor   User?   @relation("UserSupervisor", fields: [supervisor_id], references: [id])
+  subordinates User[]  @relation("UserSupervisor")
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   system_logs SystemLog[]
 
@@ -89,6 +99,7 @@ model KSSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -139,6 +150,7 @@ model KSS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -183,6 +195,7 @@ model PINEK {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -218,6 +231,7 @@ model FLEKSI {
   created_at                       DateTime?                    @default(now())
   updated_at                       DateTime?                    @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -250,6 +264,7 @@ model PROCIM {
   created_at                       DateTime?                    @default(now())
   updated_at                       DateTime?                    @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -302,6 +317,7 @@ model KSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -353,6 +369,7 @@ model KMSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -403,6 +420,7 @@ model KRS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -456,6 +474,7 @@ model KMM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -505,6 +524,7 @@ model KMS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -556,6 +576,7 @@ model KEF {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -606,6 +627,7 @@ model KAR {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -619,6 +641,7 @@ model FleksiBarangElektronik {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model FleksiBarangFurniture {
@@ -630,6 +653,7 @@ model FleksiBarangFurniture {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model FleksiBarangJaminanLainnya {
@@ -639,6 +663,7 @@ model FleksiBarangJaminanLainnya {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangElektronik {
@@ -650,6 +675,7 @@ model ProcimBarangElektronik {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangFurniture {
@@ -661,6 +687,7 @@ model ProcimBarangFurniture {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangJaminanLainnya {
@@ -670,6 +697,7 @@ model ProcimBarangJaminanLainnya {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model SystemLog {
@@ -682,6 +710,36 @@ model SystemLog {
   description String?
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 
   user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+// V2 
+
+model Region {
+  id         String    @id @default(uuid())
+  region     String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  branches Branch[] @relation("RegionBranches")
+  user     User[]   @relation("UserRegions")
+
+  @@map("regions")
+}
+
+model Branch {
+  id         String    @id @default(uuid())
+  branch     String
+  region_id  String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  region Region @relation("RegionBranches", fields: [region_id], references: [id])
+  user   User[] @relation("UserBranches")
+
+  @@map("branches")
 }

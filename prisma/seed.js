@@ -1,6 +1,6 @@
 // prisma/seed.ts
-import { PrismaClient } from "../generated/prisma/index.js";
-import bcrypt from "bcrypt";
+import { PrismaClient } from '../generated/prisma/index.js';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -9,9 +9,9 @@ console.log(Object.keys(prisma));
 async function main() {
   const user = await prisma.user.create({
     data: {
-      username: "adminSuper",
-      password: await bcrypt.hash("Password123.", await bcrypt.genSalt(10)),
-      role: "PIC",
+      username: 'adminSuper',
+      password: await bcrypt.hash('Password123.', await bcrypt.genSalt(10)),
+      role: 'PIC',
     },
   });
 
@@ -38,19 +38,19 @@ async function main() {
       tanggal_lahir_penjamin: new Date('1985-08-22'),
       hubungan_penjamin_debitur: 'Istri',
       alamat_rumah_penjamin:
-        "DUSUN 03 RT 01 RW 06 DESA KARANGMEKAR KAB CIREBON",
-      nama_barang: "KENDARAAN BERMOTOR RODA DUA",
-      no_bpkb: "M-00718385",
+        'DUSUN 03 RT 01 RW 06 DESA KARANGMEKAR KAB CIREBON',
+      nama_barang: 'KENDARAAN BERMOTOR RODA DUA',
+      no_bpkb: 'M-00718385',
       harga_barang: 15000000,
       detail_jaminan:
-        "BPKB NOMOR P-08011239 AN ADE SURYANI ALAMAT JAMINAN DESA KARANGMEKAR RT 01/06 KEC KARANGSEMBUNG KAB CIREBON. MEREK/TYPE HONDA C1M02N41L0 A/T TAHUN 2019 WARNA HITAM MERAH ISI SILINDER 110 CC NO RANGKA MH1JM611XKK044768 NO MESIN JM61F1044943 ",
+        'BPKB NOMOR P-08011239 AN ADE SURYANI ALAMAT JAMINAN DESA KARANGMEKAR RT 01/06 KEC KARANGSEMBUNG KAB CIREBON. MEREK/TYPE HONDA C1M02N41L0 A/T TAHUN 2019 WARNA HITAM MERAH ISI SILINDER 110 CC NO RANGKA MH1JM611XKK044768 NO MESIN JM61F1044943 ',
       nominal_pinjaman: 10000000,
       bunga_pinjaman: 25.8,
       jangka_waktu: 12,
-      tujuan_penggunaan: "TAMBAHAN MODAL",
+      tujuan_penggunaan: 'TAMBAHAN MODAL',
       nominal_angsuran: 950000,
-      tanggal_angsuran_pertama: new Date("2025-02-01"),
-      tanggal_angsuran_terakhir: new Date("2026-01-01"),
+      tanggal_angsuran_pertama: new Date('2025-02-01'),
+      tanggal_angsuran_terakhir: new Date('2026-01-01'),
       hutang_keseluruhan: 11400000,
       tenggat_angsuran: 30,
       provisi_persen: 1.0,
@@ -96,16 +96,16 @@ async function main() {
       nominal_pinjaman: 20000000,
       bunga_pinjaman: 18,
       jangka_waktu: 24,
-      tujuan_penggunaan: "MODAL USAHA",
+      tujuan_penggunaan: 'MODAL USAHA',
       nominal_angsuran: 950000,
-      tanggal_angsuran_dimulai: new Date("2025-04-01"),
-      tanggal_angsuran_terakhir: new Date("2027-03-01"),
+      tanggal_angsuran_dimulai: new Date('2025-04-01'),
+      tanggal_angsuran_terakhir: new Date('2027-03-01'),
       hutang_keseluruhan: 22800000,
       provisi_persen: 1,
       administrasi_persen: 0.5,
       provisi_nominal: 200000,
       administrasi_nominal: 100000,
-      nama_asuransi: "ASURANSI BERSAMA",
+      nama_asuransi: 'ASURANSI BERSAMA',
       asuransi_nominal: 150000,
       materai_nominal: 10000,
       notaris_nominal: 250000,
@@ -139,15 +139,15 @@ async function main() {
       bunga_pinjaman: 20,
       jangka_waktu: 10,
       nominal_angsuran: 550000,
-      tanggal_angsuran_pertama: new Date("2025-06-01"),
-      tanggal_angsuran_terakhir: new Date("2026-03-01"),
+      tanggal_angsuran_pertama: new Date('2025-06-01'),
+      tanggal_angsuran_terakhir: new Date('2026-03-01'),
       hutang_keseluruhan: 5500000,
       tenggat_angsuran: 1,
-      rekening_pinjaman: "112001002999",
-      tujuan_penggunaan: "PENDIDIKAN",
+      rekening_pinjaman: '112001002999',
+      tujuan_penggunaan: 'PENDIDIKAN',
       provisi_persen: 1,
       provisi_nominal: 50000,
-      nama_asuransi: "ASURANSI PENDIDIKAN",
+      nama_asuransi: 'ASURANSI PENDIDIKAN',
       asuransi_jiwa_nominal: 25000,
       materai_nominal: 10000,
       total_biaya: 85000,
@@ -176,19 +176,19 @@ async function main() {
       nominal_pinjaman: 6000000,
       bunga_pinjaman: 20.0,
       jangka_waktu: 10,
-      tujuan_penggunaan: "PEMBELIAN PERABOT RUMAH",
-      rekening_pinjaman: "112001002776",
+      tujuan_penggunaan: 'PEMBELIAN PERABOT RUMAH',
+      rekening_pinjaman: '112001002776',
       nominal_angsuran: 660000,
-      tanggal_angsuran_pertama: new Date("2025-08-01"),
-      tenggat_angsuran: "Senin",
+      tanggal_angsuran_pertama: new Date('2025-08-01'),
+      tenggat_angsuran: 'Senin',
       submitted_at: new Date(),
       userID: user.id,
       barang_elektronik: {
         createMany: {
           data: [
             {
-              nama_barang: "TV LED",
-              tipe: "SAMSUNG 43 INCH",
+              nama_barang: 'TV LED',
+              tipe: 'SAMSUNG 43 INCH',
               harga: 3000000,
             },
           ],
@@ -198,8 +198,8 @@ async function main() {
         createMany: {
           data: [
             {
-              nama_barang: "LEMARI BAJU",
-              tipe: "3 PINTU MINIMALIS",
+              nama_barang: 'LEMARI BAJU',
+              tipe: '3 PINTU MINIMALIS',
               harga: 2000000,
             },
           ],
@@ -209,7 +209,7 @@ async function main() {
         createMany: {
           data: [
             {
-              nama_barang: "KARPET PERSIA",
+              nama_barang: 'KARPET PERSIA',
             },
           ],
         },
@@ -235,18 +235,18 @@ async function main() {
       nominal_pinjaman: 8000000,
       bunga_pinjaman: 18.5,
       jangka_waktu: 10,
-      rekening_pinjaman: "112001002110",
+      rekening_pinjaman: '112001002110',
       nominal_angsuran: 870000,
-      tanggal_angsuran_pertama: new Date("2025-02-15"),
-      tenggat_angsuran: "Senin",
+      tanggal_angsuran_pertama: new Date('2025-02-15'),
+      tenggat_angsuran: 'Senin',
       userID: user.id,
       submitted_at: new Date(),
       barang_elektronik: {
         createMany: {
           data: [
             {
-              nama_barang: "KULKAS",
-              tipe: "LG SMART 2PINTU",
+              nama_barang: 'KULKAS',
+              tipe: 'LG SMART 2PINTU',
               harga: 3000000,
             },
           ],
@@ -256,8 +256,8 @@ async function main() {
         createMany: {
           data: [
             {
-              nama_barang: "SOFA",
-              tipe: "L SHAPE MODERN",
+              nama_barang: 'SOFA',
+              tipe: 'L SHAPE MODERN',
               harga: 2500000,
             },
           ],
@@ -267,7 +267,7 @@ async function main() {
         createMany: {
           data: [
             {
-              nama_barang: "SEPEDA LISTRIK",
+              nama_barang: 'SEPEDA LISTRIK',
             },
           ],
         },
@@ -306,47 +306,47 @@ async function main() {
       administrasi_persen: 0.5,
       administrasi_nominal: 50000,
       administrasi_persen: 0.5,
-      alamat_rumah_debitur: "DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02",
-      alamat_usaha_debitur: "DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02",
+      alamat_rumah_debitur: 'DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02',
+      alamat_usaha_debitur: 'DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02',
       asuransi_nominal: 0,
       asuransi_tlo_nominal: 0,
       bunga_pinjaman: 24,
-      detail_jaminan: "DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02",
+      detail_jaminan: 'DESA SINDANGJAWA BLOK KARANGANYAR RT 01 RW 02',
       harga_barang: 0,
-      hubungan_debitur_penjamin: "Suami",
-      hubungan_penjamin_debitur: "Istri",
+      hubungan_debitur_penjamin: 'Suami',
+      hubungan_penjamin_debitur: 'Istri',
       hutang_keseluruhan: 11400000,
-      jabatan: "Area Manager ",
+      jabatan: 'Area Manager ',
       jangka_waktu: 12,
-      jenis_kelamin_debitur: "Laki-laki",
+      jenis_kelamin_debitur: 'Laki-laki',
       materai_nominal: 10000,
-      nama: "Budiono Sudarmono",
-      nama_barang: "Vario",
-      nama_debitur: "ROFIUDIN",
-      nama_penjamin: "SRI KURNIA",
-      nik_debitur: "3210122301890001",
-      nik_penjamin: "3210122301930002",
-      no_bpkb: "N-20204567",
+      nama: 'Budiono Sudarmono',
+      nama_barang: 'Vario',
+      nama_debitur: 'ROFIUDIN',
+      nama_penjamin: 'SRI KURNIA',
+      nik_debitur: '3210122301890001',
+      nik_penjamin: '3210122301930002',
+      no_bpkb: 'N-20204567',
       nominal_angsuran: 950000,
       nominal_pinjaman: 10000000,
-      nomor_surat: "001100.2/1",
+      nomor_surat: '001100.2/1',
       notaris_nominal: 0,
-      pekerjaan_debitur: "PEDAGANG",
+      pekerjaan_debitur: 'PEDAGANG',
       provisi_nominal: 100000,
       provisi_persen: 1,
-      status_debitur: "Kawin",
+      status_debitur: 'Kawin',
       submitted_at: new Date(),
-      tanggal_angsuran_pertama: new Date("2025-05-01"),
-      tanggal_angsuran_terakhir: new Date("2025-05-01"),
+      tanggal_angsuran_pertama: new Date('2025-05-01'),
+      tanggal_angsuran_terakhir: new Date('2025-05-01'),
       tanggal_lahir_debitur: new Date(),
       tanggal_lahir_penjamin: new Date(),
       tanggal_surat_permohonan_kredit: new Date(),
       tanggal_surat_persetujuan_kredit: new Date(),
-      tempat_lahir_debitur: "CIREBON",
-      tempat_lahir_penjamin: "CIREBON",
+      tempat_lahir_debitur: 'CIREBON',
+      tempat_lahir_penjamin: 'CIREBON',
       tenggat_angsuran: 10,
       total_biaya: 160000,
-      tujuan_penggunaan: "TAMBAHAN MODAL USAHA",
+      tujuan_penggunaan: 'TAMBAHAN MODAL USAHA',
       submitted_at: new Date(),
       userID: user.id,
     },
@@ -376,16 +376,16 @@ async function main() {
       hubungan_penjamin_debitur: 'Istri',
       nama_barang: 'SEPEDA MOTOR HONDA',
       harga_barang: 14000000,
-      no_bpkb: "BPKB-987654",
+      no_bpkb: 'BPKB-987654',
       detail_jaminan:
-        "BPKB NO. BPKB-987654 AN. SITI AMINAH, MERK HONDA VARIO 125 TAHUN 2021, WARNA HITAM, NO. RANGKA MH1JF5124MK001234, NO. MESIN JF51E-1001234",
+        'BPKB NO. BPKB-987654 AN. SITI AMINAH, MERK HONDA VARIO 125 TAHUN 2021, WARNA HITAM, NO. RANGKA MH1JF5124MK001234, NO. MESIN JF51E-1001234',
       nominal_pinjaman: 10000000,
       bunga_pinjaman: 18.5,
       jangka_waktu: 12,
-      tujuan_penggunaan: "MODAL KERJA",
+      tujuan_penggunaan: 'MODAL KERJA',
       nominal_angsuran: 925000,
-      tanggal_angsuran_pertama: new Date("2025-05-01"),
-      tanggal_angsuran_terakhir: new Date("2026-04-01"),
+      tanggal_angsuran_pertama: new Date('2025-05-01'),
+      tanggal_angsuran_terakhir: new Date('2026-04-01'),
       hutang_keseluruhan: 11100000,
       tenggat_angsuran: 1,
       provisi_persen: 1.0,
@@ -427,21 +427,21 @@ async function main() {
       nik_shm: '3210041202850005',
       alamat_shm: 'JL. PELABUHAN NO. 10 CIREBON',
       detail_jaminan:
-        "SHM No. 1234567 atas nama BUDI PRATAMA, Luas 120 m², Desa Citemu, Kec. Mundu, Kab. Cirebon",
+        'SHM No. 1234567 atas nama BUDI PRATAMA, Luas 120 m², Desa Citemu, Kec. Mundu, Kab. Cirebon',
       nominal_pinjaman: 20000000,
       bunga_pinjaman: 18.0,
       jangka_waktu: 18,
-      tujuan_penggunaan: "RENOVASI RUMAH",
+      tujuan_penggunaan: 'RENOVASI RUMAH',
       nominal_angsuran: 1250000,
-      tanggal_angsuran_pertama: new Date("2025-04-01"),
-      tanggal_angsuran_terakhir: new Date("2026-09-01"),
+      tanggal_angsuran_pertama: new Date('2025-04-01'),
+      tanggal_angsuran_terakhir: new Date('2026-09-01'),
       hutang_keseluruhan: 22500000,
       tenggat_angsuran: 1,
       provisi_persen: 1.0,
       administrasi_persen: 0.5,
       provisi_nominal: 200000,
       administrasi_nominal: 100000,
-      nama_asuransi: "Asuransi Jaga Jiwa",
+      nama_asuransi: 'Asuransi Jaga Jiwa',
       asuransi_jiwa_nominal: 150000,
       materai_nominal: 10000,
       total_biaya: 460000,
@@ -474,16 +474,16 @@ async function main() {
       hubungan_penjamin_debitur: 'Istri',
       nama_barang: 'MOBIL TOYOTA AVANZA',
       harga_barang: 120000000,
-      no_bpkb: "BPKB-AVZ-789654",
+      no_bpkb: 'BPKB-AVZ-789654',
       detail_jaminan:
-        "BPKB MOBIL TOYOTA AVANZA, WARNA HITAM, TAHUN 2020, NOMOR RANGKA MHFCW123456789101, NOMOR MESIN CW456789",
+        'BPKB MOBIL TOYOTA AVANZA, WARNA HITAM, TAHUN 2020, NOMOR RANGKA MHFCW123456789101, NOMOR MESIN CW456789',
       nominal_pinjaman: 80000000,
       bunga_pinjaman: 15.5,
       jangka_waktu: 24,
-      tujuan_penggunaan: "MODAL USAHA",
+      tujuan_penggunaan: 'MODAL USAHA',
       nominal_angsuran: 3850000,
-      tanggal_angsuran_pertama: new Date("2025-05-01"),
-      tanggal_angsuran_terakhir: new Date("2027-04-01"),
+      tanggal_angsuran_pertama: new Date('2025-05-01'),
+      tanggal_angsuran_terakhir: new Date('2027-04-01'),
       hutang_keseluruhan: 92400000,
       tenggat_angsuran: 1,
       provisi_persen: 1.0,
@@ -492,7 +492,7 @@ async function main() {
       administrasi_nominal: 400000,
       materai_nominal: 10000,
       asuransi_jiwa_nominal: 250000,
-      nama_asuransi: "Asuransi Mobil Sejahtera",
+      nama_asuransi: 'Asuransi Mobil Sejahtera',
       asuransi_tlo_nominal: 350000,
       notaris_nominal: 200000,
       total_biaya: 2010000,
@@ -525,14 +525,14 @@ async function main() {
       alamat_shm: 'JL. MELATI NO. 88 CIREBON',
       nik_shm: '3210030803820001',
       detail_jaminan:
-        "SHM NO. 123456789 ATAS NAMA AGUS SUPRIYANTO, LUAS 200M2, LOKASI JL. MELATI NO. 88 CIREBON",
+        'SHM NO. 123456789 ATAS NAMA AGUS SUPRIYANTO, LUAS 200M2, LOKASI JL. MELATI NO. 88 CIREBON',
       nominal_pinjaman: 75000000,
-      tujuan_penggunaan: "MODAL PERLUASAN TOKO",
+      tujuan_penggunaan: 'MODAL PERLUASAN TOKO',
       jangka_waktu: 18,
       bunga_pinjaman: 14.0,
-      tanggal_angsuran_terakhir: new Date("2026-08-01"),
+      tanggal_angsuran_terakhir: new Date('2026-08-01'),
       tenggat_angsuran: 1,
-      tanggal_angsuran_pertama: new Date("2025-03-01"),
+      tanggal_angsuran_pertama: new Date('2025-03-01'),
       nominal_angsuran: 4700000,
       hutang_keseluruhan: 84600000,
       provisi_persen: 1.0,
@@ -541,7 +541,7 @@ async function main() {
       administrasi_nominal: 375000,
       materai_nominal: 10000,
       notaris_nominal: 200000,
-      nama_asuransi_jiwa: "Asuransi Hidup Sejahtera",
+      nama_asuransi_jiwa: 'Asuransi Hidup Sejahtera',
       asuransi_jiwa_nominal: 300000,
       total_biaya: 1635000,
       submitted_at: new Date(),
@@ -579,12 +579,12 @@ async function main() {
       warna_barang: 'Silver',
       harga_barang: 3200000,
       detail_jaminan:
-        "Kulkas SHARP 185L SJ-195MD-SR warna silver sebagai jaminan.",
+        'Kulkas SHARP 185L SJ-195MD-SR warna silver sebagai jaminan.',
       bunga_pinjaman: 18.0,
       jangka_waktu: 12,
-      tanggal_angsuran_terakhir: new Date("2026-03-01"),
+      tanggal_angsuran_terakhir: new Date('2026-03-01'),
       tenggat_angsuran: 1,
-      tanggal_angsuran_pertama: new Date("2025-04-01"),
+      tanggal_angsuran_pertama: new Date('2025-04-01'),
       nominal_angsuran: 310000,
       hutang_keseluruhan: 3720000,
       provisi_persen: 1.0,
@@ -625,13 +625,13 @@ async function main() {
       nama_barang: 'HONDA BEAT CBS 2020',
       no_bpkb: 'N-20204567',
       detail_jaminan:
-        "BPKB MOTOR HONDA BEAT CBS TAHUN 2020 WARNA PUTIH BIRU, NO. RANGKA MH1JF5115LK023456, NO. MESIN JF51E1234567",
+        'BPKB MOTOR HONDA BEAT CBS TAHUN 2020 WARNA PUTIH BIRU, NO. RANGKA MH1JF5115LK023456, NO. MESIN JF51E1234567',
       nominal_pinjaman: 8000000,
       bunga_pinjaman: 22.5,
       jangka_waktu: 12,
       nominal_angsuran: 750000,
-      tanggal_angsuran_pertama: new Date("2025-05-01"),
-      tanggal_angsuran_terakhir: new Date("2026-04-01"),
+      tanggal_angsuran_pertama: new Date('2025-05-01'),
+      tanggal_angsuran_terakhir: new Date('2026-04-01'),
       hutang_keseluruhan: 9000000,
       tenggat_angsuran: 1,
       provisi_persen: 1.0,
@@ -639,7 +639,7 @@ async function main() {
       provisi_nominal: 80000,
       materai_nominal: 10000,
       asuransi_jiwa_nominal: 25000,
-      nama_asuransi: "Asuransi Jiwa Sejahtera",
+      nama_asuransi: 'Asuransi Jiwa Sejahtera',
       notaris_nominal: 120000,
       total_biaya: 275000,
       submitted_at: new Date(),
@@ -647,7 +647,60 @@ async function main() {
     },
   });
 
-  console.log("✅ Seed data berhasil dibuat.");
+  await prisma.region.createMany({
+    data: [
+      { id: 'b82f9447-7a60-4daf-b888-d053390c836e', region: 'Barat' },
+      { id: 'e89805b2-32f5-4fbb-9c54-14de62581836', region: 'Utara' },
+      { id: 'a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7', region: 'Selatan' },
+      { id: '2372b1f6-a5f7-4160-beea-5463bad5145f', region: 'Timur' },
+    ],
+  });
+
+  await prisma.branch.createMany({
+    data: [
+      // Barat
+      {
+        branch: 'Jakarta Barat',
+        region_id: 'b82f9447-7a60-4daf-b888-d053390c836e',
+      },
+      {
+        branch: 'Bandung Barat',
+        region_id: 'b82f9447-7a60-4daf-b888-d053390c836e',
+      },
+
+      // Utara
+      {
+        branch: 'Jakarta Utara',
+        region_id: 'e89805b2-32f5-4fbb-9c54-14de62581836',
+      },
+      {
+        branch: 'Medan Utara',
+        region_id: 'e89805b2-32f5-4fbb-9c54-14de62581836',
+      },
+
+      // Selatan
+      {
+        branch: 'Jakarta Selatan',
+        region_id: 'a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7',
+      },
+      {
+        branch: 'Bandung Selatan',
+        region_id: 'a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7',
+      },
+
+      // Timur
+      {
+        branch: 'Jakarta Timur',
+        region_id: '2372b1f6-a5f7-4160-beea-5463bad5145f',
+      },
+      {
+        branch: 'Surabaya Timur',
+        region_id: '2372b1f6-a5f7-4160-beea-5463bad5145f',
+      },
+    ],
+  });
+
+  console.log('✅ Seed data berhasil dibuat.');
 }
 
 main()
