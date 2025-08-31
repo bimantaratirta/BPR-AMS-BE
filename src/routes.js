@@ -20,6 +20,9 @@ import dashboardRoutes from './core/V1/dashboard/dashboard-routes.js';
 import AuthRoutesV2 from './core/V2/auth/auth-routes.js';
 import RegionV2 from './core/V2/region/region-routes.js';
 import BranchV2 from './core/V2/branch/branch-routes.js';
+import CustomerV2 from './core/V2/customer/customer-routes.js';
+import ReportV2 from './core/V2/report/report-routes.js';
+import ReviewCustomerV2 from './core/V2/review-customer/review-customer-routes.js';
 
 const router = express.Router();
 
@@ -94,6 +97,18 @@ const appsRoutesV2 = [
   {
     path: '/branch',
     route: BranchV2,
+  },
+  {
+    path: '/customer',
+    route: CustomerV2,
+  },
+  {
+    path: '/report',
+    route: ReportV2,
+  },
+  {
+    path: '/review-customer',
+    route: ReviewCustomerV2,
   },
 ];
 

@@ -660,42 +660,79 @@ async function main() {
     data: [
       // Barat
       {
+        id: '4dfc5d80-9312-418a-9bff-10e9cfcdb21e',
         branch: 'Jakarta Barat',
         region_id: 'b82f9447-7a60-4daf-b888-d053390c836e',
       },
       {
+        id: '5a4f6e1c-2d3b-4f4a-9f1e-3c9e8f7b6c2a',
         branch: 'Bandung Barat',
         region_id: 'b82f9447-7a60-4daf-b888-d053390c836e',
       },
 
       // Utara
       {
+        id: '6c7e8f9a-1b2c-4d5e-8f9a-0b1c2d3e4f5a',
         branch: 'Jakarta Utara',
         region_id: 'e89805b2-32f5-4fbb-9c54-14de62581836',
       },
       {
+        id: '7d8e9f0a-2b3c-4d5e-9f0a-1b2c3d4e5f6a',
         branch: 'Medan Utara',
         region_id: 'e89805b2-32f5-4fbb-9c54-14de62581836',
       },
 
       // Selatan
       {
+        id: '8e9f0a1b-3c4d-5e6f-0a1b-2c3d4e5f6a7b',
         branch: 'Jakarta Selatan',
         region_id: 'a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7',
       },
       {
+        id: '9f0a1b2c-4d5e-6f7a-1b2c-3d4e5f6a7b8c',
         branch: 'Bandung Selatan',
         region_id: 'a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7',
       },
 
       // Timur
       {
+        id: '2372b1f6-a5f7-4160-beea-5463bad5145f',
         branch: 'Jakarta Timur',
         region_id: '2372b1f6-a5f7-4160-beea-5463bad5145f',
       },
       {
+        id: '3483c2d7-b6e8-4f9a-8c7d-6594e1f2a3b4',
         branch: 'Surabaya Timur',
         region_id: '2372b1f6-a5f7-4160-beea-5463bad5145f',
+      },
+    ],
+  });
+
+  await prisma.user.createMany({
+    data: [
+      {
+        name: 'Andika Mahardika',
+        username: 'andika.am',
+        region_id: 'b82f9447-7a60-4daf-b888-d053390c836e',
+        password: await bcrypt.hash('Password123.', await bcrypt.genSalt(10)),
+        // password_confirmation: 'Password123.',
+        role: 'AM',
+      },
+      {
+        name: 'Surya Laksamana',
+        username: 'surya.slo',
+        branch_id: '5a4f6e1c-2d3b-4f4a-9f1e-3c9e8f7b6c2a',
+        password: await bcrypt.hash('Password123.', await bcrypt.genSalt(10)),
+        // password_confirmation: 'Password123.',
+        role: 'SLO',
+      },
+      {
+        name: 'Lia Oktaviani',
+        username: 'lia.okta',
+        branch_id: '5a4f6e1c-2d3b-4f4a-9f1e-3c9e8f7b6c2a',
+        password: await bcrypt.hash('Password123.', await bcrypt.genSalt(10)),
+        // password_confirmation: 'Password123.',
+        role: 'LO',
       },
     ],
   });

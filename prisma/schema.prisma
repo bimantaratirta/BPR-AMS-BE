@@ -41,6 +41,9 @@ model User {
   supervisor   User?      @relation("UserSupervisor", fields: [supervisor_id], references: [id])
   subordinates User[]     @relation("UserSupervisor")
   customer     Customer[] @relation("UserCustomer")
+  report_lo    Report[]   @relation("UserReportLO")
+  report_slo   Report[]   @relation("UserReportSLO")
+  report_am    Report[]   @relation("UserReportAM")
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -745,67 +748,169 @@ model Branch {
   @@map("branches")
 }
 
-model Customer {
-  id         String    @id @default(uuid())
-  debetor_id String
-  status     Status
-  process    Process
-  created_by String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+model Employee {
+  id              String    @id @default(uuid())
+  company_name    String?
+  company_address String?
+  company_phone   String?
+  position        String?
+  work            String? // shown in report
+  salary          Int?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
 
-  debetor Debetor @relation("CustomerDebetor", fields: [debetor_id], references: [id])
-  created User    @relation("UserCustomer", fields: [created_by], references: [id])
+  customer Customer[] @relation("EmployeeCustomer")
 
-  @@map("customers")
+  @@map("employees")
 }
 
-model Debetor {
-  id            String    @id @default(uuid())
-  name          String?
-  no_ktp        String?   @unique
-  date_of_birth DateTime?
-  address       String?
-  no_hp         String?
-  employment_id String?
-  business_id   String?
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  deleted_at    DateTime
-
-  employment Employment? @relation(fields: [employment_id], references: [id])
-  business   Business?   @relation(fields: [business_id], references: [id])
-  customer   Customer[]  @relation("CustomerDebetor")
-
-  @@map("debetors")
-}
-
-model Employment {
+model NonEmployee {
   id               String    @id @default(uuid())
-  company_name     String?
-  job_title        String?
   salary_frequency String?
+  work             String? // shown in report
   salary           Int?
   created_at       DateTime  @default(now())
   updated_at       DateTime  @updatedAt
   deleted_at       DateTime?
-  debetor          Debetor[]
 
-  @@map("employments")
+  customer Customer[] @relation("NonEmployeeCustomer")
+
+  @@map("non_employees")
 }
 
 model Business {
-  id            String    @id @default(uuid())
-  business_type String?
-  revenue       Int?
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  deleted_at    DateTime?
+  id             String    @id @default(uuid())
+  business_type  String? // shown in report
+  employee_count Int?
+  revenue        Int?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  deleted_at     DateTime?
 
-  debetor Debetor[]
+  customer Customer[] @relation("BusinessCustomer")
 
-  @@map("business")
+  @@map("businesses")
+}
+
+model Customer {
+  id              String    @id @default(uuid())
+  name            String?
+  ktp_number      String?
+  date_of_birth   DateTime?
+  address         String?
+  rt_rw           String?
+  village         String?
+  phone_number    String?
+  employee_id     String?
+  non_employee_id String?
+  business_id     String?
+  created_by      String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  user         User?        @relation("UserCustomer", fields: [created_by], references: [id])
+  employee     Employee?    @relation("EmployeeCustomer", fields: [employee_id], references: [id])
+  non_employee NonEmployee? @relation("NonEmployeeCustomer", fields: [non_employee_id], references: [id])
+  business     Business?    @relation("BusinessCustomer", fields: [business_id], references: [id])
+
+  report Report[] @relation("CustomerReport")
+
+  @@map("customers")
+}
+
+model Report {
+  id                    String  @id @default(uuid())
+  status                Status
+  process               Process
+  customer_id           String?
+  lo_id                 String?
+  slo_id                String?
+  am_id                 String?
+  customer_snapshot     Json
+  employee_snapshot     Json?
+  non_employee_snapshot Json?
+  business_snapshot     Json?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  lo              User?            @relation("UserReportLO", fields: [lo_id], references: [id])
+  slo             User?            @relation("UserReportSLO", fields: [slo_id], references: [id])
+  am              User?            @relation("UserReportAM", fields: [am_id], references: [id])
+  customer        Customer?        @relation("CustomerReport", fields: [customer_id], references: [id])
+  report_photo    ReportPhoto[]    @relation("ReportPhoto")
+  review_customer ReviewCustomer[] @relation("ReportReviewCustomer")
+  evaluation      Evaluation[]     @relation("ReportEvaluation")
+
+  @@map("reports")
+}
+
+model ReportPhoto {
+  id         String    @id @default(uuid())
+  report_id  String
+  url        String // public URL / signed URL
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  report Report @relation("ReportPhoto", fields: [report_id], references: [id])
+
+  @@map("report_photos")
+}
+
+model ReviewCustomer {
+  id              String    @id @default(uuid())
+  report_id       String
+  review_identity Boolean
+  review_domicile Boolean
+  review_work     Boolean
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  report Report @relation("ReportReviewCustomer", fields: [report_id], references: [id])
+
+  @@map("review_customers")
+}
+
+model Evaluation {
+  id               String    @id @default(uuid())
+  report_id        String
+  character        String
+  status_character Status
+  capacity         String
+  status_capacity  Status
+  condition        String
+  status_condition Status
+  capital          String
+  status_capital   Status
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  report            Report             @relation("ReportEvaluation", fields: [report_id], references: [id])
+  review_evaluation ReviewEvaluation[] @relation("EvaluationReviewEvaluation")
+
+  @@map("evaluations")
+}
+
+model ReviewEvaluation {
+  id               String    @id @default(uuid())
+  evaluation_id    String
+  review_character Boolean
+  review_capacity  Boolean
+  review_condition Boolean
+  review_capital   Boolean
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  evaluation Evaluation @relation("EvaluationReviewEvaluation", fields: [evaluation_id], references: [id])
+
+  @@map("review_evaluations")
 }
 
 enum Status {

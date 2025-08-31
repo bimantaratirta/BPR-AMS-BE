@@ -28,10 +28,12 @@
   "homepage": "https://github.com/nevmock/BO-Apps-BE#readme",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.876.0",
     "@joi/date": "^2.1.1",
     "@prisma/client": "^6.7.0",
     "@types/express": "^5.0.0",
     "apicache": "^1.6.3",
+    "aws-sdk": "^2.1692.0",
     "babel": "^5.8.38",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",

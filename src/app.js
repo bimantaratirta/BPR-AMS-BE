@@ -15,6 +15,7 @@ import morgan from 'morgan';
 
 import BaseError from './base_classes/base-error.js';
 import router from './routes.js';
+import corsMiddleware from './middlewares/cors-middleware.js';
 
 class ExpressApplication {
   app;
@@ -24,9 +25,11 @@ class ExpressApplication {
     this.app = express();
     this.port = port;
 
-    this.app.use(cors());
     this.app.use(express.json({ type: 'application/json' }));
+
     this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(corsMiddleware);
+
     //  __init__
     this.configureAssets();
     this.setupRoute();
@@ -43,36 +46,36 @@ class ExpressApplication {
       // cors(),
     ]);
 
-    this.fileStorage = multer.diskStorage({
-      destination: (req, file, cb) => {
-        cb(null, 'public/images');
-      },
-      filename: (req, file, cb) => {
-        cb(null, new Date().getTime() + '-' + file.originalname);
-      },
-    });
-    this.fileFilter = (req, file, cb) => {
-      if (
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        file.mimetype === 'image/jpeg'
-      ) {
-        cb(null, true);
-      } else {
-        cb(null, false);
-      }
-    };
-    this.app.use(
-      multer({
-        storage: this.fileStorage,
-        fileFilter: this.fileFilter,
-      }).fields([
-        {
-          name: 'image',
-          maxCount: 1,
-        },
-      ])
-    );
+    // this.fileStorage = multer.diskStorage({
+    //   destination: (req, file, cb) => {
+    //     cb(null, 'public/images');
+    //   },
+    //   filename: (req, file, cb) => {
+    //     cb(null, new Date().getTime() + '-' + file.originalname);
+    //   },
+    // });
+    // this.fileFilter = (req, file, cb) => {
+    //   if (
+    //     file.mimetype === 'image/png' ||
+    //     file.mimetype === 'image/jpg' ||
+    //     file.mimetype === 'image/jpeg'
+    //   ) {
+    //     cb(null, true);
+    //   } else {
+    //     cb(null, false);
+    //   }
+    // };
+    // this.app.use(
+    //   multer({
+    //     storage: this.fileStorage,
+    //     fileFilter: this.fileFilter,
+    //   }).fields([
+    //     {
+    //       name: 'image',
+    //       maxCount: 1,
+    //     },
+    //   ])
+    // );
   }
 
   setupMiddlewares(middlewaresArr) {

@@ -3,7 +3,6 @@ import AuthService from './auth-service.js';
 
 class AuthController {
   async login(req, res) {
-    console.log(req.body);
     const { username, password } = req.body;
 
     const token = await AuthService.login(username, password);
