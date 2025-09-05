@@ -1,23 +1,23 @@
-import { createdResponse, successResponse } from '../../../utils/response.js';
-import KSSMService from './KSSM-service.js';
-import tryCatch from '../../../utils/tryCatcher.js';
-import express from 'express';
-import path from 'path';
-import ejs from 'ejs';
-import puppeteer from 'puppeteer';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import mammoth from 'mammoth';
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
-import { renderAsync } from 'docx-preview';
-import { JSDOM } from 'jsdom';
-import docxConverter from 'docx-pdf';
-import { exec } from 'child_process';
-import { __dirname, __filename } from '../../../utils/path.js';
-import { formatRupiahDenganHuruf } from '../../../utils/formatTerbilangRupiah.js';
-import { formatRupiah } from '../../../utils/formatRupiah.js';
-import { getHariDalamBahasaIndonesia } from '../../../utils/getHariDalamBahasaIndonesia.js';
+import { createdResponse, successResponse } from "../../../utils/response.js";
+import KSSMService from "./KSSM-service.js";
+import tryCatch from "../../../utils/tryCatcher.js";
+import express from "express";
+import path from "path";
+import ejs from "ejs";
+import puppeteer from "puppeteer";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import mammoth from "mammoth";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import { renderAsync } from "docx-preview";
+import { JSDOM } from "jsdom";
+import docxConverter from "docx-pdf";
+import { exec } from "child_process";
+import { __dirname, __filename } from "../../../utils/path.js";
+import { formatRupiahDenganHuruf } from "../../../utils/formatTerbilangRupiah.js";
+import { formatRupiah } from "../../../utils/formatRupiah.js";
+import { getHariDalamBahasaIndonesia } from "../../../utils/getHariDalamBahasaIndonesia.js";
 
 class KSSMController {
   async get(req, res) {
@@ -31,7 +31,7 @@ class KSSMController {
     const data = await KSSMService.getById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'KSSM not found' });
+      return res.status(404).json({ message: "KSSM not found" });
     }
 
     return successResponse(res, data);
@@ -86,7 +86,7 @@ class KSSMController {
       is_submitted,
     } = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
 
     const newKSSM = await KSSMService.create({
       nomor_surat,
@@ -138,7 +138,7 @@ class KSSMController {
     });
 
     if (!newKSSM) {
-      throw Error('Failed to create KSSM');
+      throw Error("Failed to create KSSM");
     }
 
     return createdResponse(res, newKSSM);
@@ -150,7 +150,7 @@ class KSSMController {
       const dbData = await KSSMService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'KSSM not found' });
+        return res.status(404).json({ message: "KSSM not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
@@ -160,18 +160,18 @@ class KSSMController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -265,24 +265,24 @@ class KSSMController {
         total_biaya: formatTotalBiaya,
       };
 
-      const templatePath = path.resolve('src/templates/', 'KSSM.docx');
+      const templatePath = path.resolve("src/templates/", "KSSM.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -292,13 +292,13 @@ class KSSMController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
 
       const outputDir = path.resolve(`output`);
       if (!fs.existsSync(outputDir)) {
@@ -307,7 +307,7 @@ class KSSMController {
 
       const timestamp = Date.now();
       const docxFilename = `KSSM_${id}_${timestamp}.docx`;
-      const pdfFilename = docxFilename.replace('.docx', '.pdf');
+      const pdfFilename = docxFilename.replace(".docx", ".pdf");
 
       const docxPath = path.join(outputDir, docxFilename);
       const pdfPath = path.join(outputDir, pdfFilename);
@@ -339,9 +339,9 @@ class KSSMController {
         const pdfBuffer = await convertToPdfWithSoffice(docxPath, pdfPath);
 
         res.set({
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${pdfFilename}"`,
-          'Content-Length': pdfBuffer.length,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${pdfFilename}"`,
+          "Content-Length": pdfBuffer.length,
         });
 
         res.send(pdfBuffer);
@@ -349,16 +349,16 @@ class KSSMController {
         fs.unlinkSync(docxPath);
         fs.unlinkSync(pdfPath);
       } catch (pdfError) {
-        console.error('Gagal konversi ke PDF:', pdfError);
+        console.error("Gagal konversi ke PDF:", pdfError);
         return res.status(500).json({
-          error: 'PDF conversion failed',
+          error: "PDF conversion failed",
           message: pdfError.message,
         });
       }
     } catch (error) {
-      console.error('Gagal generate PDF:', error);
+      console.error("Gagal generate PDF:", error);
       res.status(500).json({
-        error: 'Failed to generate PDF',
+        error: "Failed to generate PDF",
         message: error.message,
         timestamp: new Date().toISOString(),
       });
@@ -371,7 +371,7 @@ class KSSMController {
       const dbData = await KSSMService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'KSSM not found' });
+        return res.status(404).json({ message: "KSSM not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
@@ -381,18 +381,18 @@ class KSSMController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -486,24 +486,24 @@ class KSSMController {
         total_biaya: formatTotalBiaya,
       };
 
-      const templatePath = path.resolve('src/templates/', 'KSSM.docx');
+      const templatePath = path.resolve("src/templates/", "KSSM.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -513,28 +513,28 @@ class KSSMController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
       const timestamp = Date.now();
       const docxFilename = `KSSM_${id}_${timestamp}.docx`;
 
       res.set({
-        'Content-Type':
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'Content-Disposition': `attachment; filename="${docxFilename}"`,
-        'Content-Length': buf.length,
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${docxFilename}"`,
+        "Content-Length": buf.length,
       });
 
       res.send(buf);
     } catch (err) {
-      console.error('Gagal generate DOCX:', err);
+      console.error("Gagal generate DOCX:", err);
       res.status(500).json({
-        error: 'Failed to generate Word document',
+        error: "Failed to generate Word document",
         message: err.message,
       });
     }
@@ -544,12 +544,12 @@ class KSSMController {
     const { id } = req.params;
     let payload = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
     payload.userID = userID;
     const updatedKSSM = await KSSMService.update(id, payload);
 
     if (!updatedKSSM) {
-      return res.status(404).json({ message: 'KSSM not found' });
+      return res.status(404).json({ message: "KSSM not found" });
     }
 
     return successResponse(res, updatedKSSM);
@@ -560,7 +560,7 @@ class KSSMController {
     const data = await KSSMService.deleteById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'KSSM not found' });
+      return res.status(404).json({ message: "KSSM not found" });
     }
 
     return successResponse(res, data);

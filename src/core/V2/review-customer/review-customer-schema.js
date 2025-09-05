@@ -1,6 +1,6 @@
-import JoiDate from '@joi/date';
-import JoiBase from 'joi';
-import { update } from 'lodash';
+import JoiDate from "@joi/date";
+import JoiBase from "joi";
+import { update } from "lodash";
 
 const Joi = JoiBase.extend(JoiDate);
 

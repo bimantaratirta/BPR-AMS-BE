@@ -1,14 +1,14 @@
-import { createdResponse, successResponse } from '../../../utils/response.js';
-import KMMService from './KMM-service.js';
-import path from 'path';
-import fs from 'fs';
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
-import { exec } from 'child_process';
-import { __dirname, __filename } from '../../../utils/path.js';
-import { formatRupiahDenganHuruf } from '../../../utils/formatTerbilangRupiah.js';
-import { formatRupiah } from '../../../utils/formatRupiah.js';
-import { getHariDalamBahasaIndonesia } from '../../../utils/getHariDalamBahasaIndonesia.js';
+import { createdResponse, successResponse } from "../../../utils/response.js";
+import KMMService from "./KMM-service.js";
+import path from "path";
+import fs from "fs";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import { exec } from "child_process";
+import { __dirname, __filename } from "../../../utils/path.js";
+import { formatRupiahDenganHuruf } from "../../../utils/formatTerbilangRupiah.js";
+import { formatRupiah } from "../../../utils/formatRupiah.js";
+import { getHariDalamBahasaIndonesia } from "../../../utils/getHariDalamBahasaIndonesia.js";
 
 class KMMController {
   async get(req, res) {
@@ -22,7 +22,7 @@ class KMMController {
     const data = await KMMService.getById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'KMM not found' });
+      return res.status(404).json({ message: "KMM not found" });
     }
 
     return successResponse(res, data);
@@ -77,7 +77,7 @@ class KMMController {
       is_submitted,
     } = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
 
     const newKMM = await KMMService.create({
       nomor_surat,
@@ -129,7 +129,7 @@ class KMMController {
     });
 
     if (!newKMM) {
-      throw Error('Failed to create KMM');
+      throw Error("Failed to create KMM");
     }
 
     return createdResponse(res, newKMM);
@@ -141,7 +141,7 @@ class KMMController {
       const dbData = await KMMService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'KMM not found' });
+        return res.status(404).json({ message: "KMM not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
@@ -151,18 +151,18 @@ class KMMController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -256,24 +256,24 @@ class KMMController {
         harga_jaminan: formatHargaBarang,
       };
 
-      const templatePath = path.resolve('src/templates/', 'KMM.docx');
+      const templatePath = path.resolve("src/templates/", "KMM.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -283,13 +283,13 @@ class KMMController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
 
       const outputDir = path.resolve(`output`);
       if (!fs.existsSync(outputDir)) {
@@ -298,7 +298,7 @@ class KMMController {
 
       const timestamp = Date.now();
       const docxFilename = `KMM_${id}_${timestamp}.docx`;
-      const pdfFilename = docxFilename.replace('.docx', '.pdf');
+      const pdfFilename = docxFilename.replace(".docx", ".pdf");
 
       const docxPath = path.join(outputDir, docxFilename);
       const pdfPath = path.join(outputDir, pdfFilename);
@@ -330,9 +330,9 @@ class KMMController {
         const pdfBuffer = await convertToPdfWithSoffice(docxPath, pdfPath);
 
         res.set({
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${pdfFilename}"`,
-          'Content-Length': pdfBuffer.length,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${pdfFilename}"`,
+          "Content-Length": pdfBuffer.length,
         });
 
         res.send(pdfBuffer);
@@ -340,16 +340,16 @@ class KMMController {
         fs.unlinkSync(docxPath);
         fs.unlinkSync(pdfPath);
       } catch (pdfError) {
-        console.error('Gagal konversi ke PDF:', pdfError);
+        console.error("Gagal konversi ke PDF:", pdfError);
         return res.status(500).json({
-          error: 'PDF conversion failed',
+          error: "PDF conversion failed",
           message: pdfError.message,
         });
       }
     } catch (error) {
-      console.error('Gagal generate PDF:', error);
+      console.error("Gagal generate PDF:", error);
       res.status(500).json({
-        error: 'Failed to generate PDF',
+        error: "Failed to generate PDF",
         message: error.message,
         timestamp: new Date().toISOString(),
       });
@@ -362,7 +362,7 @@ class KMMController {
       const dbData = await KMMService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'KMM not found' });
+        return res.status(404).json({ message: "KMM not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_permohonan_kredit);
@@ -372,18 +372,18 @@ class KMMController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -477,24 +477,24 @@ class KMMController {
         harga_jaminan: formatHargaBarang,
       };
 
-      const templatePath = path.resolve('src/templates/', 'KMM.docx');
+      const templatePath = path.resolve("src/templates/", "KMM.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -504,28 +504,28 @@ class KMMController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
       const timestamp = Date.now();
       const docxFilename = `KMM_${id}_${timestamp}.docx`;
 
       res.set({
-        'Content-Type':
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'Content-Disposition': `attachment; filename="${docxFilename}"`,
-        'Content-Length': buf.length,
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${docxFilename}"`,
+        "Content-Length": buf.length,
       });
 
       res.send(buf);
     } catch (err) {
-      console.error('Gagal generate DOCX:', err);
+      console.error("Gagal generate DOCX:", err);
       res.status(500).json({
-        error: 'Failed to generate Word document',
+        error: "Failed to generate Word document",
         message: err.message,
       });
     }
@@ -535,12 +535,12 @@ class KMMController {
     const { id } = req.params;
     let payload = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
     payload.userID = userID;
     const updatedKMM = await KMMService.update(id, payload);
 
     if (!updatedKMM) {
-      return res.status(404).json({ message: 'KMM not found' });
+      return res.status(404).json({ message: "KMM not found" });
     }
 
     return successResponse(res, updatedKMM);
@@ -551,7 +551,7 @@ class KMMController {
     const data = await KMMService.deleteById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'KMM not found' });
+      return res.status(404).json({ message: "KMM not found" });
     }
 
     return successResponse(res, data);

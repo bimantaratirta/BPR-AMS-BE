@@ -15,7 +15,8 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
     filterableFields = [],
     orderableFields = [],
     relations = {},
-    dateFields = { created_at: 'created_at', updated_at: 'updated_at' },
+    select = {},
+    dateFields = { created_at: "created_at", updated_at: "updated_at" },
   } = modelConfig;
 
   const {
@@ -34,11 +35,11 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
   if (search != null && searchableFields.length > 0) {
     const searchTerm = String(search);
     where.OR = searchableFields.map((fieldPath) => {
-      const parts = fieldPath.split('.');
+      const parts = fieldPath.split(".");
       const leaf = parts.pop();
       // Nested builder: e.g. { user: { email: { contains: searchTerm, mode: 'insensitive' } } }
       const condition = {
-        [leaf]: { contains: searchTerm, mode: 'insensitive' },
+        [leaf]: { contains: searchTerm, mode: "insensitive" },
       };
       return parts.reduceRight((acc, curr) => ({ [curr]: acc }), condition);
     });
@@ -53,8 +54,8 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
   }
 
   // ⏱️ Date exact & ranges
-  const createdField = dateFields.created_at || 'created_at';
-  const updatedField = dateFields.updated_at || 'updated_at';
+  const createdField = dateFields.created_at || "created_at";
+  const updatedField = dateFields.updated_at || "updated_at";
 
   if (filter?.created_at) {
     where[createdField] = new Date(filter.created_at);
@@ -94,14 +95,28 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
 
   // 📦 Include Relations (whitelist via config)
   const include = {};
-  if (Array.isArray(include_relation)) {
-    for (const rel of include_relation) {
-      if (relations[rel]) include[rel] = relations[rel];
-      else if (relations[rel] === true) include[rel] = true;
-    }
-  }
 
-  // 📊 Order By (whitelist fields)
+  include_relation.forEach((rel) => {
+    const relation = relations[rel];
+
+    if (relation) {
+      // Cek apakah relasi mengandung sub-relasi (nested)
+      if (typeof relation === "object" && !Array.isArray(relation)) {
+        include[rel] = {
+          include: handleNestedInclude(relation, select[rel]), // Apply select untuk kolom tertentu
+        };
+      } else if (select[rel]) {
+        // Jika relasi tidak nested, hanya menggunakan select
+        include[rel] = {
+          select: select[rel], // Menambahkan select kolom sesuai konfigurasi
+        };
+      } else {
+        include[rel] = true; // Jika hanya relasi tanpa sub-relasi
+      }
+    }
+  });
+
+  // 📊 Order By (same logic as before)
   let orderBy = [];
   if (Array.isArray(order_by)) {
     orderBy = order_by
@@ -109,8 +124,8 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
         ({ field }) =>
           orderableFields.length === 0 || orderableFields.includes(field)
       )
-      .map(({ field, direction = 'asc' }) => ({
-        [field]: direction.toLowerCase() === 'desc' ? 'desc' : 'asc',
+      .map(({ field, direction = "asc" }) => ({
+        [field]: direction.toLowerCase() === "desc" ? "desc" : "asc",
       }));
   }
 
@@ -126,8 +141,32 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
   return {
     where,
     orderBy,
-    include,
+    include, // Return the include object with relations
     ...(take !== undefined ? { take } : {}),
     ...(skip !== undefined ? { skip } : {}),
   };
+}
+
+function handleNestedInclude(nestedRelations, selectColumns) {
+  const result = {};
+
+  Object.keys(nestedRelations).forEach((key) => {
+    const value = nestedRelations[key];
+
+    // Jika relasi adalah objek dan memiliki sub-relasi, rekursifkan
+    if (typeof value === "object" && !Array.isArray(value)) {
+      result[key] = {
+        include: handleNestedInclude(value, selectColumns), // Rekursif untuk nested include
+      };
+    } else {
+      // Jika hanya field saja, set sesuai kolom yang dipilih
+      if (selectColumns && selectColumns[key] !== undefined) {
+        result[key] = { select: selectColumns[key] }; // Apply select untuk kolom tertentu
+      } else {
+        result[key] = true; // Semua kolom dimasukkan
+      }
+    }
+  });
+
+  return result;
 }

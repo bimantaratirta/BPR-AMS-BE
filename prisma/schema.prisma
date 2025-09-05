@@ -842,8 +842,8 @@ model Report {
   am              User?            @relation("UserReportAM", fields: [am_id], references: [id])
   customer        Customer?        @relation("CustomerReport", fields: [customer_id], references: [id])
   report_photo    ReportPhoto[]    @relation("ReportPhoto")
-  review_customer ReviewCustomer[] @relation("ReportReviewCustomer")
-  evaluation      Evaluation[]     @relation("ReportEvaluation")
+  review_customer ReviewCustomer? @relation("ReportReviewCustomer")
+  evaluation      Evaluation?     @relation("ReportEvaluation")
 
   @@map("reports")
 }
@@ -863,7 +863,7 @@ model ReportPhoto {
 
 model ReviewCustomer {
   id              String    @id @default(uuid())
-  report_id       String
+  report_id       String    @unique
   review_identity Boolean
   review_domicile Boolean
   review_work     Boolean
@@ -878,7 +878,7 @@ model ReviewCustomer {
 
 model Evaluation {
   id               String    @id @default(uuid())
-  report_id        String
+  report_id        String    @unique
   character        String
   status_character Status
   capacity         String
@@ -892,14 +892,14 @@ model Evaluation {
   deleted_at       DateTime?
 
   report            Report             @relation("ReportEvaluation", fields: [report_id], references: [id])
-  review_evaluation ReviewEvaluation[] @relation("EvaluationReviewEvaluation")
+  review_evaluation ReviewEvaluation? @relation("EvaluationReviewEvaluation")
 
   @@map("evaluations")
 }
 
 model ReviewEvaluation {
   id               String    @id @default(uuid())
-  evaluation_id    String
+  evaluation_id    String    @unique
   review_character Boolean
   review_capacity  Boolean
   review_condition Boolean
@@ -915,15 +915,16 @@ model ReviewEvaluation {
 
 enum Status {
   GOOD
-  NO_GOOD
+  BAD
 }
 
 enum Process {
-  SEND_SLO
+  DECLINE_LO
   REVIEW_SLO
-  DECLINE_SLO
-  SEND_AM
+  DECLINE_REVIEW_SLO
+  EVALUATION_SLO
+  DECLINE_EVALUATION_SLO
   REVIEW_AM
-  ACCEPTED_AM
+  APPROVE_AM
   DECLINE_AM
 }

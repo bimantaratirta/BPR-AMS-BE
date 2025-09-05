@@ -1,21 +1,21 @@
-import 'dotenv/config';
+import "dotenv/config";
 
-import { __dirname, __filename } from './utils/path.js';
+import { __dirname, __filename } from "./utils/path.js";
 
-import apicache from 'apicache';
-import compression from 'compression';
-import cors from 'cors';
-import errorHandler from './middlewares/error-handler-middleware.js';
-import express from 'express';
-import helmet from 'helmet';
-import logger from './utils/logger.js';
-import multer from 'multer';
-import path from 'path';
-import morgan from 'morgan';
+import apicache from "apicache";
+import compression from "compression";
+import cors from "cors";
+import errorHandler from "./middlewares/error-handler-middleware.js";
+import express from "express";
+import helmet from "helmet";
+import logger from "./utils/logger.js";
+import multer from "multer";
+import path from "path";
+import morgan from "morgan";
 
-import BaseError from './base_classes/base-error.js';
-import router from './routes.js';
-import corsMiddleware from './middlewares/cors-middleware.js';
+import BaseError from "./base_classes/base-error.js";
+import router from "./routes.js";
+import corsMiddleware from "./middlewares/cors-middleware.js";
 
 class ExpressApplication {
   app;
@@ -25,7 +25,7 @@ class ExpressApplication {
     this.app = express();
     this.port = port;
 
-    this.app.use(express.json({ type: 'application/json' }));
+    this.app.use(express.json({ type: "application/json" }));
 
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(corsMiddleware);
@@ -37,45 +37,45 @@ class ExpressApplication {
       errorHandler,
       express.json(),
       express.urlencoded(),
-      apicache.middleware('5 minutes'),
+      apicache.middleware("5 minutes"),
     ]);
     this.setupLibrary([
-      process.env.NODE_ENV === 'development' ? morgan('dev') : '',
+      process.env.NODE_ENV === "development" ? morgan("dev") : "",
       compression(),
       helmet(),
       // cors(),
     ]);
 
-    // this.fileStorage = multer.diskStorage({
-    //   destination: (req, file, cb) => {
-    //     cb(null, 'public/images');
-    //   },
-    //   filename: (req, file, cb) => {
-    //     cb(null, new Date().getTime() + '-' + file.originalname);
-    //   },
-    // });
-    // this.fileFilter = (req, file, cb) => {
-    //   if (
-    //     file.mimetype === 'image/png' ||
-    //     file.mimetype === 'image/jpg' ||
-    //     file.mimetype === 'image/jpeg'
-    //   ) {
-    //     cb(null, true);
-    //   } else {
-    //     cb(null, false);
-    //   }
-    // };
-    // this.app.use(
-    //   multer({
-    //     storage: this.fileStorage,
-    //     fileFilter: this.fileFilter,
-    //   }).fields([
-    //     {
-    //       name: 'image',
-    //       maxCount: 1,
-    //     },
-    //   ])
-    // );
+    this.fileStorage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, "public/images");
+      },
+      filename: (req, file, cb) => {
+        cb(null, new Date().getTime() + "-" + file.originalname);
+      },
+    });
+    this.fileFilter = (req, file, cb) => {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        cb(null, true);
+      } else {
+        cb(null, false);
+      }
+    };
+    this.app.use(
+      multer({
+        storage: this.fileStorage,
+        fileFilter: this.fileFilter,
+      }).fields([
+        {
+          name: "image",
+          maxCount: 1,
+        },
+      ])
+    );
   }
 
   setupMiddlewares(middlewaresArr) {
@@ -104,26 +104,26 @@ class ExpressApplication {
     // this.app.use("/*", () => {
     //   throw BaseError.notFound("Route not found");
     // });
-    this.app.get('/hello-world', (req, res) => {
+    this.app.get("/hello-world", (req, res) => {
       res.status(200).json({
-        message: 'Hello World',
+        message: "Hello World",
       });
     });
 
-    this.app.use('/api/', router);
+    this.app.use("/api/", router);
 
-    this.app.use('/*', () => {
-      throw BaseError.notFound('Route not found');
+    this.app.use("/*", () => {
+      throw BaseError.notFound("Route not found");
     });
   }
 
   configureAssets() {
-    this.app.use(express.static(path.join(__filename, 'public')));
+    this.app.use(express.static(path.join(__filename, "public")));
   }
 
   setupLibrary(libraries) {
     libraries.forEach((library) => {
-      if (library != '' && library != null) {
+      if (library != "" && library != null) {
         this.app.use(library);
       }
     });

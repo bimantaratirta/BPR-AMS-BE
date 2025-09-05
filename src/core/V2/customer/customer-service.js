@@ -1,9 +1,9 @@
 // services/customerService.js
-import joi from 'joi';
-import BaseError from '../../../base_classes/base-error.js';
-import { PrismaService } from '../../../common/service/prisma.service.js';
-import { buildQueryOptions } from '../../../utils/buildQueryOptions.js';
-import customerQueryConfig from './customer-query-config.js';
+import joi from "joi";
+import BaseError from "../../../base_classes/base-error.js";
+import { PrismaService } from "../../../common/service/prisma.service.js";
+import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
+import customerQueryConfig from "./customer-query-config.js";
 
 class CustomerService {
   constructor() {
@@ -11,18 +11,24 @@ class CustomerService {
   }
 
   async create(data, user) {
-    let validation = '';
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
 
     const { customer, employee, non_employee, business } = data || {};
 
+    if (user.role !== "LO") {
+      throw BaseError.badRequest(
+        `Only users with role LO can create customers`
+      );
+    }
+
     // Guard dasar
     if (!customer) {
-      fail('Customer payload is required', 'customer');
+      fail("Customer payload is required", "customer");
       throw new joi.ValidationError(validation, stack);
     }
 
@@ -34,50 +40,50 @@ class CustomerService {
       (employee ? 1 : 0) + (non_employee ? 1 : 0) + (business ? 1 : 0);
     if (blocksProvided > 1) {
       fail(
-        'Only one of employee, non_employee, or business may be provided',
-        'work_block'
+        "Only one of employee, non_employee, or business may be provided",
+        "work_block"
       );
     }
 
     // Jika work_type ada, harus cocok dengan blok yang dikirim
     if (wt) {
-      if (wt === 'Karyawan Tetap') {
+      if (wt === "Karyawan Tetap") {
         if (!employee)
-          fail('Employee block is required for Karyawan Tetap', 'employee');
+          fail("Employee block is required for Karyawan Tetap", "employee");
         if (non_employee)
           fail(
-            'non_employee block is not allowed for Karyawan Tetap',
-            'non_employee'
+            "non_employee block is not allowed for Karyawan Tetap",
+            "non_employee"
           );
         if (business)
-          fail('business block is not allowed for Karyawan Tetap', 'business');
-      } else if (wt === 'Pekerja Lepas') {
+          fail("business block is not allowed for Karyawan Tetap", "business");
+      } else if (wt === "Pekerja Lepas") {
         if (!non_employee)
           fail(
-            'NonEmployee block is required for Pekerja Lepas',
-            'non_employee'
+            "NonEmployee block is required for Pekerja Lepas",
+            "non_employee"
           );
         if (employee)
-          fail('employee block is not allowed for Pekerja Lepas', 'employee');
+          fail("employee block is not allowed for Pekerja Lepas", "employee");
         if (business)
-          fail('business block is not allowed for Pekerja Lepas', 'business');
-      } else if (wt === 'Pengusaha') {
+          fail("business block is not allowed for Pekerja Lepas", "business");
+      } else if (wt === "Pengusaha") {
         if (!business)
-          fail('Business block is required for Pengusaha', 'business');
+          fail("Business block is required for Pengusaha", "business");
         if (employee)
-          fail('employee block is not allowed for Pengusaha', 'employee');
+          fail("employee block is not allowed for Pengusaha", "employee");
         if (non_employee)
           fail(
-            'non_employee block is not allowed for Pengusaha',
-            'non_employee'
+            "non_employee block is not allowed for Pengusaha",
+            "non_employee"
           );
       }
     } else {
       // Bila work_type tidak diisi, tidak boleh kirim blok pekerjaan/usaha
       if (employee || non_employee || business) {
         fail(
-          'work_type is required when sending employee/non_employee/business block',
-          'work_type'
+          "work_type is required when sending employee/non_employee/business block",
+          "work_type"
         );
       }
     }
@@ -93,13 +99,13 @@ class CustomerService {
       let businessData = null;
 
       // Buat blok pekerjaan/usaha bila ada
-      if (wt === 'Karyawan Tetap' && employee) {
+      if (wt === "Karyawan Tetap" && employee) {
         employeeData = await tx.employee.create({ data: employee });
       }
-      if (wt === 'Pekerja Lepas' && non_employee) {
+      if (wt === "Pekerja Lepas" && non_employee) {
         nonEmployeeData = await tx.nonEmployee.create({ data: non_employee });
       }
-      if (wt === 'Pengusaha' && business) {
+      if (wt === "Pengusaha" && business) {
         businessData = await tx.business.create({ data: business });
       }
 
@@ -182,21 +188,21 @@ class CustomerService {
         // },
       },
     });
-    if (!customer) throw BaseError.notFound('Customer not found');
+    if (!customer) throw BaseError.notFound("Customer not found");
     return { ...customer, work_type: this._inferWorkTypeFromCurrent(customer) };
   }
 
   async update(id, data) {
-    let validation = '';
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
 
     const { customer, employee, non_employee, business } = data || {};
     if (!customer) {
-      fail('Customer payload is required', 'customer');
+      fail("Customer payload is required", "customer");
       throw new joi.ValidationError(validation, stack);
     }
 
@@ -205,15 +211,15 @@ class CustomerService {
       where: { id },
       include: { employee: true, non_employee: true, business: true },
     });
-    if (!current) throw BaseError.notFound('Customer not found');
+    if (!current) throw BaseError.notFound("Customer not found");
 
     // Hitung blok yang dikirim
     const blocksProvided =
       (employee ? 1 : 0) + (non_employee ? 1 : 0) + (business ? 1 : 0);
     if (blocksProvided > 1) {
       fail(
-        'Only one of employee, non_employee, or business may be provided',
-        'work_block'
+        "Only one of employee, non_employee, or business may be provided",
+        "work_block"
       );
     }
 
@@ -225,8 +231,8 @@ class CustomerService {
     // Jika tidak ada work_type (baik di payload maupun di DB) tapi user mengirim blok, tidak konsisten
     if (!targetWorkType && blocksProvided === 1) {
       fail(
-        'work_type is required when sending employee/non_employee/business block',
-        'work_type'
+        "work_type is required when sending employee/non_employee/business block",
+        "work_type"
       );
     }
 
@@ -234,58 +240,58 @@ class CustomerService {
     // Tidak boleh mix id override + blok baru untuk tipe yang sama
     if (employee && customer.employee_id) {
       fail(
-        'Provide either employee block or employee_id, not both',
-        'employee'
+        "Provide either employee block or employee_id, not both",
+        "employee"
       );
     }
     if (non_employee && customer.non_employee_id) {
       fail(
-        'Provide either non_employee block or non_employee_id, not both',
-        'non_employee'
+        "Provide either non_employee block or non_employee_id, not both",
+        "non_employee"
       );
     }
     if (business && customer.business_id) {
       fail(
-        'Provide either business block or business_id, not both',
-        'business'
+        "Provide either business block or business_id, not both",
+        "business"
       );
     }
 
     // Validasi kesesuaian work_type ↔ blok/id yang dikirim
-    if (targetWorkType === 'Karyawan Tetap') {
+    if (targetWorkType === "Karyawan Tetap") {
       if (non_employee || business)
         fail(
-          'Only employee block is allowed for work_type Karyawan Tetap',
-          'work_type'
+          "Only employee block is allowed for work_type Karyawan Tetap",
+          "work_type"
         );
       if (customer.non_employee_id || customer.business_id) {
         fail(
-          'Only employee_id is allowed for work_type Karyawan Tetap',
-          'work_type_fk'
+          "Only employee_id is allowed for work_type Karyawan Tetap",
+          "work_type_fk"
         );
       }
-    } else if (targetWorkType === 'Pekerja Lepas') {
+    } else if (targetWorkType === "Pekerja Lepas") {
       if (employee || business)
         fail(
-          'Only non_employee block is allowed for work_type Pekerja Lepas',
-          'work_type'
+          "Only non_employee block is allowed for work_type Pekerja Lepas",
+          "work_type"
         );
       if (customer.employee_id || customer.business_id) {
         fail(
-          'Only non_employee_id is allowed for work_type Pekerja Lepas',
-          'work_type_fk'
+          "Only non_employee_id is allowed for work_type Pekerja Lepas",
+          "work_type_fk"
         );
       }
-    } else if (targetWorkType === 'Pengusaha') {
+    } else if (targetWorkType === "Pengusaha") {
       if (employee || non_employee)
         fail(
-          'Only business block is allowed for work_type Pengusaha',
-          'work_type'
+          "Only business block is allowed for work_type Pengusaha",
+          "work_type"
         );
       if (customer.employee_id || customer.non_employee_id) {
         fail(
-          'Only business_id is allowed for work_type Pengusaha',
-          'work_type_fk'
+          "Only business_id is allowed for work_type Pengusaha",
+          "work_type_fk"
         );
       }
     }
@@ -310,7 +316,7 @@ class CustomerService {
       };
 
       // APPLY per target work_type
-      if (targetWorkType === 'Karyawan Tetap') {
+      if (targetWorkType === "Karyawan Tetap") {
         // a) jika ada block employee → create/update
         if (employee) {
           if (newEmployeeId) {
@@ -326,16 +332,16 @@ class CustomerService {
         // b) jika ada employee_id → re-link
         if (customer.employee_id) {
           newEmployeeId = await ensureExists(
-            'employee',
+            "employee",
             customer.employee_id,
-            'employee_id'
+            "employee_id"
           );
         }
         // c) pastikan ada link employee (entah dari block atau id atau eksisting)
         if (!newEmployeeId) {
           fail(
-            'Employee is required for work_type Karyawan Tetap (provide employee block or employee_id)',
-            'employee'
+            "Employee is required for work_type Karyawan Tetap (provide employee block or employee_id)",
+            "employee"
           );
           throw new joi.ValidationError(validation, stack);
         }
@@ -344,7 +350,7 @@ class CustomerService {
         newBusinessId = null;
       }
 
-      if (targetWorkType === 'Pekerja Lepas') {
+      if (targetWorkType === "Pekerja Lepas") {
         if (non_employee) {
           if (newNonEmployeeId) {
             await tx.nonEmployee.update({
@@ -358,15 +364,15 @@ class CustomerService {
         }
         if (customer.non_employee_id) {
           newNonEmployeeId = await ensureExists(
-            'nonEmployee',
+            "nonEmployee",
             customer.non_employee_id,
-            'non_employee_id'
+            "non_employee_id"
           );
         }
         if (!newNonEmployeeId) {
           fail(
-            'Non-employee is required for work_type Pekerja Lepas (provide non_employee block or non_employee_id)',
-            'non_employee'
+            "Non-employee is required for work_type Pekerja Lepas (provide non_employee block or non_employee_id)",
+            "non_employee"
           );
           throw new joi.ValidationError(validation, stack);
         }
@@ -374,7 +380,7 @@ class CustomerService {
         newBusinessId = null;
       }
 
-      if (targetWorkType === 'Pengusaha') {
+      if (targetWorkType === "Pengusaha") {
         if (business) {
           if (newBusinessId) {
             await tx.business.update({
@@ -388,15 +394,15 @@ class CustomerService {
         }
         if (customer.business_id) {
           newBusinessId = await ensureExists(
-            'business',
+            "business",
             customer.business_id,
-            'business_id'
+            "business_id"
           );
         }
         if (!newBusinessId) {
           fail(
-            'Business is required for work_type Pengusaha (provide business block or business_id)',
-            'business'
+            "Business is required for work_type Pengusaha (provide business block or business_id)",
+            "business"
           );
           throw new joi.ValidationError(validation, stack);
         }
@@ -426,12 +432,12 @@ class CustomerService {
       });
 
       if (targetWorkType && prevWorkType && targetWorkType !== prevWorkType) {
-        if (prevWorkType === 'Pengusaha' && current.business_id) {
+        if (prevWorkType === "Pengusaha" && current.business_id) {
           await tx.business.delete({ where: { id: current.business_id } });
-        } else if (prevWorkType === 'Karyawan Tetap' && current.employee_id) {
+        } else if (prevWorkType === "Karyawan Tetap" && current.employee_id) {
           await tx.employee.delete({ where: { id: current.employee_id } });
         } else if (
-          prevWorkType === 'Pekerja Lepas' &&
+          prevWorkType === "Pekerja Lepas" &&
           current.non_employee_id
         ) {
           await tx.nonEmployee.delete({
@@ -456,9 +462,9 @@ class CustomerService {
   }
 
   _inferWorkTypeFromCurrent(current) {
-    if (current.employee_id) return 'Karyawan Tetap';
-    if (current.non_employee_id) return 'Pekerja Lepas';
-    if (current.business_id) return 'Pengusaha';
+    if (current.employee_id) return "Karyawan Tetap";
+    if (current.non_employee_id) return "Pekerja Lepas";
+    if (current.business_id) return "Pengusaha";
     return null;
   }
 }

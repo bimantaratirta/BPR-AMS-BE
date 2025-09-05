@@ -1,14 +1,14 @@
-import { createdResponse, successResponse } from '../../../utils/response.js';
-import FLEKSIService from './FLEKSI-service.js';
-import path from 'path';
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
-import { exec } from 'child_process';
-import fs from 'fs';
-import { formatRupiah } from '../../../utils/formatRupiah.js';
-import { formatRupiahDenganHuruf } from '../../../utils/formatTerbilangRupiah.js';
-import { getHariDalamBahasaIndonesia } from '../../../utils/getHariDalamBahasaIndonesia.js';
-import getYear from '../../../utils/getYear.js';
+import { createdResponse, successResponse } from "../../../utils/response.js";
+import FLEKSIService from "./FLEKSI-service.js";
+import path from "path";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import { exec } from "child_process";
+import fs from "fs";
+import { formatRupiah } from "../../../utils/formatRupiah.js";
+import { formatRupiahDenganHuruf } from "../../../utils/formatTerbilangRupiah.js";
+import { getHariDalamBahasaIndonesia } from "../../../utils/getHariDalamBahasaIndonesia.js";
+import getYear from "../../../utils/getYear.js";
 
 class FLEKSIController {
   async get(req, res) {
@@ -22,7 +22,7 @@ class FLEKSIController {
     const data = await FLEKSIService.getById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'FLEKSI not found' });
+      return res.status(404).json({ message: "FLEKSI not found" });
     }
 
     return successResponse(res, data);
@@ -60,7 +60,7 @@ class FLEKSIController {
       is_submitted,
     } = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
 
     const newFLEKSI = await FLEKSIService.create({
       nomor_surat,
@@ -95,7 +95,7 @@ class FLEKSIController {
     });
 
     if (!newFLEKSI) {
-      throw Error('Failed to create FLEKSI');
+      throw Error("Failed to create FLEKSI");
     }
 
     return createdResponse(res, newFLEKSI);
@@ -107,7 +107,7 @@ class FLEKSIController {
       const dbData = await FLEKSIService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'FLEKSI not found' });
+        return res.status(404).json({ message: "FLEKSI not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_persetujuan_kredit);
@@ -115,18 +115,18 @@ class FLEKSIController {
       const tanggal2 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal3 = new Date(dbData.tanggal_lahir_penjamin);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -199,24 +199,24 @@ class FLEKSIController {
         hubungan_debitur_penjamin: dbData.hubungan_penjamin_debitur,
       };
 
-      const templatePath = path.resolve('src/templates/', 'FLEKSI.docx');
+      const templatePath = path.resolve("src/templates/", "FLEKSI.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -226,13 +226,13 @@ class FLEKSIController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
 
       const outputDir = path.resolve(`output`);
       if (!fs.existsSync(outputDir)) {
@@ -241,7 +241,7 @@ class FLEKSIController {
 
       const timestamp = Date.now();
       const docxFilename = `FLEKSI_${id}_${timestamp}.docx`;
-      const pdfFilename = docxFilename.replace('.docx', '.pdf');
+      const pdfFilename = docxFilename.replace(".docx", ".pdf");
 
       const docxPath = path.join(outputDir, docxFilename);
       const pdfPath = path.join(outputDir, pdfFilename);
@@ -273,9 +273,9 @@ class FLEKSIController {
         const pdfBuffer = await convertToPdfWithSoffice(docxPath, pdfPath);
 
         res.set({
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${pdfFilename}"`,
-          'Content-Length': pdfBuffer.length,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${pdfFilename}"`,
+          "Content-Length": pdfBuffer.length,
         });
 
         res.send(pdfBuffer);
@@ -283,16 +283,16 @@ class FLEKSIController {
         fs.unlinkSync(docxPath);
         fs.unlinkSync(pdfPath);
       } catch (pdfError) {
-        console.error('Gagal konversi ke PDF:', pdfError);
+        console.error("Gagal konversi ke PDF:", pdfError);
         return res.status(500).json({
-          error: 'PDF conversion failed',
+          error: "PDF conversion failed",
           message: pdfError.message,
         });
       }
     } catch (error) {
-      console.error('Gagal generate PDF:', error);
+      console.error("Gagal generate PDF:", error);
       res.status(500).json({
-        error: 'Failed to generate PDF',
+        error: "Failed to generate PDF",
         message: error.message,
         timestamp: new Date().toISOString(),
       });
@@ -305,7 +305,7 @@ class FLEKSIController {
       const dbData = await FLEKSIService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'FLEKSI not found' });
+        return res.status(404).json({ message: "FLEKSI not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_persetujuan_kredit);
@@ -313,18 +313,18 @@ class FLEKSIController {
       const tanggal2 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal3 = new Date(dbData.tanggal_lahir_penjamin);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -397,24 +397,24 @@ class FLEKSIController {
         hubungan_debitur_penjamin: dbData.hubungan_penjamin_debitur,
       };
 
-      const templatePath = path.resolve('src/templates/', 'FLEKSI.docx');
+      const templatePath = path.resolve("src/templates/", "FLEKSI.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -424,28 +424,28 @@ class FLEKSIController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
       const timestamp = Date.now();
       const docxFilename = `FLEKSI_${id}_${timestamp}.docx`;
 
       res.set({
-        'Content-Type':
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'Content-Disposition': `attachment; filename="${docxFilename}"`,
-        'Content-Length': buf.length,
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${docxFilename}"`,
+        "Content-Length": buf.length,
       });
 
       res.send(buf);
     } catch (err) {
-      console.error('Gagal generate DOCX:', err);
+      console.error("Gagal generate DOCX:", err);
       res.status(500).json({
-        error: 'Failed to generate Word document',
+        error: "Failed to generate Word document",
         message: err.message,
       });
     }
@@ -455,12 +455,12 @@ class FLEKSIController {
     const { id } = req.params;
     let payload = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
     payload.userID = userID;
     const updatedFLEKSI = await FLEKSIService.update(id, payload);
 
     if (!updatedFLEKSI) {
-      return res.status(404).json({ message: 'FLEKSI not found' });
+      return res.status(404).json({ message: "FLEKSI not found" });
     }
 
     return successResponse(res, updatedFLEKSI);
@@ -471,7 +471,7 @@ class FLEKSIController {
     const data = await FLEKSIService.deleteById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'FLEKSI not found' });
+      return res.status(404).json({ message: "FLEKSI not found" });
     }
 
     return successResponse(res, data);

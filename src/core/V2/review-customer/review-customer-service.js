@@ -1,6 +1,6 @@
 // modules/report/report-service.js
-import BaseError from '../../../base_classes/base-error.js';
-import { PrismaService } from '../../../common/service/prisma.service.js';
+import BaseError from "../../../base_classes/base-error.js";
+import { PrismaService } from "../../../common/service/prisma.service.js";
 // import S3Service from '../../../common/service/s3.service.js';
 // import { buildQueryOptions } from '../../../utils/buildQueryOptions.js';
 // import reportQueryConfig from './report-query-config.js';
@@ -15,28 +15,34 @@ class ReviewCustomerService {
       const report = await tx.report.findFirst({
         where: { id: data.report_id },
       });
-      if (!report) throw BaseError.notFound('Report not found');
-
-      const user = await tx.user.findFirst({
-        where: { id: currentUser.id, role: 'SLO' },
-      });
-      if (!user) throw BaseError.forbidden('Only SLO can create review');
-
-      if (report.slo_id !== currentUser.id) {
-        throw BaseError.forbidden('Cannot review this report');
-      }
+      if (!report) throw BaseError.notFound("Report not found");
 
       const existingReview = await tx.reviewCustomer.findFirst({
         where: { report_id: data.report_id },
       });
       if (existingReview) {
-        throw BaseError.duplicate('Review for this report already exists');
+        throw BaseError.duplicate("Review for this report already exists");
+      }
+
+      console.log(currentUser);
+
+      const user = await tx.user.findFirst({
+        where: { id: currentUser.id, role: "SLO" },
+      });
+      if (!user) throw BaseError.forbidden("Only SLO can create review");
+
+      if (report.slo_id !== currentUser.id) {
+        throw BaseError.forbidden("Cannot review this report");
       }
 
       const statusReport =
         data.review_identity && data.review_domicile && data.review_work
-          ? 'GOOD'
-          : 'NOT_GOOD';
+          ? "GOOD"
+          : "BAD";
+      const processReport =
+        data.review_identity && data.review_domicile && data.review_work
+          ? "EVALUATION_SLO"
+          : "DECLINE_REVIEW_SLO";
 
       const reviewCustomer = await tx.reviewCustomer.create({
         data: {
@@ -49,7 +55,7 @@ class ReviewCustomerService {
 
       await tx.report.update({
         where: { id: data.report_id },
-        data: { status: statusReport },
+        data: { status: statusReport, process: processReport },
       });
 
       return reviewCustomer;

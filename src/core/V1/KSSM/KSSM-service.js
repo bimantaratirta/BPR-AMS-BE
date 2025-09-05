@@ -1,10 +1,10 @@
-import BaseError from '../../../base_classes/base-error.js';
+import BaseError from "../../../base_classes/base-error.js";
 
-import { generateVerifEmail } from '../../../utils/bodyEmail.js';
-import sendEmail from '../../../utils/sendEmail.js';
-import db from '../../../config/db.js';
-import { parseJWT, generateToken } from '../../../utils/jwtTokenConfig.js';
-import { matchPassword, hashPassword } from '../../../utils/passwordConfig.js';
+import { generateVerifEmail } from "../../../utils/bodyEmail.js";
+import sendEmail from "../../../utils/sendEmail.js";
+import db from "../../../config/db.js";
+import { parseJWT, generateToken } from "../../../utils/jwtTokenConfig.js";
+import { matchPassword, hashPassword } from "../../../utils/passwordConfig.js";
 
 class KSSMService {
   async getAll(page, limit) {
@@ -174,7 +174,7 @@ class KSSMService {
       },
     });
     if (!newKSSM) {
-      throw new Error('Create KSSM failed');
+      throw new Error("Create KSSM failed");
     }
     return newKSSM;
   }

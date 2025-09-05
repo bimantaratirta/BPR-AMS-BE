@@ -1,7 +1,11 @@
 // customer-controller.js
-import { successResponse } from '../../../utils/response.js';
-import customerService from './customer-service.js';
-import CustomerService from './customer-service.js';
+import {
+  createdResponse,
+  successResponse,
+  updatedResponse,
+} from "../../../utils/response.js";
+import customerService from "./customer-service.js";
+import CustomerService from "./customer-service.js";
 
 class CustomerController {
   // GET /customers?q=&page=&per_page=&order_by=&order=&status=
@@ -13,7 +17,7 @@ class CustomerController {
     return successResponse(
       res,
       result.data,
-      'customer retrieved successfully',
+      "customer retrieved successfully",
       result.meta
     );
   }
@@ -21,26 +25,26 @@ class CustomerController {
   // GET /customers/:id
   async detail(req, res) {
     const result = await CustomerService.detail(req.params.id);
-    return successResponse(res, result, 'Customer retrieved successfully');
+    return successResponse(res, result, "Customer retrieved successfully");
   }
 
   // DELETE /customers/:id
   async remove(req, res) {
     await CustomerService.remove(req.params.id);
-    return successResponse(res, null, 'Customer deleted successfully');
+    return successResponse(res, null, "Customer deleted successfully");
   }
 
   // (Opsional) jika Anda juga sudah punya create/update/submit:
   // POST /customers
   async create(req, res) {
     const result = await CustomerService.create(req.body, req.user);
-    return successResponse(res, result);
+    return createdResponse(res, result, "Customer created successfully");
   }
 
   // PUT /customers/:id
   async update(req, res) {
     const result = await CustomerService.update(req.params.id, req.body);
-    return successResponse(res, result);
+    return updatedResponse(res, result);
   }
 }
 

@@ -1,13 +1,13 @@
-import { createdResponse, successResponse } from '../../../utils/response.js';
-import PINEKService from './PINEK-service.js';
-import path from 'path';
-import fs from 'fs';
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
-import { exec } from 'child_process';
-import { formatRupiahDenganHuruf } from '../../../utils/formatTerbilangRupiah.js';
-import { formatRupiah } from '../../../utils/formatRupiah.js';
-import { getHariDalamBahasaIndonesia } from '../../../utils/getHariDalamBahasaIndonesia.js';
+import { createdResponse, successResponse } from "../../../utils/response.js";
+import PINEKService from "./PINEK-service.js";
+import path from "path";
+import fs from "fs";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import { exec } from "child_process";
+import { formatRupiahDenganHuruf } from "../../../utils/formatTerbilangRupiah.js";
+import { formatRupiah } from "../../../utils/formatRupiah.js";
+import { getHariDalamBahasaIndonesia } from "../../../utils/getHariDalamBahasaIndonesia.js";
 
 class PINEKController {
   async get(req, res) {
@@ -21,7 +21,7 @@ class PINEKController {
     const data = await PINEKService.getById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'PINEK not found' });
+      return res.status(404).json({ message: "PINEK not found" });
     }
 
     return successResponse(res, data);
@@ -67,7 +67,7 @@ class PINEKController {
       is_submitted,
     } = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
 
     const newPINEK = await PINEKService.create({
       nomor_surat,
@@ -110,7 +110,7 @@ class PINEKController {
     });
 
     if (!newPINEK) {
-      throw Error('Failed to create PINEK');
+      throw Error("Failed to create PINEK");
     }
 
     return createdResponse(res, newPINEK);
@@ -122,7 +122,7 @@ class PINEKController {
       const dbData = await PINEKService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'PINEK not found' });
+        return res.status(404).json({ message: "PINEK not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_persetujuan_kredit);
@@ -132,18 +132,18 @@ class PINEKController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -216,24 +216,24 @@ class PINEKController {
         total_biaya: formatTotalBiaya,
       };
 
-      const templatePath = path.resolve('src/templates/', 'PINEK.docx');
+      const templatePath = path.resolve("src/templates/", "PINEK.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -243,13 +243,13 @@ class PINEKController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
 
       const outputDir = path.resolve(`output`);
       if (!fs.existsSync(outputDir)) {
@@ -258,7 +258,7 @@ class PINEKController {
 
       const timestamp = Date.now();
       const docxFilename = `PINEK_${id}_${timestamp}.docx`;
-      const pdfFilename = docxFilename.replace('.docx', '.pdf');
+      const pdfFilename = docxFilename.replace(".docx", ".pdf");
 
       const docxPath = path.join(outputDir, docxFilename);
       const pdfPath = path.join(outputDir, pdfFilename);
@@ -290,9 +290,9 @@ class PINEKController {
         const pdfBuffer = await convertToPdfWithSoffice(docxPath, pdfPath);
 
         res.set({
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${pdfFilename}"`,
-          'Content-Length': pdfBuffer.length,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${pdfFilename}"`,
+          "Content-Length": pdfBuffer.length,
         });
 
         res.send(pdfBuffer);
@@ -300,16 +300,16 @@ class PINEKController {
         fs.unlinkSync(docxPath);
         fs.unlinkSync(pdfPath);
       } catch (pdfError) {
-        console.error('Gagal konversi ke PDF:', pdfError);
+        console.error("Gagal konversi ke PDF:", pdfError);
         return res.status(500).json({
-          error: 'PDF conversion failed',
+          error: "PDF conversion failed",
           message: pdfError.message,
         });
       }
     } catch (error) {
-      console.error('Gagal generate PDF:', error);
+      console.error("Gagal generate PDF:", error);
       res.status(500).json({
-        error: 'Failed to generate PDF',
+        error: "Failed to generate PDF",
         message: error.message,
         timestamp: new Date().toISOString(),
       });
@@ -322,7 +322,7 @@ class PINEKController {
       const dbData = await PINEKService.getById(id);
 
       if (!dbData) {
-        return res.status(404).json({ message: 'PINEK not found' });
+        return res.status(404).json({ message: "PINEK not found" });
       }
 
       const tanggal = new Date(dbData.tanggal_surat_persetujuan_kredit);
@@ -332,18 +332,18 @@ class PINEKController {
       const tanggal4 = new Date(dbData.tanggal_angsuran_pertama);
       const tanggal5 = new Date(dbData.tanggal_angsuran_terakhir);
       const bulanIndonesia = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember',
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
       ];
       const formattedTanggal = `${tanggal.getDate()} ${
         bulanIndonesia[tanggal.getMonth()]
@@ -416,24 +416,24 @@ class PINEKController {
         total_biaya: formatTotalBiaya,
       };
 
-      const templatePath = path.resolve('src/templates/', 'PINEK.docx');
+      const templatePath = path.resolve("src/templates/", "PINEK.docx");
 
       if (!fs.existsSync(templatePath)) {
         return res.status(404).json({
-          error: 'Template file tidak ditemukan',
+          error: "Template file tidak ditemukan",
           path: templatePath,
         });
       }
 
-      const content = fs.readFileSync(templatePath, 'binary');
+      const content = fs.readFileSync(templatePath, "binary");
       const zip = new PizZip(content);
 
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: {
-          start: '{{',
-          end: '}}',
+          start: "{{",
+          end: "}}",
         },
       });
 
@@ -443,28 +443,28 @@ class PINEKController {
         doc.render();
       } catch (renderError) {
         return res.status(400).json({
-          error: 'Template rendering failed',
+          error: "Template rendering failed",
           message: renderError.message,
           details: renderError.properties?.errors || [],
         });
       }
 
-      const buf = doc.getZip().generate({ type: 'nodebuffer' });
+      const buf = doc.getZip().generate({ type: "nodebuffer" });
       const timestamp = Date.now();
       const docxFilename = `PINEK_${id}_${timestamp}.docx`;
 
       res.set({
-        'Content-Type':
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'Content-Disposition': `attachment; filename="${docxFilename}"`,
-        'Content-Length': buf.length,
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${docxFilename}"`,
+        "Content-Length": buf.length,
       });
 
       res.send(buf);
     } catch (err) {
-      console.error('Gagal generate DOCX:', err);
+      console.error("Gagal generate DOCX:", err);
       res.status(500).json({
-        error: 'Failed to generate Word document',
+        error: "Failed to generate Word document",
         message: err.message,
       });
     }
@@ -474,12 +474,12 @@ class PINEKController {
     const { id } = req.params;
     let payload = req.body;
 
-    const userID = req.app.locals.user;
+    const userID = req.user.id;
     payload.userID = userID;
     const updatedPINEK = await PINEKService.update(id, payload);
 
     if (!updatedPINEK) {
-      return res.status(404).json({ message: 'PINEK not found' });
+      return res.status(404).json({ message: "PINEK not found" });
     }
 
     return successResponse(res, updatedPINEK);
@@ -490,7 +490,7 @@ class PINEKController {
     const data = await PINEKService.deleteById(id);
 
     if (!data) {
-      return res.status(404).json({ message: 'PINEK not found' });
+      return res.status(404).json({ message: "PINEK not found" });
     }
 
     return successResponse(res, data);

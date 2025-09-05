@@ -1,12 +1,13 @@
 // prisma.service.js
 // import { createSoftDeleteMiddleware } from "prisma-soft-delete-middleware";
-import { createSoftDeleteMiddleware } from 'prisma-soft-delete-middleware';
-import { PrismaClient } from '@prisma/client';
-
+import { createSoftDeleteMiddleware } from "prisma-soft-delete-middleware";
+import { PrismaClient } from "@prisma/client";
 export class PrismaService extends PrismaClient {
   constructor() {
     super();
+  }
 
+  async onModuleInit() {
     this.$use(
       createSoftDeleteMiddleware({
         models: {
@@ -43,14 +44,15 @@ export class PrismaService extends PrismaClient {
           SystemLog: true,
         },
         defaultConfig: {
-          field: 'deleted_at',
-          createValue: (deleted) => (deleted ? new Date() : null),
+          field: "deleted_at",
+          createValue: (deleted) => {
+            if (deleted) return new Date();
+            return null;
+          },
         },
       })
     );
-  }
 
-  async onModuleInit() {
     await this.$connect();
   }
 

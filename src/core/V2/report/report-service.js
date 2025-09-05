@@ -1,16 +1,20 @@
 // modules/report/report-service.js
-import BaseError from '../../../base_classes/base-error.js';
-import { PrismaService } from '../../../common/service/prisma.service.js';
-import S3Service from '../../../common/service/s3.service.js';
-import { buildQueryOptions } from '../../../utils/buildQueryOptions.js';
-import reportQueryConfig from './report-query-config.js';
+import BaseError from "../../../base_classes/base-error.js";
+import { PrismaService } from "../../../common/service/prisma.service.js";
+import S3Service from "../../../common/service/s3.service.js";
+import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
+import reportQueryConfig from "./report-query-config.js";
+import XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import fs from "fs";
+import path from "path";
 
 const ALLOWED_MIME = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/heic',
-  'image/heif',
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
 ]);
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 const MAX_FILES = 5; // selaras dengan multer
@@ -21,20 +25,213 @@ class ReportService {
     this.s3Service = new S3Service();
   }
 
-  // Tambahan: list/detail/remove (tetap sama seperti sebelumnya)
+  async generateXlsx({ currentUser, query }) {
+    // Data dummy untuk nasabah
+    const nasabahData = [
+      {
+        created_at: "2025-10-01",
+        customer_name: "John Doe",
+        address: "Jl. Merdeka No. 1, Jakarta",
+        rt_rw: "001/002",
+        village: "Jakarta Barat",
+        employment: null,
+        business: "Technology",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-11-01",
+        customer_name: "Jane Doe",
+        address: "Jl. Raya No. 2, Bandung",
+        rt_rw: "003/004",
+        village: "Bandung Tengah",
+        employment: "Graphic Designer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      // Tambahkan data nasabah lainnya di sini
+    ];
+
+    // Membuat workbook baru
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Laporan Nasabah");
+
+    // Menambahkan Header: "DATA KUNJUNGAN PMS"
+    worksheet.mergeCells("A1:M1");
+    const headerCell = worksheet.getCell("A1");
+    headerCell.value = "DATA KUNJUNGAN PMS";
+    headerCell.font = { bold: true, size: 16 };
+    headerCell.alignment = { horizontal: "center", vertical: "middle" };
+
+    // Menambahkan header untuk kolom
+    worksheet.mergeCells("A2:A3");
+    worksheet.getCell("A2").value = "NO";
+    worksheet.getCell("A2").font = { bold: true, size: 11 };
+    worksheet.getCell("A2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("B2:B3");
+    worksheet.getCell("B2").value = "TANGGAL";
+    worksheet.getCell("B2").font = { bold: true, size: 11 };
+    worksheet.getCell("B2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("C2:C3");
+    worksheet.getCell("C2").value = "NAMA LENGKAP";
+    worksheet.getCell("C2").font = { bold: true, size: 11 };
+    worksheet.getCell("C2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    // Menambahkan header "DOMISILI" di baris ke-3 dan merge
+    worksheet.mergeCells("D2:F2");
+    worksheet.getCell("D2").value = "DOMISILI";
+    worksheet.getCell("D2").font = { bold: true, size: 11 };
+    worksheet.getCell("D2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    // Menambahkan sub-header untuk DOMISILI
+    worksheet.getCell("D3").value = "ALAMAT";
+    worksheet.getCell("D3").font = { bold: true, size: 11 };
+    worksheet.getCell("E3").value = "RT/RW";
+    worksheet.getCell("E3").font = { bold: true, size: 11 };
+    worksheet.getCell("F3").value = "DESA";
+    worksheet.getCell("F3").font = { bold: true, size: 11 };
+
+    worksheet.mergeCells("G2:G3");
+    worksheet.getCell("G2").value = "PEKERJAAN";
+    worksheet.getCell("G2").font = { bold: true, size: 11 };
+    worksheet.getCell("G2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("H2:H3");
+    worksheet.getCell("H2").value = "USAHA";
+    worksheet.getCell("H2").font = { bold: true, size: 11 };
+    worksheet.getCell("H2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("I2:I3");
+    worksheet.getCell("I2").value = "PENDAPATAN";
+    worksheet.getCell("I2").font = { bold: true, size: 11 };
+    worksheet.getCell("I2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("J2:J3");
+    worksheet.getCell("J2").value = "LO";
+    worksheet.getCell("J2").font = { bold: true, size: 11 };
+    worksheet.getCell("J2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("K2:K3");
+    worksheet.getCell("K2").value = "SLO";
+    worksheet.getCell("K2").font = { bold: true, size: 11 };
+    worksheet.getCell("K2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("L2:L3");
+    worksheet.getCell("L2").value = "AM";
+    worksheet.getCell("L2").font = { bold: true, size: 11 };
+    worksheet.getCell("L2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    worksheet.mergeCells("M2:M3");
+    worksheet.getCell("M2").value = "STATUS";
+    worksheet.getCell("M2").font = { bold: true, size: 11 };
+    worksheet.getCell("M2").alignment = {
+      horizontal: "center",
+      vertical: "middle",
+    };
+
+    // Menambahkan data nasabah
+    nasabahData.forEach((nasabah, index) => {
+      worksheet.addRow([
+        index + 1,
+        nasabah.created_at,
+        nasabah.customer_name,
+        nasabah.address,
+        nasabah.rt_rw,
+        nasabah.village,
+        nasabah.employment ?? " - ",
+        nasabah.business ?? " - ",
+        nasabah.salary_frequency,
+        nasabah.lo,
+        nasabah.slo,
+        nasabah.am,
+        nasabah.status,
+      ]);
+    });
+
+    // Menentukan lebar kolom (menyesuaikan panjang data)
+    worksheet.getColumn(1).width = 5; // No
+    worksheet.getColumn(2).width = 15; // Tanggal
+    worksheet.getColumn(3).width = 25; // Nama Lengkap
+    worksheet.getColumn(4).width = 35; // DOMISILI (ALAMAT)
+    worksheet.getColumn(5).width = 15; // RT/RW
+    worksheet.getColumn(6).width = 20; // Desa
+    worksheet.getColumn(7).width = 20; // Pekerjaan
+    worksheet.getColumn(8).width = 20; // Usaha
+    worksheet.getColumn(9).width = 15; // Pendapatan
+    worksheet.getColumn(10).width = 15; // LO
+    worksheet.getColumn(11).width = 15; // SLO
+    worksheet.getColumn(12).width = 15; // AM
+    worksheet.getColumn(13).width = 10; // Status
+
+    // Menambahkan border hitam pada semua cell
+    worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
+      row.eachCell({ includeEmpty: true }, function (cell, colNumber) {
+        cell.border = {
+          top: { style: "thin", color: { argb: "FF000000" } },
+          left: { style: "thin", color: { argb: "FF000000" } },
+          bottom: { style: "thin", color: { argb: "FF000000" } },
+          right: { style: "thin", color: { argb: "FF000000" } },
+        };
+      });
+    });
+
+    // Menghasilkan file XLSX sebagai buffer (tanpa menyimpan ke disk)
+    const xlsxBuffer = await workbook.xlsx.writeBuffer();
+
+    return xlsxBuffer; // Mengembalikan buffer file XLSX
+  }
 
   async create(data, files = [], currentUser) {
     if (!Array.isArray(files))
-      throw BaseError.badRequest('files must be an array');
+      throw BaseError.badRequest("files must be an array");
     if (files.length > MAX_FILES)
       throw BaseError.badRequest(`too many files, max ${MAX_FILES}`);
     for (const f of files) {
-      if (!f || typeof f !== 'object')
-        throw BaseError.badRequest('invalid file payload');
+      if (!f || typeof f !== "object")
+        throw BaseError.badRequest("invalid file payload");
       if (f.mimetype && !ALLOWED_MIME.has(f.mimetype)) {
         throw BaseError.badRequest(`unsupported mimetype: ${f.mimetype}`);
       }
-      if (typeof f.size === 'number' && f.size > MAX_FILE_SIZE_BYTES) {
+      if (typeof f.size === "number" && f.size > MAX_FILE_SIZE_BYTES) {
         throw BaseError.badRequest(
           `file too large (> ${MAX_FILE_SIZE_BYTES} bytes)`
         );
@@ -45,7 +242,7 @@ class ReportService {
     let uploaded = [];
     if (files.length) {
       uploaded = await Promise.all(
-        files.map((f) => this.s3Service.uploadFile(f, 'reports'))
+        files.map((f) => this.s3Service.uploadFile(f, "reports"))
       );
     }
 
@@ -60,33 +257,33 @@ class ReportService {
           user: true,
         },
       });
-      if (!customer) throw BaseError.badRequest('Customer not found');
+      if (!customer) throw BaseError.badRequest("Customer not found");
 
       // 3b) Pastikan hanya satu profil kerja yang ter-link
       const links = [
-        customer.employee_id ? 'employee' : null,
-        customer.non_employee_id ? 'non_employee' : null,
-        customer.business_id ? 'business' : null,
+        customer.employee_id ? "employee" : null,
+        customer.non_employee_id ? "non_employee" : null,
+        customer.business_id ? "business" : null,
       ].filter(Boolean);
       if (links.length > 1) {
         throw BaseError.badRequest(
-          `Customer has multiple work profiles: ${links.join(', ')}`
+          `Customer has multiple work profiles: ${links.join(", ")}`
         );
       }
 
       // 3c) Resolve LO→SLO→AM dari chain supervisor
       const loUser = await tx.user.findFirst({
-        where: { id: customer.created_by, role: 'LO' },
+        where: { id: customer.created_by, role: "LO" },
       });
-      if (!loUser) throw BaseError.badRequest('LO not found for this customer');
+      if (!loUser) throw BaseError.badRequest("LO not found for this customer");
       const sloUser = await tx.user.findFirst({
-        where: { id: loUser.supervisor_id, role: 'SLO' },
+        where: { id: loUser.supervisor_id, role: "SLO" },
       });
-      if (!sloUser) throw BaseError.badRequest('SLO not found for this LO');
+      if (!sloUser) throw BaseError.badRequest("SLO not found for this LO");
       const amUser = await tx.user.findFirst({
-        where: { id: sloUser.supervisor_id, role: 'AM' },
+        where: { id: sloUser.supervisor_id, role: "AM" },
       });
-      if (!amUser) throw BaseError.badRequest('AM not found for this SLO');
+      if (!amUser) throw BaseError.badRequest("AM not found for this SLO");
 
       // Optional: enforce hanya LO terkait yang boleh create
       // if (!currentUser || currentUser.id !== loUser.id || currentUser.role !== 'LO') {
@@ -148,10 +345,10 @@ class ReportService {
 
       // 3e) Map process dari status (tetap kompatibel dengan skema kamu)
       const mappedProcess =
-        data.status === 'GOOD'
-          ? 'SEND_SLO'
-          : data.status === 'NO_GOOD'
-          ? 'DECLINE_SLO'
+        data.status === "GOOD"
+          ? "REVIEW_SLO"
+          : data.status === "BAD"
+          ? "DECLINE_LO"
           : null;
 
       // 3f) Enrich untuk validasi persist
@@ -168,18 +365,6 @@ class ReportService {
         business_snapshot,
       };
 
-      // 3g) VALIDASI persist schema (yang wajibkan snapshot)
-      // const { error: persistErr, value } = reportCreatePersist.validate(
-      //   enriched,
-      //   {
-      //     abortEarly: false,
-      //     stripUnknown: true,
-      //     convert: true,
-      //   }
-      // );
-      // if (persistErr) throw this._asJoiError(persistErr);
-
-      // 3h) Create report
       const report = await tx.report.create({ data: enriched });
 
       // 3i) Simpan photos
@@ -206,17 +391,17 @@ class ReportService {
   async update(id, data, files = [], currentUser) {
     // 1) Validasi file cepat (selaras dengan create)
     if (!Array.isArray(files))
-      throw BaseError.badRequest('files must be an array');
+      throw BaseError.badRequest("files must be an array");
     if (files.length > MAX_FILES)
       throw BaseError.badRequest(`too many files, max ${MAX_FILES}`);
 
     for (const f of files) {
-      if (!f || typeof f !== 'object')
-        throw BaseError.badRequest('invalid file payload');
+      if (!f || typeof f !== "object")
+        throw BaseError.badRequest("invalid file payload");
       if (f.mimetype && !ALLOWED_MIME.has(f.mimetype)) {
         throw BaseError.badRequest(`unsupported mimetype: ${f.mimetype}`);
       }
-      const size = typeof f.size === 'number' ? f.size : f.buffer?.length ?? 0;
+      const size = typeof f.size === "number" ? f.size : f.buffer?.length ?? 0;
       if (size > MAX_FILE_SIZE_BYTES) {
         throw BaseError.badRequest(
           `file too large (> ${MAX_FILE_SIZE_BYTES} bytes)`
@@ -228,7 +413,7 @@ class ReportService {
     let uploaded = [];
     if (files.length) {
       uploaded = await Promise.all(
-        files.map((f) => this.s3Service.uploadFile(f, 'reports'))
+        files.map((f) => this.s3Service.uploadFile(f, "reports"))
       );
     }
 
@@ -239,7 +424,7 @@ class ReportService {
           where: { id },
           include: { report_photo: true },
         });
-        if (!current) throw BaseError.notFound('Report not found');
+        if (!current) throw BaseError.notFound("Report not found");
 
         // 3b) Tentukan apakah customer_id berubah
         const targetCustomerId =
@@ -268,32 +453,32 @@ class ReportService {
               user: true,
             },
           });
-          if (!customer) throw BaseError.badRequest('Customer not found');
+          if (!customer) throw BaseError.badRequest("Customer not found");
 
           const links = [
-            customer.employee_id ? 'employee' : null,
-            customer.non_employee_id ? 'non_employee' : null,
-            customer.business_id ? 'business' : null,
+            customer.employee_id ? "employee" : null,
+            customer.non_employee_id ? "non_employee" : null,
+            customer.business_id ? "business" : null,
           ].filter(Boolean);
           if (links.length > 1) {
             throw BaseError.badRequest(
-              `Customer has multiple work profiles: ${links.join(', ')}`
+              `Customer has multiple work profiles: ${links.join(", ")}`
             );
           }
 
           const loUser = await tx.user.findFirst({
-            where: { id: customer.created_by, role: 'LO' },
+            where: { id: customer.created_by, role: "LO" },
           });
           if (!loUser)
-            throw BaseError.badRequest('LO not found for this customer');
+            throw BaseError.badRequest("LO not found for this customer");
           const sloUser = await tx.user.findFirst({
-            where: { id: loUser.supervisor_id, role: 'SLO' },
+            where: { id: loUser.supervisor_id, role: "SLO" },
           });
-          if (!sloUser) throw BaseError.badRequest('SLO not found for this LO');
+          if (!sloUser) throw BaseError.badRequest("SLO not found for this LO");
           const amUser = await tx.user.findFirst({
-            where: { id: sloUser.supervisor_id, role: 'AM' },
+            where: { id: sloUser.supervisor_id, role: "AM" },
           });
-          if (!amUser) throw BaseError.badRequest('AM not found for this SLO');
+          if (!amUser) throw BaseError.badRequest("AM not found for this SLO");
 
           loUserId = loUser.id;
           sloUserId = sloUser.id;
@@ -360,15 +545,15 @@ class ReportService {
         const nextStatus = data.status ?? current.status;
         let nextProcess;
 
-        if (typeof data.process !== 'undefined') {
+        if (typeof data.process !== "undefined") {
           // hormati process eksplisit jika kamu memang ingin mengizinkannya
           nextProcess = data.process;
         } else if (nextStatus !== current.status) {
           nextProcess =
-            nextStatus === 'GOOD'
-              ? 'SEND_SLO'
-              : nextStatus === 'NO_GOOD'
-              ? 'DECLINE_SLO'
+            nextStatus === "GOOD"
+              ? "SEND_SLO"
+              : nextStatus === "NO_GOOD"
+              ? "DECLINE_SLO"
               : null; // DRAFT
         } else {
           nextProcess = current.process ?? null;
@@ -425,13 +610,46 @@ class ReportService {
   }
 
   async list({ currentUser, query } = {}) {
-    console.log(currentUser);
-    const roleKeyMap = { LO: 'lo_id', SLO: 'slo_id', AM: 'am_id' };
+    const roleKeyMap = {
+      LO: "lo_id",
+      SLO: "slo_id",
+      AM: "am_id",
+    };
+
+    const processMap = {
+      LO: [
+        "DECLINE_LO",
+        "REVIEW_SLO",
+        "DECLINE_REVIEW_SLO",
+        "EVALUATION_SLO",
+        "DECLINE_EVALUATION_SLO",
+        "REVIEW_AM",
+        "APPROVE_AM",
+        "DECLINE_AM",
+      ],
+      SLO: [
+        "REVIEW_SLO",
+        "DECLINE_REVIEW_SLO",
+        "EVALUATION_SLO",
+        "DECLINE_EVALUATION_SLO",
+        "REVIEW_AM",
+        "APPROVE_AM",
+        "DECLINE_AM",
+      ],
+      AM: ["REVIEW_AM", "APPROVE_AM", "DECLINE_AM"],
+    };
+
     const key = roleKeyMap[currentUser.role] || null;
 
-    const baseWhere = key ? { [key]: currentUser.id } : null;
+    const baseWhere = key
+      ? {
+          [key]: currentUser.id,
+          process: { in: processMap[currentUser.role] || [] },
+        }
+      : null;
 
     const options = buildQueryOptions(reportQueryConfig, query, baseWhere);
+    console.log("options: ", options);
 
     const [data, count] = await Promise.all([
       this.prisma.report.findMany(options),
@@ -466,21 +684,21 @@ class ReportService {
         am: true,
       },
     });
-    if (!item) throw BaseError.notFound('Report not found');
+    if (!item) throw BaseError.notFound("Report not found");
     return item;
   }
 
   async remove(id) {
     const existing = await this.prisma.report.findUnique({ where: { id } });
-    if (!existing) throw BaseError.notFound('Report not found');
+    if (!existing) throw BaseError.notFound("Report not found");
     const deleted = await this.prisma.report.delete({ where: { id } });
-    return { message: 'Report deleted successfully', data: deleted };
+    return { message: "Report deleted successfully", data: deleted };
   }
 
   _inferWorkTypeFromCurrent(current) {
-    if (current.employee_id) return 'Karyawan Tetap';
-    if (current.non_employee_id) return 'Pekerja Lepas';
-    if (current.business_id) return 'Pengusaha';
+    if (current.employee_id) return "Karyawan Tetap";
+    if (current.non_employee_id) return "Pekerja Lepas";
+    if (current.business_id) return "Pengusaha";
     return null;
   }
 }
