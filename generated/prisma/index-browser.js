@@ -122,11 +122,16 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   username: 'username',
   password: 'password',
+  region_id: 'region_id',
+  branch_id: 'branch_id',
+  supervisor_id: 'supervisor_id',
   role: 'role',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.KSSMScalarFieldEnum = {
@@ -177,6 +182,7 @@ exports.Prisma.KSSMScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -226,6 +232,7 @@ exports.Prisma.KSSScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -268,6 +275,7 @@ exports.Prisma.PINEKScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -299,6 +307,7 @@ exports.Prisma.FLEKSIScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -327,6 +336,7 @@ exports.Prisma.PROCIMScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -377,6 +387,7 @@ exports.Prisma.KSMScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -426,6 +437,7 @@ exports.Prisma.KMSMScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -475,6 +487,7 @@ exports.Prisma.KRSScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -526,6 +539,7 @@ exports.Prisma.KMMScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -574,6 +588,7 @@ exports.Prisma.KMSScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -624,6 +639,7 @@ exports.Prisma.KEFScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -672,6 +688,7 @@ exports.Prisma.KARScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   submitted_at: 'submitted_at',
+  deleted_at: 'deleted_at',
   userID: 'userID'
 };
 
@@ -682,7 +699,8 @@ exports.Prisma.FleksiBarangElektronikScalarFieldEnum = {
   tipe: 'tipe',
   harga: 'harga',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.FleksiBarangFurnitureScalarFieldEnum = {
@@ -692,7 +710,8 @@ exports.Prisma.FleksiBarangFurnitureScalarFieldEnum = {
   tipe: 'tipe',
   harga: 'harga',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.FleksiBarangJaminanLainnyaScalarFieldEnum = {
@@ -700,7 +719,8 @@ exports.Prisma.FleksiBarangJaminanLainnyaScalarFieldEnum = {
   fleksi_id: 'fleksi_id',
   nama_barang: 'nama_barang',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.ProcimBarangElektronikScalarFieldEnum = {
@@ -710,7 +730,8 @@ exports.Prisma.ProcimBarangElektronikScalarFieldEnum = {
   tipe: 'tipe',
   harga: 'harga',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.ProcimBarangFurnitureScalarFieldEnum = {
@@ -720,7 +741,8 @@ exports.Prisma.ProcimBarangFurnitureScalarFieldEnum = {
   tipe: 'tipe',
   harga: 'harga',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.ProcimBarangJaminanLainnyaScalarFieldEnum = {
@@ -728,7 +750,8 @@ exports.Prisma.ProcimBarangJaminanLainnyaScalarFieldEnum = {
   procim_id: 'procim_id',
   nama_barang: 'nama_barang',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.SystemLogScalarFieldEnum = {
@@ -740,7 +763,25 @@ exports.Prisma.SystemLogScalarFieldEnum = {
   method: 'method',
   description: 'description',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+};
+
+exports.Prisma.RegionScalarFieldEnum = {
+  id: 'id',
+  region: 'region',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+};
+
+exports.Prisma.BranchScalarFieldEnum = {
+  id: 'id',
+  branch: 'branch',
+  region_id: 'region_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -779,7 +820,9 @@ exports.Prisma.ModelName = {
   ProcimBarangElektronik: 'ProcimBarangElektronik',
   ProcimBarangFurniture: 'ProcimBarangFurniture',
   ProcimBarangJaminanLainnya: 'ProcimBarangJaminanLainnya',
-  SystemLog: 'SystemLog'
+  SystemLog: 'SystemLog',
+  Region: 'Region',
+  Branch: 'Branch'
 };
 
 /**

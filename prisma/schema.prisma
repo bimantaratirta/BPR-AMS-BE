@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,25 +15,39 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  username String   @unique
-  password String
-  KSSM     KSSM[]
-  KSS      KSS[]
-  PINEK    PINEK[]
-  FLEKSI   FLEKSI[]
-  PROCIM   PROCIM[]
-  KSM      KSM[]
-  KMSM     KMSM[]
-  KRS      KRS[]
-  KMM      KMM[]
-  KMS      KMS[]
-  KEF      KEF[]
-  KAR      KAR[]
-  role     String   @default("PIC")
+  id            String   @id @default(uuid())
+  name          String?
+  username      String   @unique
+  password      String
+  region_id     String?
+  branch_id     String?
+  supervisor_id String?
+  KSSM          KSSM[]
+  KSS           KSS[]
+  PINEK         PINEK[]
+  FLEKSI        FLEKSI[]
+  PROCIM        PROCIM[]
+  KSM           KSM[]
+  KMSM          KMSM[]
+  KRS           KRS[]
+  KMM           KMM[]
+  KMS           KMS[]
+  KEF           KEF[]
+  KAR           KAR[]
+  role          String   @default("PIC")
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  region       Region?    @relation("UserRegions", fields: [region_id], references: [id])
+  branch       Branch?    @relation("UserBranches", fields: [branch_id], references: [id])
+  supervisor   User?      @relation("UserSupervisor", fields: [supervisor_id], references: [id])
+  subordinates User[]     @relation("UserSupervisor")
+  customer     Customer[] @relation("UserCustomer")
+  report_lo    Report[]   @relation("UserReportLO")
+  report_slo   Report[]   @relation("UserReportSLO")
+  report_am    Report[]   @relation("UserReportAM")
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   system_logs SystemLog[]
 
@@ -89,6 +103,7 @@ model KSSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -139,6 +154,7 @@ model KSS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -183,6 +199,7 @@ model PINEK {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -218,6 +235,7 @@ model FLEKSI {
   created_at                       DateTime?                    @default(now())
   updated_at                       DateTime?                    @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -250,6 +268,7 @@ model PROCIM {
   created_at                       DateTime?                    @default(now())
   updated_at                       DateTime?                    @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -302,6 +321,7 @@ model KSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -353,6 +373,7 @@ model KMSM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -403,6 +424,7 @@ model KRS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -456,6 +478,7 @@ model KMM {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -505,6 +528,7 @@ model KMS {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -556,6 +580,7 @@ model KEF {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -606,6 +631,7 @@ model KAR {
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
+  deleted_at                       DateTime?
   userID                           String
   User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -619,6 +645,7 @@ model FleksiBarangElektronik {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model FleksiBarangFurniture {
@@ -630,6 +657,7 @@ model FleksiBarangFurniture {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model FleksiBarangJaminanLainnya {
@@ -639,6 +667,7 @@ model FleksiBarangJaminanLainnya {
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangElektronik {
@@ -650,6 +679,7 @@ model ProcimBarangElektronik {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangFurniture {
@@ -661,6 +691,7 @@ model ProcimBarangFurniture {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model ProcimBarangJaminanLainnya {
@@ -670,6 +701,7 @@ model ProcimBarangJaminanLainnya {
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 }
 
 model SystemLog {
@@ -682,6 +714,217 @@ model SystemLog {
   description String?
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  deleted_at  DateTime?
 
   user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+// V2 
+
+model Region {
+  id         String    @id @default(uuid())
+  region     String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  branches Branch[] @relation("RegionBranches")
+  user     User[]   @relation("UserRegions")
+
+  @@map("regions")
+}
+
+model Branch {
+  id         String    @id @default(uuid())
+  branch     String
+  region_id  String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  region Region @relation("RegionBranches", fields: [region_id], references: [id])
+  user   User[] @relation("UserBranches")
+
+  @@map("branches")
+}
+
+model Employee {
+  id              String    @id @default(uuid())
+  company_name    String?
+  company_address String?
+  company_phone   String?
+  position        String?
+  work            String? // shown in report
+  salary          Int?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  customer Customer[] @relation("EmployeeCustomer")
+
+  @@map("employees")
+}
+
+model NonEmployee {
+  id               String    @id @default(uuid())
+  salary_frequency String?
+  work             String? // shown in report
+  salary           Int?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  customer Customer[] @relation("NonEmployeeCustomer")
+
+  @@map("non_employees")
+}
+
+model Business {
+  id             String    @id @default(uuid())
+  business_type  String? // shown in report
+  employee_count Int?
+  revenue        Int?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  deleted_at     DateTime?
+
+  customer Customer[] @relation("BusinessCustomer")
+
+  @@map("businesses")
+}
+
+model Customer {
+  id              String    @id @default(uuid())
+  name            String?
+  ktp_number      String?
+  date_of_birth   DateTime?
+  address         String?
+  rt_rw           String?
+  village         String?
+  phone_number    String?
+  employee_id     String?
+  non_employee_id String?
+  business_id     String?
+  created_by      String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  user         User?        @relation("UserCustomer", fields: [created_by], references: [id])
+  employee     Employee?    @relation("EmployeeCustomer", fields: [employee_id], references: [id])
+  non_employee NonEmployee? @relation("NonEmployeeCustomer", fields: [non_employee_id], references: [id])
+  business     Business?    @relation("BusinessCustomer", fields: [business_id], references: [id])
+
+  report Report[] @relation("CustomerReport")
+
+  @@map("customers")
+}
+
+model Report {
+  id                    String  @id @default(uuid())
+  status                Status
+  process               Process
+  customer_id           String?
+  lo_id                 String?
+  slo_id                String?
+  am_id                 String?
+  customer_snapshot     Json
+  employee_snapshot     Json?
+  non_employee_snapshot Json?
+  business_snapshot     Json?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  lo              User?            @relation("UserReportLO", fields: [lo_id], references: [id])
+  slo             User?            @relation("UserReportSLO", fields: [slo_id], references: [id])
+  am              User?            @relation("UserReportAM", fields: [am_id], references: [id])
+  customer        Customer?        @relation("CustomerReport", fields: [customer_id], references: [id])
+  report_photo    ReportPhoto[]    @relation("ReportPhoto")
+  review_customer ReviewCustomer? @relation("ReportReviewCustomer")
+  evaluation      Evaluation?     @relation("ReportEvaluation")
+
+  @@map("reports")
+}
+
+model ReportPhoto {
+  id         String    @id @default(uuid())
+  report_id  String
+  url        String // public URL / signed URL
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  report Report @relation("ReportPhoto", fields: [report_id], references: [id])
+
+  @@map("report_photos")
+}
+
+model ReviewCustomer {
+  id              String    @id @default(uuid())
+  report_id       String    @unique
+  review_identity Boolean
+  review_domicile Boolean
+  review_work     Boolean
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+
+  report Report @relation("ReportReviewCustomer", fields: [report_id], references: [id])
+
+  @@map("review_customers")
+}
+
+model Evaluation {
+  id               String    @id @default(uuid())
+  report_id        String    @unique
+  character        String
+  status_character Status
+  capacity         String
+  status_capacity  Status
+  condition        String
+  status_condition Status
+  capital          String
+  status_capital   Status
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  report            Report             @relation("ReportEvaluation", fields: [report_id], references: [id])
+  review_evaluation ReviewEvaluation? @relation("EvaluationReviewEvaluation")
+
+  @@map("evaluations")
+}
+
+model ReviewEvaluation {
+  id               String    @id @default(uuid())
+  evaluation_id    String    @unique
+  review_character Boolean
+  review_capacity  Boolean
+  review_condition Boolean
+  review_capital   Boolean
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  evaluation Evaluation @relation("EvaluationReviewEvaluation", fields: [evaluation_id], references: [id])
+
+  @@map("review_evaluations")
+}
+
+enum Status {
+  GOOD
+  BAD
+}
+
+enum Process {
+  DECLINE_LO
+  REVIEW_SLO
+  DECLINE_REVIEW_SLO
+  EVALUATION_SLO
+  DECLINE_EVALUATION_SLO
+  REVIEW_AM
+  APPROVE_AM
+  DECLINE_AM
 }

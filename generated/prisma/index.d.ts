@@ -113,6 +113,16 @@ export type ProcimBarangJaminanLainnya = $Result.DefaultSelection<Prisma.$Procim
  * 
  */
 export type SystemLog = $Result.DefaultSelection<Prisma.$SystemLogPayload>
+/**
+ * Model Region
+ * 
+ */
+export type Region = $Result.DefaultSelection<Prisma.$RegionPayload>
+/**
+ * Model Branch
+ * 
+ */
+export type Branch = $Result.DefaultSelection<Prisma.$BranchPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -438,6 +448,26 @@ export class PrismaClient<
     * ```
     */
   get systemLog(): Prisma.SystemLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.region`: Exposes CRUD operations for the **Region** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Regions
+    * const regions = await prisma.region.findMany()
+    * ```
+    */
+  get region(): Prisma.RegionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.branch`: Exposes CRUD operations for the **Branch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Branches
+    * const branches = await prisma.branch.findMany()
+    * ```
+    */
+  get branch(): Prisma.BranchDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -897,7 +927,9 @@ export namespace Prisma {
     ProcimBarangElektronik: 'ProcimBarangElektronik',
     ProcimBarangFurniture: 'ProcimBarangFurniture',
     ProcimBarangJaminanLainnya: 'ProcimBarangJaminanLainnya',
-    SystemLog: 'SystemLog'
+    SystemLog: 'SystemLog',
+    Region: 'Region',
+    Branch: 'Branch'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -916,7 +948,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "kSSM" | "kSS" | "pINEK" | "fLEKSI" | "pROCIM" | "kSM" | "kMSM" | "kRS" | "kMM" | "kMS" | "kEF" | "kAR" | "fleksiBarangElektronik" | "fleksiBarangFurniture" | "fleksiBarangJaminanLainnya" | "procimBarangElektronik" | "procimBarangFurniture" | "procimBarangJaminanLainnya" | "systemLog"
+      modelProps: "user" | "kSSM" | "kSS" | "pINEK" | "fLEKSI" | "pROCIM" | "kSM" | "kMSM" | "kRS" | "kMM" | "kMS" | "kEF" | "kAR" | "fleksiBarangElektronik" | "fleksiBarangFurniture" | "fleksiBarangJaminanLainnya" | "procimBarangElektronik" | "procimBarangFurniture" | "procimBarangJaminanLainnya" | "systemLog" | "region" | "branch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2400,6 +2432,154 @@ export namespace Prisma {
           }
         }
       }
+      Region: {
+        payload: Prisma.$RegionPayload<ExtArgs>
+        fields: Prisma.RegionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RegionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RegionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          findFirst: {
+            args: Prisma.RegionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RegionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          findMany: {
+            args: Prisma.RegionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>[]
+          }
+          create: {
+            args: Prisma.RegionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          createMany: {
+            args: Prisma.RegionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RegionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>[]
+          }
+          delete: {
+            args: Prisma.RegionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          update: {
+            args: Prisma.RegionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          deleteMany: {
+            args: Prisma.RegionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RegionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RegionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>[]
+          }
+          upsert: {
+            args: Prisma.RegionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegionPayload>
+          }
+          aggregate: {
+            args: Prisma.RegionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRegion>
+          }
+          groupBy: {
+            args: Prisma.RegionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RegionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RegionCountArgs<ExtArgs>
+            result: $Utils.Optional<RegionCountAggregateOutputType> | number
+          }
+        }
+      }
+      Branch: {
+        payload: Prisma.$BranchPayload<ExtArgs>
+        fields: Prisma.BranchFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BranchFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BranchFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          findFirst: {
+            args: Prisma.BranchFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BranchFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          findMany: {
+            args: Prisma.BranchFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>[]
+          }
+          create: {
+            args: Prisma.BranchCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          createMany: {
+            args: Prisma.BranchCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BranchCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>[]
+          }
+          delete: {
+            args: Prisma.BranchDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          update: {
+            args: Prisma.BranchUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          deleteMany: {
+            args: Prisma.BranchDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BranchUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BranchUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>[]
+          }
+          upsert: {
+            args: Prisma.BranchUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BranchPayload>
+          }
+          aggregate: {
+            args: Prisma.BranchAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBranch>
+          }
+          groupBy: {
+            args: Prisma.BranchGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BranchGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BranchCountArgs<ExtArgs>
+            result: $Utils.Optional<BranchCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2504,6 +2684,8 @@ export namespace Prisma {
     procimBarangFurniture?: ProcimBarangFurnitureOmit
     procimBarangJaminanLainnya?: ProcimBarangJaminanLainnyaOmit
     systemLog?: SystemLogOmit
+    region?: RegionOmit
+    branch?: BranchOmit
   }
 
   /* Types for Logging */
@@ -2610,6 +2792,7 @@ export namespace Prisma {
     KMS: number
     KEF: number
     KAR: number
+    subordinates: number
     system_logs: number
   }
 
@@ -2626,6 +2809,7 @@ export namespace Prisma {
     KMS?: boolean | UserCountOutputTypeCountKMSArgs
     KEF?: boolean | UserCountOutputTypeCountKEFArgs
     KAR?: boolean | UserCountOutputTypeCountKARArgs
+    subordinates?: boolean | UserCountOutputTypeCountSubordinatesArgs
     system_logs?: boolean | UserCountOutputTypeCountSystem_logsArgs
   }
 
@@ -2722,6 +2906,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountKARArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: KARWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSubordinatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
   /**
@@ -2831,6 +3022,77 @@ export namespace Prisma {
 
 
   /**
+   * Count Type RegionCountOutputType
+   */
+
+  export type RegionCountOutputType = {
+    branches: number
+    user: number
+  }
+
+  export type RegionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | RegionCountOutputTypeCountBranchesArgs
+    user?: boolean | RegionCountOutputTypeCountUserArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RegionCountOutputType without action
+   */
+  export type RegionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegionCountOutputType
+     */
+    select?: RegionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RegionCountOutputType without action
+   */
+  export type RegionCountOutputTypeCountBranchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BranchWhereInput
+  }
+
+  /**
+   * RegionCountOutputType without action
+   */
+  export type RegionCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * Count Type BranchCountOutputType
+   */
+
+  export type BranchCountOutputType = {
+    user: number
+  }
+
+  export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | BranchCountOutputTypeCountUserArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BranchCountOutputType
+     */
+    select?: BranchCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -2846,58 +3108,88 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: string | null
+    name: string | null
     username: string | null
     password: string | null
+    region_id: string | null
+    branch_id: string | null
+    supervisor_id: string | null
     role: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
+    name: string | null
     username: string | null
     password: string | null
+    region_id: string | null
+    branch_id: string | null
+    supervisor_id: string | null
     role: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
+    name: number
     username: number
     password: number
+    region_id: number
+    branch_id: number
+    supervisor_id: number
     role: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
 
   export type UserMinAggregateInputType = {
     id?: true
+    name?: true
     username?: true
     password?: true
+    region_id?: true
+    branch_id?: true
+    supervisor_id?: true
     role?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
+    name?: true
     username?: true
     password?: true
+    region_id?: true
+    branch_id?: true
+    supervisor_id?: true
     role?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
+    name?: true
     username?: true
     password?: true
+    region_id?: true
+    branch_id?: true
+    supervisor_id?: true
     role?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -2975,11 +3267,16 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: string
+    name: string | null
     username: string
     password: string
+    region_id: string | null
+    branch_id: string | null
+    supervisor_id: string | null
     role: string
     created_at: Date
     updated_at: Date
+    deleted_at: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3001,11 +3298,16 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     username?: boolean
     password?: boolean
+    region_id?: boolean
+    branch_id?: boolean
+    supervisor_id?: boolean
     role?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     KSSM?: boolean | User$KSSMArgs<ExtArgs>
     KSS?: boolean | User$KSSArgs<ExtArgs>
     PINEK?: boolean | User$PINEKArgs<ExtArgs>
@@ -3018,38 +3320,63 @@ export namespace Prisma {
     KMS?: boolean | User$KMSArgs<ExtArgs>
     KEF?: boolean | User$KEFArgs<ExtArgs>
     KAR?: boolean | User$KARArgs<ExtArgs>
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
+    subordinates?: boolean | User$subordinatesArgs<ExtArgs>
     system_logs?: boolean | User$system_logsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     username?: boolean
     password?: boolean
+    region_id?: boolean
+    branch_id?: boolean
+    supervisor_id?: boolean
     role?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     username?: boolean
     password?: boolean
+    region_id?: boolean
+    branch_id?: boolean
+    supervisor_id?: boolean
     role?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
+    name?: boolean
     username?: boolean
     password?: boolean
+    region_id?: boolean
+    branch_id?: boolean
+    supervisor_id?: boolean
     role?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "password" | "role" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "username" | "password" | "region_id" | "branch_id" | "supervisor_id" | "role" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     KSSM?: boolean | User$KSSMArgs<ExtArgs>
     KSS?: boolean | User$KSSArgs<ExtArgs>
@@ -3063,11 +3390,23 @@ export namespace Prisma {
     KMS?: boolean | User$KMSArgs<ExtArgs>
     KEF?: boolean | User$KEFArgs<ExtArgs>
     KAR?: boolean | User$KARArgs<ExtArgs>
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
+    subordinates?: boolean | User$subordinatesArgs<ExtArgs>
     system_logs?: boolean | User$system_logsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
+  }
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    region?: boolean | User$regionArgs<ExtArgs>
+    branch?: boolean | User$branchArgs<ExtArgs>
+    supervisor?: boolean | User$supervisorArgs<ExtArgs>
+  }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -3084,15 +3423,24 @@ export namespace Prisma {
       KMS: Prisma.$KMSPayload<ExtArgs>[]
       KEF: Prisma.$KEFPayload<ExtArgs>[]
       KAR: Prisma.$KARPayload<ExtArgs>[]
+      region: Prisma.$RegionPayload<ExtArgs> | null
+      branch: Prisma.$BranchPayload<ExtArgs> | null
+      supervisor: Prisma.$UserPayload<ExtArgs> | null
+      subordinates: Prisma.$UserPayload<ExtArgs>[]
       system_logs: Prisma.$SystemLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      name: string | null
       username: string
       password: string
+      region_id: string | null
+      branch_id: string | null
+      supervisor_id: string | null
       role: string
       created_at: Date
       updated_at: Date
+      deleted_at: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3499,6 +3847,10 @@ export namespace Prisma {
     KMS<T extends User$KMSArgs<ExtArgs> = {}>(args?: Subset<T, User$KMSArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KMSPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     KEF<T extends User$KEFArgs<ExtArgs> = {}>(args?: Subset<T, User$KEFArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KEFPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     KAR<T extends User$KARArgs<ExtArgs> = {}>(args?: Subset<T, User$KARArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KARPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    region<T extends User$regionArgs<ExtArgs> = {}>(args?: Subset<T, User$regionArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    supervisor<T extends User$supervisorArgs<ExtArgs> = {}>(args?: Subset<T, User$supervisorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    subordinates<T extends User$subordinatesArgs<ExtArgs> = {}>(args?: Subset<T, User$subordinatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     system_logs<T extends User$system_logsArgs<ExtArgs> = {}>(args?: Subset<T, User$system_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3530,11 +3882,16 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
+    readonly name: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly region_id: FieldRef<"User", 'String'>
+    readonly branch_id: FieldRef<"User", 'String'>
+    readonly supervisor_id: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
     readonly created_at: FieldRef<"User", 'DateTime'>
     readonly updated_at: FieldRef<"User", 'DateTime'>
+    readonly deleted_at: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -3784,6 +4141,10 @@ export namespace Prisma {
      */
     data: UserCreateManyInput | UserCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3854,6 +4215,10 @@ export namespace Prisma {
      * Limit how many Users to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4211,6 +4576,87 @@ export namespace Prisma {
   }
 
   /**
+   * User.region
+   */
+  export type User$regionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    where?: RegionWhereInput
+  }
+
+  /**
+   * User.branch
+   */
+  export type User$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
+  }
+
+  /**
+   * User.supervisor
+   */
+  export type User$supervisorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * User.subordinates
+   */
+  export type User$subordinatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
    * User.system_logs
    */
   export type User$system_logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4351,6 +4797,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -4402,6 +4849,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -4453,6 +4901,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -4544,6 +4993,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -4595,6 +5045,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -4646,6 +5097,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -4784,6 +5236,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KSSMCountAggregateOutputType | null
     _avg: KSSMAvgAggregateOutputType | null
@@ -4854,6 +5307,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSSM"]>
@@ -4906,6 +5360,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSSM"]>
@@ -4958,6 +5413,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSSM"]>
@@ -5010,10 +5466,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KSSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "pekerjaan_debitur" | "jenis_kelamin_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "no_bpkb" | "harga_barang" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "asuransi_tlo_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kSSM"]>
+  export type KSSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "pekerjaan_debitur" | "jenis_kelamin_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "no_bpkb" | "harga_barang" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "asuransi_tlo_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kSSM"]>
   export type KSSMInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -5077,6 +5534,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kSSM"]>
     composites: {}
@@ -5549,6 +6007,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KSSM", 'DateTime'>
     readonly updated_at: FieldRef<"KSSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KSSM", 'DateTime'>
+    readonly deleted_at: FieldRef<"KSSM", 'DateTime'>
     readonly userID: FieldRef<"KSSM", 'String'>
   }
     
@@ -6054,6 +6513,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -6103,6 +6563,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -6152,6 +6613,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -6235,6 +6697,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -6284,6 +6747,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -6333,6 +6797,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -6469,6 +6934,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KSSCountAggregateOutputType | null
     _avg: KSSAvgAggregateOutputType | null
@@ -6537,6 +7003,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSS"]>
@@ -6587,6 +7054,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSS"]>
@@ -6637,6 +7105,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSS"]>
@@ -6687,10 +7156,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KSSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "nama_penjamin" | "nik_penjamin" | "alamat_rumah_penjamin" | "tempat_lahir_penjamin" | "hubungan_penjamin_debitur" | "tanggal_lahir_penjamin" | "nama_shm" | "nik_shm" | "alamat_shm" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_dimulai" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "administrasi_nominal" | "nama_asuransi" | "asuransi_nominal" | "materai_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kSS"]>
+  export type KSSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "nama_penjamin" | "nik_penjamin" | "alamat_rumah_penjamin" | "tempat_lahir_penjamin" | "hubungan_penjamin_debitur" | "tanggal_lahir_penjamin" | "nama_shm" | "nik_shm" | "alamat_shm" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_dimulai" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "administrasi_nominal" | "nama_asuransi" | "asuransi_nominal" | "materai_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kSS"]>
   export type KSSInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6752,6 +7222,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kSS"]>
     composites: {}
@@ -7222,6 +7693,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KSS", 'DateTime'>
     readonly updated_at: FieldRef<"KSS", 'DateTime'>
     readonly submitted_at: FieldRef<"KSS", 'DateTime'>
+    readonly deleted_at: FieldRef<"KSS", 'DateTime'>
     readonly userID: FieldRef<"KSS", 'String'>
   }
     
@@ -7716,6 +8188,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -7758,6 +8231,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -7800,6 +8274,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -7872,6 +8347,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -7914,6 +8390,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -7956,6 +8433,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -8085,6 +8563,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: PINEKCountAggregateOutputType | null
     _avg: PINEKAvgAggregateOutputType | null
@@ -8146,6 +8625,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pINEK"]>
@@ -8189,6 +8669,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pINEK"]>
@@ -8232,6 +8713,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pINEK"]>
@@ -8275,10 +8757,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type PINEKOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "nik_debitur" | "status_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "rekening_pinjaman" | "tujuan_penggunaan" | "provisi_persen" | "provisi_nominal" | "nama_asuransi" | "asuransi_jiwa_nominal" | "materai_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["pINEK"]>
+  export type PINEKOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "nik_debitur" | "status_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "rekening_pinjaman" | "tujuan_penggunaan" | "provisi_persen" | "provisi_nominal" | "nama_asuransi" | "asuransi_jiwa_nominal" | "materai_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["pINEK"]>
   export type PINEKInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -8333,6 +8816,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["pINEK"]>
     composites: {}
@@ -8796,6 +9280,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"PINEK", 'DateTime'>
     readonly updated_at: FieldRef<"PINEK", 'DateTime'>
     readonly submitted_at: FieldRef<"PINEK", 'DateTime'>
+    readonly deleted_at: FieldRef<"PINEK", 'DateTime'>
     readonly userID: FieldRef<"PINEK", 'String'>
   }
     
@@ -9265,6 +9750,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -9296,6 +9782,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -9327,6 +9814,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -9374,6 +9862,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -9405,6 +9894,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -9436,6 +9926,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -9554,6 +10045,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: FLEKSICountAggregateOutputType | null
     _avg: FLEKSIAvgAggregateOutputType | null
@@ -9604,6 +10096,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     barang_elektronik?: boolean | FLEKSI$barang_elektronikArgs<ExtArgs>
     barang_furniture?: boolean | FLEKSI$barang_furnitureArgs<ExtArgs>
@@ -9640,6 +10133,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fLEKSI"]>
@@ -9672,6 +10166,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fLEKSI"]>
@@ -9704,10 +10199,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type FLEKSIOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "status_debitur" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "nik_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "rekening_pinjaman" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tenggat_angsuran" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["fLEKSI"]>
+  export type FLEKSIOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "status_debitur" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "nik_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "rekening_pinjaman" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tenggat_angsuran" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["fLEKSI"]>
   export type FLEKSIInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     barang_elektronik?: boolean | FLEKSI$barang_elektronikArgs<ExtArgs>
     barang_furniture?: boolean | FLEKSI$barang_furnitureArgs<ExtArgs>
@@ -9758,6 +10254,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["fLEKSI"]>
     composites: {}
@@ -10213,6 +10710,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"FLEKSI", 'DateTime'>
     readonly updated_at: FieldRef<"FLEKSI", 'DateTime'>
     readonly submitted_at: FieldRef<"FLEKSI", 'DateTime'>
+    readonly deleted_at: FieldRef<"FLEKSI", 'DateTime'>
     readonly userID: FieldRef<"FLEKSI", 'String'>
   }
     
@@ -10751,6 +11249,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -10779,6 +11278,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -10807,6 +11307,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -10851,6 +11352,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -10879,6 +11381,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -10907,6 +11410,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -11022,6 +11526,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: PROCIMCountAggregateOutputType | null
     _avg: PROCIMAvgAggregateOutputType | null
@@ -11069,6 +11574,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     barang_elektronik?: boolean | PROCIM$barang_elektronikArgs<ExtArgs>
     barang_furniture?: boolean | PROCIM$barang_furnitureArgs<ExtArgs>
@@ -11102,6 +11608,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pROCIM"]>
@@ -11131,6 +11638,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pROCIM"]>
@@ -11160,10 +11668,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type PROCIMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "nik_debitur" | "status_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "alamat_rumah_penjamin" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "rekening_pinjaman" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tenggat_angsuran" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["pROCIM"]>
+  export type PROCIMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "nama_debitur" | "nik_debitur" | "status_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_rumah_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "alamat_rumah_penjamin" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "rekening_pinjaman" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tenggat_angsuran" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["pROCIM"]>
   export type PROCIMInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     barang_elektronik?: boolean | PROCIM$barang_elektronikArgs<ExtArgs>
     barang_furniture?: boolean | PROCIM$barang_furnitureArgs<ExtArgs>
@@ -11211,6 +11720,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["pROCIM"]>
     composites: {}
@@ -11663,6 +12173,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"PROCIM", 'DateTime'>
     readonly updated_at: FieldRef<"PROCIM", 'DateTime'>
     readonly submitted_at: FieldRef<"PROCIM", 'DateTime'>
+    readonly deleted_at: FieldRef<"PROCIM", 'DateTime'>
     readonly userID: FieldRef<"PROCIM", 'String'>
   }
     
@@ -12247,6 +12758,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -12297,6 +12809,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -12347,6 +12860,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -12437,6 +12951,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -12487,6 +13002,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -12537,6 +13053,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -12674,6 +13191,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KSMCountAggregateOutputType | null
     _avg: KSMAvgAggregateOutputType | null
@@ -12743,6 +13261,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSM"]>
@@ -12794,6 +13313,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSM"]>
@@ -12845,6 +13365,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kSM"]>
@@ -12896,10 +13417,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_nominal" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kSM"]>
+  export type KSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_nominal" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kSM"]>
   export type KSMInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -12962,6 +13484,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kSM"]>
     composites: {}
@@ -13433,6 +13956,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KSM", 'DateTime'>
     readonly updated_at: FieldRef<"KSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KSM", 'DateTime'>
+    readonly deleted_at: FieldRef<"KSM", 'DateTime'>
     readonly userID: FieldRef<"KSM", 'String'>
   }
     
@@ -13942,6 +14466,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -13991,6 +14516,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -14040,6 +14566,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -14127,6 +14654,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -14176,6 +14704,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -14225,6 +14754,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -14361,6 +14891,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KMSMCountAggregateOutputType | null
     _avg: KMSMAvgAggregateOutputType | null
@@ -14429,6 +14960,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMSM"]>
@@ -14479,6 +15011,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMSM"]>
@@ -14529,6 +15062,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMSM"]>
@@ -14579,10 +15113,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KMSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "nik_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "tanggal_lahir_debitur" | "tempat_lahir_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kMSM"]>
+  export type KMSMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "nik_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "tanggal_lahir_debitur" | "tempat_lahir_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kMSM"]>
   export type KMSMInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -14644,6 +15179,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kMSM"]>
     composites: {}
@@ -15114,6 +15650,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KMSM", 'DateTime'>
     readonly updated_at: FieldRef<"KMSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KMSM", 'DateTime'>
+    readonly deleted_at: FieldRef<"KMSM", 'DateTime'>
     readonly userID: FieldRef<"KMSM", 'String'>
   }
     
@@ -15619,6 +16156,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -15668,6 +16206,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -15717,6 +16256,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -15800,6 +16340,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -15849,6 +16390,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -15898,6 +16440,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -16034,6 +16577,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KRSCountAggregateOutputType | null
     _avg: KRSAvgAggregateOutputType | null
@@ -16102,6 +16646,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kRS"]>
@@ -16152,6 +16697,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kRS"]>
@@ -16202,6 +16748,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kRS"]>
@@ -16252,10 +16799,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KRSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "nama_shm" | "nik_shm" | "alamat_shm" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "administrasi_nominal" | "nama_asuransi" | "asuransi_jiwa_nominal" | "materai_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kRS"]>
+  export type KRSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "nama_shm" | "nik_shm" | "alamat_shm" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "administrasi_nominal" | "nama_asuransi" | "asuransi_jiwa_nominal" | "materai_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kRS"]>
   export type KRSInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -16317,6 +16865,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kRS"]>
     composites: {}
@@ -16787,6 +17336,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KRS", 'DateTime'>
     readonly updated_at: FieldRef<"KRS", 'DateTime'>
     readonly submitted_at: FieldRef<"KRS", 'DateTime'>
+    readonly deleted_at: FieldRef<"KRS", 'DateTime'>
     readonly userID: FieldRef<"KRS", 'String'>
   }
     
@@ -17300,6 +17850,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -17351,6 +17902,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -17402,6 +17954,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -17493,6 +18046,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -17544,6 +18098,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -17595,6 +18150,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -17733,6 +18289,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KMMCountAggregateOutputType | null
     _avg: KMMAvgAggregateOutputType | null
@@ -17803,6 +18360,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMM"]>
@@ -17855,6 +18413,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMM"]>
@@ -17907,6 +18466,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMM"]>
@@ -17959,10 +18519,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KMMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tanggal_lahir_debitur" | "tempat_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "nama_asuransi" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kMM"]>
+  export type KMMOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tanggal_lahir_debitur" | "tempat_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_barang" | "harga_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "tujuan_penggunaan" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_persen" | "provisi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "nama_asuransi" | "asuransi_tlo_nominal" | "administrasi_nominal" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kMM"]>
   export type KMMInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -18026,6 +18587,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kMM"]>
     composites: {}
@@ -18498,6 +19060,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KMM", 'DateTime'>
     readonly updated_at: FieldRef<"KMM", 'DateTime'>
     readonly submitted_at: FieldRef<"KMM", 'DateTime'>
+    readonly deleted_at: FieldRef<"KMM", 'DateTime'>
     readonly userID: FieldRef<"KMM", 'String'>
   }
     
@@ -19004,6 +19567,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -19052,6 +19616,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -19100,6 +19665,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -19184,6 +19750,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -19232,6 +19799,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -19280,6 +19848,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -19415,6 +19984,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KMSCountAggregateOutputType | null
     _avg: KMSAvgAggregateOutputType | null
@@ -19482,6 +20052,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMS"]>
@@ -19531,6 +20102,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMS"]>
@@ -19580,6 +20152,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kMS"]>
@@ -19629,10 +20202,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KMSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "status_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "nik_debitur" | "pekerjaan_debitur" | "hubungan_debitur_penjamin" | "alamat_rumah_penjamin" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_shm" | "alamat_shm" | "nik_shm" | "detail_jaminan" | "nominal_pinjaman" | "tujuan_penggunaan" | "jangka_waktu" | "bunga_pinjaman" | "tanggal_angsuran_terakhir" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "nominal_angsuran" | "hutang_keseluruhan" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "notaris_nominal" | "nama_asuransi_jiwa" | "asuransi_jiwa_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kMS"]>
+  export type KMSOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "status_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "nik_debitur" | "pekerjaan_debitur" | "hubungan_debitur_penjamin" | "alamat_rumah_penjamin" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "nama_shm" | "alamat_shm" | "nik_shm" | "detail_jaminan" | "nominal_pinjaman" | "tujuan_penggunaan" | "jangka_waktu" | "bunga_pinjaman" | "tanggal_angsuran_terakhir" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "nominal_angsuran" | "hutang_keseluruhan" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "notaris_nominal" | "nama_asuransi_jiwa" | "asuransi_jiwa_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kMS"]>
   export type KMSInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -19693,6 +20267,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kMS"]>
     composites: {}
@@ -20162,6 +20737,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KMS", 'DateTime'>
     readonly updated_at: FieldRef<"KMS", 'DateTime'>
     readonly submitted_at: FieldRef<"KMS", 'DateTime'>
+    readonly deleted_at: FieldRef<"KMS", 'DateTime'>
     readonly userID: FieldRef<"KMS", 'String'>
   }
     
@@ -20670,6 +21246,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -20720,6 +21297,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -20770,6 +21348,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -20856,6 +21435,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -20906,6 +21486,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -20956,6 +21537,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -21093,6 +21675,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KEFCountAggregateOutputType | null
     _avg: KEFAvgAggregateOutputType | null
@@ -21162,6 +21745,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kEF"]>
@@ -21213,6 +21797,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kEF"]>
@@ -21264,6 +21849,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kEF"]>
@@ -21315,10 +21901,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KEFOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "tanggal_surat_permohonan_kredit" | "nama_debitur" | "status_debitur" | "nik_debitur" | "no_hp_debitur" | "jenis_kelamin_debitur" | "hubungan_debitur_penjamin" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "nama_usaha_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "jumlah_barang" | "nama_barang" | "merek_barang" | "tipe_barang" | "ukuran_barang" | "warna_barang" | "harga_barang" | "detail_jaminan" | "bunga_pinjaman" | "jangka_waktu" | "tanggal_angsuran_terakhir" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "nominal_angsuran" | "hutang_keseluruhan" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "fidusia_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kEF"]>
+  export type KEFOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_persetujuan_kredit" | "tanggal_surat_permohonan_kredit" | "nama_debitur" | "status_debitur" | "nik_debitur" | "no_hp_debitur" | "jenis_kelamin_debitur" | "hubungan_debitur_penjamin" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "nama_usaha_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "nik_penjamin" | "hubungan_penjamin_debitur" | "jumlah_barang" | "nama_barang" | "merek_barang" | "tipe_barang" | "ukuran_barang" | "warna_barang" | "harga_barang" | "detail_jaminan" | "bunga_pinjaman" | "jangka_waktu" | "tanggal_angsuran_terakhir" | "tenggat_angsuran" | "tanggal_angsuran_pertama" | "nominal_angsuran" | "hutang_keseluruhan" | "provisi_persen" | "provisi_nominal" | "administrasi_persen" | "administrasi_nominal" | "materai_nominal" | "fidusia_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kEF"]>
   export type KEFInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -21381,6 +21968,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kEF"]>
     composites: {}
@@ -21852,6 +22440,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KEF", 'DateTime'>
     readonly updated_at: FieldRef<"KEF", 'DateTime'>
     readonly submitted_at: FieldRef<"KEF", 'DateTime'>
+    readonly deleted_at: FieldRef<"KEF", 'DateTime'>
     readonly userID: FieldRef<"KEF", 'String'>
   }
     
@@ -22356,6 +22945,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -22404,6 +22994,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string | null
   }
 
@@ -22452,6 +23043,7 @@ export namespace Prisma {
     created_at: number
     updated_at: number
     submitted_at: number
+    deleted_at: number
     userID: number
     _all: number
   }
@@ -22534,6 +23126,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -22582,6 +23175,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
   }
 
@@ -22630,6 +23224,7 @@ export namespace Prisma {
     created_at?: true
     updated_at?: true
     submitted_at?: true
+    deleted_at?: true
     userID?: true
     _all?: true
   }
@@ -22765,6 +23360,7 @@ export namespace Prisma {
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
+    deleted_at: Date | null
     userID: string
     _count: KARCountAggregateOutputType | null
     _avg: KARAvgAggregateOutputType | null
@@ -22832,6 +23428,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kAR"]>
@@ -22881,6 +23478,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kAR"]>
@@ -22930,6 +23528,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["kAR"]>
@@ -22979,10 +23578,11 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     submitted_at?: boolean
+    deleted_at?: boolean
     userID?: boolean
   }
 
-  export type KAROmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_nominal" | "provisi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "nama_asuransi" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "userID", ExtArgs["result"]["kAR"]>
+  export type KAROmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nomor_surat" | "tanggal_surat_permohonan_kredit" | "tanggal_surat_persetujuan_kredit" | "nama" | "jabatan" | "nama_debitur" | "nik_debitur" | "status_debitur" | "hubungan_debitur_penjamin" | "jenis_kelamin_debitur" | "tempat_lahir_debitur" | "tanggal_lahir_debitur" | "alamat_usaha_debitur" | "alamat_rumah_debitur" | "pekerjaan_debitur" | "nama_penjamin" | "nik_penjamin" | "tempat_lahir_penjamin" | "tanggal_lahir_penjamin" | "hubungan_penjamin_debitur" | "alamat_rumah_penjamin" | "nama_barang" | "no_bpkb" | "detail_jaminan" | "nominal_pinjaman" | "bunga_pinjaman" | "jangka_waktu" | "nominal_angsuran" | "tanggal_angsuran_pertama" | "tanggal_angsuran_terakhir" | "hutang_keseluruhan" | "tenggat_angsuran" | "provisi_persen" | "administrasi_nominal" | "provisi_nominal" | "materai_nominal" | "asuransi_jiwa_nominal" | "nama_asuransi" | "notaris_nominal" | "total_biaya" | "created_at" | "updated_at" | "submitted_at" | "deleted_at" | "userID", ExtArgs["result"]["kAR"]>
   export type KARInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -23043,6 +23643,7 @@ export namespace Prisma {
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
+      deleted_at: Date | null
       userID: string
     }, ExtArgs["result"]["kAR"]>
     composites: {}
@@ -23512,6 +24113,7 @@ export namespace Prisma {
     readonly created_at: FieldRef<"KAR", 'DateTime'>
     readonly updated_at: FieldRef<"KAR", 'DateTime'>
     readonly submitted_at: FieldRef<"KAR", 'DateTime'>
+    readonly deleted_at: FieldRef<"KAR", 'DateTime'>
     readonly userID: FieldRef<"KAR", 'String'>
   }
     
@@ -23955,6 +24557,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangElektronikMaxAggregateOutputType = {
@@ -23965,6 +24568,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangElektronikCountAggregateOutputType = {
@@ -23975,6 +24579,7 @@ export namespace Prisma {
     harga: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -23995,6 +24600,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangElektronikMaxAggregateInputType = {
@@ -24005,6 +24611,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangElektronikCountAggregateInputType = {
@@ -24015,6 +24622,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -24112,6 +24720,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: FleksiBarangElektronikCountAggregateOutputType | null
     _avg: FleksiBarangElektronikAvgAggregateOutputType | null
     _sum: FleksiBarangElektronikSumAggregateOutputType | null
@@ -24141,6 +24750,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangElektronik"]>
 
@@ -24152,6 +24762,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangElektronik"]>
 
@@ -24163,6 +24774,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangElektronik"]>
 
@@ -24174,9 +24786,10 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type FleksiBarangElektronikOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at", ExtArgs["result"]["fleksiBarangElektronik"]>
+  export type FleksiBarangElektronikOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["fleksiBarangElektronik"]>
   export type FleksiBarangElektronikInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }
@@ -24200,6 +24813,7 @@ export namespace Prisma {
       harga: number | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["fleksiBarangElektronik"]>
     composites: {}
   }
@@ -24631,6 +25245,7 @@ export namespace Prisma {
     readonly harga: FieldRef<"FleksiBarangElektronik", 'Int'>
     readonly created_at: FieldRef<"FleksiBarangElektronik", 'DateTime'>
     readonly updated_at: FieldRef<"FleksiBarangElektronik", 'DateTime'>
+    readonly deleted_at: FieldRef<"FleksiBarangElektronik", 'DateTime'>
   }
     
 
@@ -25073,6 +25688,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangFurnitureMaxAggregateOutputType = {
@@ -25083,6 +25699,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangFurnitureCountAggregateOutputType = {
@@ -25093,6 +25710,7 @@ export namespace Prisma {
     harga: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -25113,6 +25731,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangFurnitureMaxAggregateInputType = {
@@ -25123,6 +25742,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangFurnitureCountAggregateInputType = {
@@ -25133,6 +25753,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -25230,6 +25851,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: FleksiBarangFurnitureCountAggregateOutputType | null
     _avg: FleksiBarangFurnitureAvgAggregateOutputType | null
     _sum: FleksiBarangFurnitureSumAggregateOutputType | null
@@ -25259,6 +25881,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangFurniture"]>
 
@@ -25270,6 +25893,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangFurniture"]>
 
@@ -25281,6 +25905,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangFurniture"]>
 
@@ -25292,9 +25917,10 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type FleksiBarangFurnitureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at", ExtArgs["result"]["fleksiBarangFurniture"]>
+  export type FleksiBarangFurnitureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["fleksiBarangFurniture"]>
   export type FleksiBarangFurnitureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }
@@ -25318,6 +25944,7 @@ export namespace Prisma {
       harga: number | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["fleksiBarangFurniture"]>
     composites: {}
   }
@@ -25749,6 +26376,7 @@ export namespace Prisma {
     readonly harga: FieldRef<"FleksiBarangFurniture", 'Int'>
     readonly created_at: FieldRef<"FleksiBarangFurniture", 'DateTime'>
     readonly updated_at: FieldRef<"FleksiBarangFurniture", 'DateTime'>
+    readonly deleted_at: FieldRef<"FleksiBarangFurniture", 'DateTime'>
   }
     
 
@@ -26179,6 +26807,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangJaminanLainnyaMaxAggregateOutputType = {
@@ -26187,6 +26816,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type FleksiBarangJaminanLainnyaCountAggregateOutputType = {
@@ -26195,6 +26825,7 @@ export namespace Prisma {
     nama_barang: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -26205,6 +26836,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangJaminanLainnyaMaxAggregateInputType = {
@@ -26213,6 +26845,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type FleksiBarangJaminanLainnyaCountAggregateInputType = {
@@ -26221,6 +26854,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -26302,6 +26936,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: FleksiBarangJaminanLainnyaCountAggregateOutputType | null
     _min: FleksiBarangJaminanLainnyaMinAggregateOutputType | null
     _max: FleksiBarangJaminanLainnyaMaxAggregateOutputType | null
@@ -26327,6 +26962,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
 
@@ -26336,6 +26972,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
 
@@ -26345,6 +26982,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
 
@@ -26354,9 +26992,10 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type FleksiBarangJaminanLainnyaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "created_at" | "updated_at", ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
+  export type FleksiBarangJaminanLainnyaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fleksi_id" | "nama_barang" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
   export type FleksiBarangJaminanLainnyaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     fleksi?: boolean | FLEKSIDefaultArgs<ExtArgs>
   }
@@ -26378,6 +27017,7 @@ export namespace Prisma {
       nama_barang: string | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["fleksiBarangJaminanLainnya"]>
     composites: {}
   }
@@ -26807,6 +27447,7 @@ export namespace Prisma {
     readonly nama_barang: FieldRef<"FleksiBarangJaminanLainnya", 'String'>
     readonly created_at: FieldRef<"FleksiBarangJaminanLainnya", 'DateTime'>
     readonly updated_at: FieldRef<"FleksiBarangJaminanLainnya", 'DateTime'>
+    readonly deleted_at: FieldRef<"FleksiBarangJaminanLainnya", 'DateTime'>
   }
     
 
@@ -27249,6 +27890,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangElektronikMaxAggregateOutputType = {
@@ -27259,6 +27901,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangElektronikCountAggregateOutputType = {
@@ -27269,6 +27912,7 @@ export namespace Prisma {
     harga: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -27289,6 +27933,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangElektronikMaxAggregateInputType = {
@@ -27299,6 +27944,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangElektronikCountAggregateInputType = {
@@ -27309,6 +27955,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -27406,6 +28053,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: ProcimBarangElektronikCountAggregateOutputType | null
     _avg: ProcimBarangElektronikAvgAggregateOutputType | null
     _sum: ProcimBarangElektronikSumAggregateOutputType | null
@@ -27435,6 +28083,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangElektronik"]>
 
@@ -27446,6 +28095,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangElektronik"]>
 
@@ -27457,6 +28107,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangElektronik"]>
 
@@ -27468,9 +28119,10 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type ProcimBarangElektronikOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at", ExtArgs["result"]["procimBarangElektronik"]>
+  export type ProcimBarangElektronikOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["procimBarangElektronik"]>
   export type ProcimBarangElektronikInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }
@@ -27494,6 +28146,7 @@ export namespace Prisma {
       harga: number | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["procimBarangElektronik"]>
     composites: {}
   }
@@ -27925,6 +28578,7 @@ export namespace Prisma {
     readonly harga: FieldRef<"ProcimBarangElektronik", 'Int'>
     readonly created_at: FieldRef<"ProcimBarangElektronik", 'DateTime'>
     readonly updated_at: FieldRef<"ProcimBarangElektronik", 'DateTime'>
+    readonly deleted_at: FieldRef<"ProcimBarangElektronik", 'DateTime'>
   }
     
 
@@ -28367,6 +29021,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangFurnitureMaxAggregateOutputType = {
@@ -28377,6 +29032,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangFurnitureCountAggregateOutputType = {
@@ -28387,6 +29043,7 @@ export namespace Prisma {
     harga: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -28407,6 +29064,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangFurnitureMaxAggregateInputType = {
@@ -28417,6 +29075,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangFurnitureCountAggregateInputType = {
@@ -28427,6 +29086,7 @@ export namespace Prisma {
     harga?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -28524,6 +29184,7 @@ export namespace Prisma {
     harga: number | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: ProcimBarangFurnitureCountAggregateOutputType | null
     _avg: ProcimBarangFurnitureAvgAggregateOutputType | null
     _sum: ProcimBarangFurnitureSumAggregateOutputType | null
@@ -28553,6 +29214,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangFurniture"]>
 
@@ -28564,6 +29226,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangFurniture"]>
 
@@ -28575,6 +29238,7 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangFurniture"]>
 
@@ -28586,9 +29250,10 @@ export namespace Prisma {
     harga?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type ProcimBarangFurnitureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at", ExtArgs["result"]["procimBarangFurniture"]>
+  export type ProcimBarangFurnitureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "tipe" | "harga" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["procimBarangFurniture"]>
   export type ProcimBarangFurnitureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }
@@ -28612,6 +29277,7 @@ export namespace Prisma {
       harga: number | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["procimBarangFurniture"]>
     composites: {}
   }
@@ -29043,6 +29709,7 @@ export namespace Prisma {
     readonly harga: FieldRef<"ProcimBarangFurniture", 'Int'>
     readonly created_at: FieldRef<"ProcimBarangFurniture", 'DateTime'>
     readonly updated_at: FieldRef<"ProcimBarangFurniture", 'DateTime'>
+    readonly deleted_at: FieldRef<"ProcimBarangFurniture", 'DateTime'>
   }
     
 
@@ -29473,6 +30140,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangJaminanLainnyaMaxAggregateOutputType = {
@@ -29481,6 +30149,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type ProcimBarangJaminanLainnyaCountAggregateOutputType = {
@@ -29489,6 +30158,7 @@ export namespace Prisma {
     nama_barang: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -29499,6 +30169,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangJaminanLainnyaMaxAggregateInputType = {
@@ -29507,6 +30178,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type ProcimBarangJaminanLainnyaCountAggregateInputType = {
@@ -29515,6 +30187,7 @@ export namespace Prisma {
     nama_barang?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -29596,6 +30269,7 @@ export namespace Prisma {
     nama_barang: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: ProcimBarangJaminanLainnyaCountAggregateOutputType | null
     _min: ProcimBarangJaminanLainnyaMinAggregateOutputType | null
     _max: ProcimBarangJaminanLainnyaMaxAggregateOutputType | null
@@ -29621,6 +30295,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangJaminanLainnya"]>
 
@@ -29630,6 +30305,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangJaminanLainnya"]>
 
@@ -29639,6 +30315,7 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["procimBarangJaminanLainnya"]>
 
@@ -29648,9 +30325,10 @@ export namespace Prisma {
     nama_barang?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type ProcimBarangJaminanLainnyaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "created_at" | "updated_at", ExtArgs["result"]["procimBarangJaminanLainnya"]>
+  export type ProcimBarangJaminanLainnyaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "procim_id" | "nama_barang" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["procimBarangJaminanLainnya"]>
   export type ProcimBarangJaminanLainnyaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     procim?: boolean | PROCIMDefaultArgs<ExtArgs>
   }
@@ -29672,6 +30350,7 @@ export namespace Prisma {
       nama_barang: string | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["procimBarangJaminanLainnya"]>
     composites: {}
   }
@@ -30101,6 +30780,7 @@ export namespace Prisma {
     readonly nama_barang: FieldRef<"ProcimBarangJaminanLainnya", 'String'>
     readonly created_at: FieldRef<"ProcimBarangJaminanLainnya", 'DateTime'>
     readonly updated_at: FieldRef<"ProcimBarangJaminanLainnya", 'DateTime'>
+    readonly deleted_at: FieldRef<"ProcimBarangJaminanLainnya", 'DateTime'>
   }
     
 
@@ -30535,6 +31215,7 @@ export namespace Prisma {
     description: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type SystemLogMaxAggregateOutputType = {
@@ -30547,6 +31228,7 @@ export namespace Prisma {
     description: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
   }
 
   export type SystemLogCountAggregateOutputType = {
@@ -30559,6 +31241,7 @@ export namespace Prisma {
     description: number
     created_at: number
     updated_at: number
+    deleted_at: number
     _all: number
   }
 
@@ -30573,6 +31256,7 @@ export namespace Prisma {
     description?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type SystemLogMaxAggregateInputType = {
@@ -30585,6 +31269,7 @@ export namespace Prisma {
     description?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
   }
 
   export type SystemLogCountAggregateInputType = {
@@ -30597,6 +31282,7 @@ export namespace Prisma {
     description?: true
     created_at?: true
     updated_at?: true
+    deleted_at?: true
     _all?: true
   }
 
@@ -30682,6 +31368,7 @@ export namespace Prisma {
     description: string | null
     created_at: Date | null
     updated_at: Date | null
+    deleted_at: Date | null
     _count: SystemLogCountAggregateOutputType | null
     _min: SystemLogMinAggregateOutputType | null
     _max: SystemLogMaxAggregateOutputType | null
@@ -30711,6 +31398,7 @@ export namespace Prisma {
     description?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     user?: boolean | SystemLog$userArgs<ExtArgs>
   }, ExtArgs["result"]["systemLog"]>
 
@@ -30724,6 +31412,7 @@ export namespace Prisma {
     description?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     user?: boolean | SystemLog$userArgs<ExtArgs>
   }, ExtArgs["result"]["systemLog"]>
 
@@ -30737,6 +31426,7 @@ export namespace Prisma {
     description?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
     user?: boolean | SystemLog$userArgs<ExtArgs>
   }, ExtArgs["result"]["systemLog"]>
 
@@ -30750,9 +31440,10 @@ export namespace Prisma {
     description?: boolean
     created_at?: boolean
     updated_at?: boolean
+    deleted_at?: boolean
   }
 
-  export type SystemLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "ip_address" | "device" | "action" | "method" | "description" | "created_at" | "updated_at", ExtArgs["result"]["systemLog"]>
+  export type SystemLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "ip_address" | "device" | "action" | "method" | "description" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["systemLog"]>
   export type SystemLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | SystemLog$userArgs<ExtArgs>
   }
@@ -30778,6 +31469,7 @@ export namespace Prisma {
       description: string | null
       created_at: Date | null
       updated_at: Date | null
+      deleted_at: Date | null
     }, ExtArgs["result"]["systemLog"]>
     composites: {}
   }
@@ -31211,6 +31903,7 @@ export namespace Prisma {
     readonly description: FieldRef<"SystemLog", 'String'>
     readonly created_at: FieldRef<"SystemLog", 'DateTime'>
     readonly updated_at: FieldRef<"SystemLog", 'DateTime'>
+    readonly deleted_at: FieldRef<"SystemLog", 'DateTime'>
   }
     
 
@@ -31645,6 +32338,2205 @@ export namespace Prisma {
 
 
   /**
+   * Model Region
+   */
+
+  export type AggregateRegion = {
+    _count: RegionCountAggregateOutputType | null
+    _min: RegionMinAggregateOutputType | null
+    _max: RegionMaxAggregateOutputType | null
+  }
+
+  export type RegionMinAggregateOutputType = {
+    id: string | null
+    region: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type RegionMaxAggregateOutputType = {
+    id: string | null
+    region: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type RegionCountAggregateOutputType = {
+    id: number
+    region: number
+    created_at: number
+    updated_at: number
+    deleted_at: number
+    _all: number
+  }
+
+
+  export type RegionMinAggregateInputType = {
+    id?: true
+    region?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type RegionMaxAggregateInputType = {
+    id?: true
+    region?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type RegionCountAggregateInputType = {
+    id?: true
+    region?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+    _all?: true
+  }
+
+  export type RegionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Region to aggregate.
+     */
+    where?: RegionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Regions to fetch.
+     */
+    orderBy?: RegionOrderByWithRelationInput | RegionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RegionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Regions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Regions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Regions
+    **/
+    _count?: true | RegionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RegionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RegionMaxAggregateInputType
+  }
+
+  export type GetRegionAggregateType<T extends RegionAggregateArgs> = {
+        [P in keyof T & keyof AggregateRegion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRegion[P]>
+      : GetScalarType<T[P], AggregateRegion[P]>
+  }
+
+
+
+
+  export type RegionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RegionWhereInput
+    orderBy?: RegionOrderByWithAggregationInput | RegionOrderByWithAggregationInput[]
+    by: RegionScalarFieldEnum[] | RegionScalarFieldEnum
+    having?: RegionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RegionCountAggregateInputType | true
+    _min?: RegionMinAggregateInputType
+    _max?: RegionMaxAggregateInputType
+  }
+
+  export type RegionGroupByOutputType = {
+    id: string
+    region: string
+    created_at: Date
+    updated_at: Date
+    deleted_at: Date | null
+    _count: RegionCountAggregateOutputType | null
+    _min: RegionMinAggregateOutputType | null
+    _max: RegionMaxAggregateOutputType | null
+  }
+
+  type GetRegionGroupByPayload<T extends RegionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RegionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RegionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RegionGroupByOutputType[P]>
+            : GetScalarType<T[P], RegionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RegionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    region?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+    branches?: boolean | Region$branchesArgs<ExtArgs>
+    user?: boolean | Region$userArgs<ExtArgs>
+    _count?: boolean | RegionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["region"]>
+
+  export type RegionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    region?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+  }, ExtArgs["result"]["region"]>
+
+  export type RegionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    region?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+  }, ExtArgs["result"]["region"]>
+
+  export type RegionSelectScalar = {
+    id?: boolean
+    region?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+  }
+
+  export type RegionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "region" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["region"]>
+  export type RegionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | Region$branchesArgs<ExtArgs>
+    user?: boolean | Region$userArgs<ExtArgs>
+    _count?: boolean | RegionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type RegionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type RegionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $RegionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Region"
+    objects: {
+      branches: Prisma.$BranchPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      region: string
+      created_at: Date
+      updated_at: Date
+      deleted_at: Date | null
+    }, ExtArgs["result"]["region"]>
+    composites: {}
+  }
+
+  type RegionGetPayload<S extends boolean | null | undefined | RegionDefaultArgs> = $Result.GetResult<Prisma.$RegionPayload, S>
+
+  type RegionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RegionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RegionCountAggregateInputType | true
+    }
+
+  export interface RegionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Region'], meta: { name: 'Region' } }
+    /**
+     * Find zero or one Region that matches the filter.
+     * @param {RegionFindUniqueArgs} args - Arguments to find a Region
+     * @example
+     * // Get one Region
+     * const region = await prisma.region.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RegionFindUniqueArgs>(args: SelectSubset<T, RegionFindUniqueArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Region that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RegionFindUniqueOrThrowArgs} args - Arguments to find a Region
+     * @example
+     * // Get one Region
+     * const region = await prisma.region.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RegionFindUniqueOrThrowArgs>(args: SelectSubset<T, RegionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Region that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionFindFirstArgs} args - Arguments to find a Region
+     * @example
+     * // Get one Region
+     * const region = await prisma.region.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RegionFindFirstArgs>(args?: SelectSubset<T, RegionFindFirstArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Region that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionFindFirstOrThrowArgs} args - Arguments to find a Region
+     * @example
+     * // Get one Region
+     * const region = await prisma.region.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RegionFindFirstOrThrowArgs>(args?: SelectSubset<T, RegionFindFirstOrThrowArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Regions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Regions
+     * const regions = await prisma.region.findMany()
+     * 
+     * // Get first 10 Regions
+     * const regions = await prisma.region.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const regionWithIdOnly = await prisma.region.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RegionFindManyArgs>(args?: SelectSubset<T, RegionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Region.
+     * @param {RegionCreateArgs} args - Arguments to create a Region.
+     * @example
+     * // Create one Region
+     * const Region = await prisma.region.create({
+     *   data: {
+     *     // ... data to create a Region
+     *   }
+     * })
+     * 
+     */
+    create<T extends RegionCreateArgs>(args: SelectSubset<T, RegionCreateArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Regions.
+     * @param {RegionCreateManyArgs} args - Arguments to create many Regions.
+     * @example
+     * // Create many Regions
+     * const region = await prisma.region.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RegionCreateManyArgs>(args?: SelectSubset<T, RegionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Regions and returns the data saved in the database.
+     * @param {RegionCreateManyAndReturnArgs} args - Arguments to create many Regions.
+     * @example
+     * // Create many Regions
+     * const region = await prisma.region.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Regions and only return the `id`
+     * const regionWithIdOnly = await prisma.region.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RegionCreateManyAndReturnArgs>(args?: SelectSubset<T, RegionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Region.
+     * @param {RegionDeleteArgs} args - Arguments to delete one Region.
+     * @example
+     * // Delete one Region
+     * const Region = await prisma.region.delete({
+     *   where: {
+     *     // ... filter to delete one Region
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RegionDeleteArgs>(args: SelectSubset<T, RegionDeleteArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Region.
+     * @param {RegionUpdateArgs} args - Arguments to update one Region.
+     * @example
+     * // Update one Region
+     * const region = await prisma.region.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RegionUpdateArgs>(args: SelectSubset<T, RegionUpdateArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Regions.
+     * @param {RegionDeleteManyArgs} args - Arguments to filter Regions to delete.
+     * @example
+     * // Delete a few Regions
+     * const { count } = await prisma.region.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RegionDeleteManyArgs>(args?: SelectSubset<T, RegionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Regions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Regions
+     * const region = await prisma.region.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RegionUpdateManyArgs>(args: SelectSubset<T, RegionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Regions and returns the data updated in the database.
+     * @param {RegionUpdateManyAndReturnArgs} args - Arguments to update many Regions.
+     * @example
+     * // Update many Regions
+     * const region = await prisma.region.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Regions and only return the `id`
+     * const regionWithIdOnly = await prisma.region.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RegionUpdateManyAndReturnArgs>(args: SelectSubset<T, RegionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Region.
+     * @param {RegionUpsertArgs} args - Arguments to update or create a Region.
+     * @example
+     * // Update or create a Region
+     * const region = await prisma.region.upsert({
+     *   create: {
+     *     // ... data to create a Region
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Region we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RegionUpsertArgs>(args: SelectSubset<T, RegionUpsertArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Regions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionCountArgs} args - Arguments to filter Regions to count.
+     * @example
+     * // Count the number of Regions
+     * const count = await prisma.region.count({
+     *   where: {
+     *     // ... the filter for the Regions we want to count
+     *   }
+     * })
+    **/
+    count<T extends RegionCountArgs>(
+      args?: Subset<T, RegionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RegionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Region.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RegionAggregateArgs>(args: Subset<T, RegionAggregateArgs>): Prisma.PrismaPromise<GetRegionAggregateType<T>>
+
+    /**
+     * Group by Region.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RegionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RegionGroupByArgs['orderBy'] }
+        : { orderBy?: RegionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RegionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRegionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Region model
+   */
+  readonly fields: RegionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Region.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RegionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    branches<T extends Region$branchesArgs<ExtArgs> = {}>(args?: Subset<T, Region$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends Region$userArgs<ExtArgs> = {}>(args?: Subset<T, Region$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Region model
+   */
+  interface RegionFieldRefs {
+    readonly id: FieldRef<"Region", 'String'>
+    readonly region: FieldRef<"Region", 'String'>
+    readonly created_at: FieldRef<"Region", 'DateTime'>
+    readonly updated_at: FieldRef<"Region", 'DateTime'>
+    readonly deleted_at: FieldRef<"Region", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Region findUnique
+   */
+  export type RegionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter, which Region to fetch.
+     */
+    where: RegionWhereUniqueInput
+  }
+
+  /**
+   * Region findUniqueOrThrow
+   */
+  export type RegionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter, which Region to fetch.
+     */
+    where: RegionWhereUniqueInput
+  }
+
+  /**
+   * Region findFirst
+   */
+  export type RegionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter, which Region to fetch.
+     */
+    where?: RegionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Regions to fetch.
+     */
+    orderBy?: RegionOrderByWithRelationInput | RegionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Regions.
+     */
+    cursor?: RegionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Regions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Regions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Regions.
+     */
+    distinct?: RegionScalarFieldEnum | RegionScalarFieldEnum[]
+  }
+
+  /**
+   * Region findFirstOrThrow
+   */
+  export type RegionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter, which Region to fetch.
+     */
+    where?: RegionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Regions to fetch.
+     */
+    orderBy?: RegionOrderByWithRelationInput | RegionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Regions.
+     */
+    cursor?: RegionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Regions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Regions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Regions.
+     */
+    distinct?: RegionScalarFieldEnum | RegionScalarFieldEnum[]
+  }
+
+  /**
+   * Region findMany
+   */
+  export type RegionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter, which Regions to fetch.
+     */
+    where?: RegionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Regions to fetch.
+     */
+    orderBy?: RegionOrderByWithRelationInput | RegionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Regions.
+     */
+    cursor?: RegionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Regions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Regions.
+     */
+    skip?: number
+    distinct?: RegionScalarFieldEnum | RegionScalarFieldEnum[]
+  }
+
+  /**
+   * Region create
+   */
+  export type RegionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Region.
+     */
+    data: XOR<RegionCreateInput, RegionUncheckedCreateInput>
+  }
+
+  /**
+   * Region createMany
+   */
+  export type RegionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Regions.
+     */
+    data: RegionCreateManyInput | RegionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Region createManyAndReturn
+   */
+  export type RegionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Regions.
+     */
+    data: RegionCreateManyInput | RegionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Region update
+   */
+  export type RegionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Region.
+     */
+    data: XOR<RegionUpdateInput, RegionUncheckedUpdateInput>
+    /**
+     * Choose, which Region to update.
+     */
+    where: RegionWhereUniqueInput
+  }
+
+  /**
+   * Region updateMany
+   */
+  export type RegionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Regions.
+     */
+    data: XOR<RegionUpdateManyMutationInput, RegionUncheckedUpdateManyInput>
+    /**
+     * Filter which Regions to update
+     */
+    where?: RegionWhereInput
+    /**
+     * Limit how many Regions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Region updateManyAndReturn
+   */
+  export type RegionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * The data used to update Regions.
+     */
+    data: XOR<RegionUpdateManyMutationInput, RegionUncheckedUpdateManyInput>
+    /**
+     * Filter which Regions to update
+     */
+    where?: RegionWhereInput
+    /**
+     * Limit how many Regions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Region upsert
+   */
+  export type RegionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Region to update in case it exists.
+     */
+    where: RegionWhereUniqueInput
+    /**
+     * In case the Region found by the `where` argument doesn't exist, create a new Region with this data.
+     */
+    create: XOR<RegionCreateInput, RegionUncheckedCreateInput>
+    /**
+     * In case the Region was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RegionUpdateInput, RegionUncheckedUpdateInput>
+  }
+
+  /**
+   * Region delete
+   */
+  export type RegionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+    /**
+     * Filter which Region to delete.
+     */
+    where: RegionWhereUniqueInput
+  }
+
+  /**
+   * Region deleteMany
+   */
+  export type RegionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Regions to delete
+     */
+    where?: RegionWhereInput
+    /**
+     * Limit how many Regions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Region.branches
+   */
+  export type Region$branchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
+    orderBy?: BranchOrderByWithRelationInput | BranchOrderByWithRelationInput[]
+    cursor?: BranchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BranchScalarFieldEnum | BranchScalarFieldEnum[]
+  }
+
+  /**
+   * Region.user
+   */
+  export type Region$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Region without action
+   */
+  export type RegionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Region
+     */
+    select?: RegionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Region
+     */
+    omit?: RegionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Branch
+   */
+
+  export type AggregateBranch = {
+    _count: BranchCountAggregateOutputType | null
+    _min: BranchMinAggregateOutputType | null
+    _max: BranchMaxAggregateOutputType | null
+  }
+
+  export type BranchMinAggregateOutputType = {
+    id: string | null
+    branch: string | null
+    region_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type BranchMaxAggregateOutputType = {
+    id: string | null
+    branch: string | null
+    region_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type BranchCountAggregateOutputType = {
+    id: number
+    branch: number
+    region_id: number
+    created_at: number
+    updated_at: number
+    deleted_at: number
+    _all: number
+  }
+
+
+  export type BranchMinAggregateInputType = {
+    id?: true
+    branch?: true
+    region_id?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type BranchMaxAggregateInputType = {
+    id?: true
+    branch?: true
+    region_id?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type BranchCountAggregateInputType = {
+    id?: true
+    branch?: true
+    region_id?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+    _all?: true
+  }
+
+  export type BranchAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Branch to aggregate.
+     */
+    where?: BranchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Branches to fetch.
+     */
+    orderBy?: BranchOrderByWithRelationInput | BranchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BranchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Branches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Branches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Branches
+    **/
+    _count?: true | BranchCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BranchMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BranchMaxAggregateInputType
+  }
+
+  export type GetBranchAggregateType<T extends BranchAggregateArgs> = {
+        [P in keyof T & keyof AggregateBranch]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBranch[P]>
+      : GetScalarType<T[P], AggregateBranch[P]>
+  }
+
+
+
+
+  export type BranchGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BranchWhereInput
+    orderBy?: BranchOrderByWithAggregationInput | BranchOrderByWithAggregationInput[]
+    by: BranchScalarFieldEnum[] | BranchScalarFieldEnum
+    having?: BranchScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BranchCountAggregateInputType | true
+    _min?: BranchMinAggregateInputType
+    _max?: BranchMaxAggregateInputType
+  }
+
+  export type BranchGroupByOutputType = {
+    id: string
+    branch: string
+    region_id: string
+    created_at: Date
+    updated_at: Date
+    deleted_at: Date | null
+    _count: BranchCountAggregateOutputType | null
+    _min: BranchMinAggregateOutputType | null
+    _max: BranchMaxAggregateOutputType | null
+  }
+
+  type GetBranchGroupByPayload<T extends BranchGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BranchGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BranchGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BranchGroupByOutputType[P]>
+            : GetScalarType<T[P], BranchGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BranchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    branch?: boolean
+    region_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+    user?: boolean | Branch$userArgs<ExtArgs>
+    _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch"]>
+
+  export type BranchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    branch?: boolean
+    region_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch"]>
+
+  export type BranchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    branch?: boolean
+    region_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch"]>
+
+  export type BranchSelectScalar = {
+    id?: boolean
+    branch?: boolean
+    region_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+  }
+
+  export type BranchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "branch" | "region_id" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["branch"]>
+  export type BranchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+    user?: boolean | Branch$userArgs<ExtArgs>
+    _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+  }
+  export type BranchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    region?: boolean | RegionDefaultArgs<ExtArgs>
+  }
+
+  export type $BranchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Branch"
+    objects: {
+      region: Prisma.$RegionPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      branch: string
+      region_id: string
+      created_at: Date
+      updated_at: Date
+      deleted_at: Date | null
+    }, ExtArgs["result"]["branch"]>
+    composites: {}
+  }
+
+  type BranchGetPayload<S extends boolean | null | undefined | BranchDefaultArgs> = $Result.GetResult<Prisma.$BranchPayload, S>
+
+  type BranchCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BranchFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BranchCountAggregateInputType | true
+    }
+
+  export interface BranchDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Branch'], meta: { name: 'Branch' } }
+    /**
+     * Find zero or one Branch that matches the filter.
+     * @param {BranchFindUniqueArgs} args - Arguments to find a Branch
+     * @example
+     * // Get one Branch
+     * const branch = await prisma.branch.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BranchFindUniqueArgs>(args: SelectSubset<T, BranchFindUniqueArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Branch that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BranchFindUniqueOrThrowArgs} args - Arguments to find a Branch
+     * @example
+     * // Get one Branch
+     * const branch = await prisma.branch.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BranchFindUniqueOrThrowArgs>(args: SelectSubset<T, BranchFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Branch that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchFindFirstArgs} args - Arguments to find a Branch
+     * @example
+     * // Get one Branch
+     * const branch = await prisma.branch.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BranchFindFirstArgs>(args?: SelectSubset<T, BranchFindFirstArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Branch that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchFindFirstOrThrowArgs} args - Arguments to find a Branch
+     * @example
+     * // Get one Branch
+     * const branch = await prisma.branch.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BranchFindFirstOrThrowArgs>(args?: SelectSubset<T, BranchFindFirstOrThrowArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Branches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Branches
+     * const branches = await prisma.branch.findMany()
+     * 
+     * // Get first 10 Branches
+     * const branches = await prisma.branch.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const branchWithIdOnly = await prisma.branch.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BranchFindManyArgs>(args?: SelectSubset<T, BranchFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Branch.
+     * @param {BranchCreateArgs} args - Arguments to create a Branch.
+     * @example
+     * // Create one Branch
+     * const Branch = await prisma.branch.create({
+     *   data: {
+     *     // ... data to create a Branch
+     *   }
+     * })
+     * 
+     */
+    create<T extends BranchCreateArgs>(args: SelectSubset<T, BranchCreateArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Branches.
+     * @param {BranchCreateManyArgs} args - Arguments to create many Branches.
+     * @example
+     * // Create many Branches
+     * const branch = await prisma.branch.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BranchCreateManyArgs>(args?: SelectSubset<T, BranchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Branches and returns the data saved in the database.
+     * @param {BranchCreateManyAndReturnArgs} args - Arguments to create many Branches.
+     * @example
+     * // Create many Branches
+     * const branch = await prisma.branch.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Branches and only return the `id`
+     * const branchWithIdOnly = await prisma.branch.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BranchCreateManyAndReturnArgs>(args?: SelectSubset<T, BranchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Branch.
+     * @param {BranchDeleteArgs} args - Arguments to delete one Branch.
+     * @example
+     * // Delete one Branch
+     * const Branch = await prisma.branch.delete({
+     *   where: {
+     *     // ... filter to delete one Branch
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BranchDeleteArgs>(args: SelectSubset<T, BranchDeleteArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Branch.
+     * @param {BranchUpdateArgs} args - Arguments to update one Branch.
+     * @example
+     * // Update one Branch
+     * const branch = await prisma.branch.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BranchUpdateArgs>(args: SelectSubset<T, BranchUpdateArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Branches.
+     * @param {BranchDeleteManyArgs} args - Arguments to filter Branches to delete.
+     * @example
+     * // Delete a few Branches
+     * const { count } = await prisma.branch.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BranchDeleteManyArgs>(args?: SelectSubset<T, BranchDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Branches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Branches
+     * const branch = await prisma.branch.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BranchUpdateManyArgs>(args: SelectSubset<T, BranchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Branches and returns the data updated in the database.
+     * @param {BranchUpdateManyAndReturnArgs} args - Arguments to update many Branches.
+     * @example
+     * // Update many Branches
+     * const branch = await prisma.branch.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Branches and only return the `id`
+     * const branchWithIdOnly = await prisma.branch.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BranchUpdateManyAndReturnArgs>(args: SelectSubset<T, BranchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Branch.
+     * @param {BranchUpsertArgs} args - Arguments to update or create a Branch.
+     * @example
+     * // Update or create a Branch
+     * const branch = await prisma.branch.upsert({
+     *   create: {
+     *     // ... data to create a Branch
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Branch we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BranchUpsertArgs>(args: SelectSubset<T, BranchUpsertArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Branches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchCountArgs} args - Arguments to filter Branches to count.
+     * @example
+     * // Count the number of Branches
+     * const count = await prisma.branch.count({
+     *   where: {
+     *     // ... the filter for the Branches we want to count
+     *   }
+     * })
+    **/
+    count<T extends BranchCountArgs>(
+      args?: Subset<T, BranchCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BranchCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Branch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BranchAggregateArgs>(args: Subset<T, BranchAggregateArgs>): Prisma.PrismaPromise<GetBranchAggregateType<T>>
+
+    /**
+     * Group by Branch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BranchGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BranchGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BranchGroupByArgs['orderBy'] }
+        : { orderBy?: BranchGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BranchGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBranchGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Branch model
+   */
+  readonly fields: BranchFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Branch.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BranchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    region<T extends RegionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RegionDefaultArgs<ExtArgs>>): Prisma__RegionClient<$Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends Branch$userArgs<ExtArgs> = {}>(args?: Subset<T, Branch$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Branch model
+   */
+  interface BranchFieldRefs {
+    readonly id: FieldRef<"Branch", 'String'>
+    readonly branch: FieldRef<"Branch", 'String'>
+    readonly region_id: FieldRef<"Branch", 'String'>
+    readonly created_at: FieldRef<"Branch", 'DateTime'>
+    readonly updated_at: FieldRef<"Branch", 'DateTime'>
+    readonly deleted_at: FieldRef<"Branch", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Branch findUnique
+   */
+  export type BranchFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter, which Branch to fetch.
+     */
+    where: BranchWhereUniqueInput
+  }
+
+  /**
+   * Branch findUniqueOrThrow
+   */
+  export type BranchFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter, which Branch to fetch.
+     */
+    where: BranchWhereUniqueInput
+  }
+
+  /**
+   * Branch findFirst
+   */
+  export type BranchFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter, which Branch to fetch.
+     */
+    where?: BranchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Branches to fetch.
+     */
+    orderBy?: BranchOrderByWithRelationInput | BranchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Branches.
+     */
+    cursor?: BranchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Branches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Branches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Branches.
+     */
+    distinct?: BranchScalarFieldEnum | BranchScalarFieldEnum[]
+  }
+
+  /**
+   * Branch findFirstOrThrow
+   */
+  export type BranchFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter, which Branch to fetch.
+     */
+    where?: BranchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Branches to fetch.
+     */
+    orderBy?: BranchOrderByWithRelationInput | BranchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Branches.
+     */
+    cursor?: BranchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Branches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Branches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Branches.
+     */
+    distinct?: BranchScalarFieldEnum | BranchScalarFieldEnum[]
+  }
+
+  /**
+   * Branch findMany
+   */
+  export type BranchFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter, which Branches to fetch.
+     */
+    where?: BranchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Branches to fetch.
+     */
+    orderBy?: BranchOrderByWithRelationInput | BranchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Branches.
+     */
+    cursor?: BranchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Branches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Branches.
+     */
+    skip?: number
+    distinct?: BranchScalarFieldEnum | BranchScalarFieldEnum[]
+  }
+
+  /**
+   * Branch create
+   */
+  export type BranchCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Branch.
+     */
+    data: XOR<BranchCreateInput, BranchUncheckedCreateInput>
+  }
+
+  /**
+   * Branch createMany
+   */
+  export type BranchCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Branches.
+     */
+    data: BranchCreateManyInput | BranchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Branch createManyAndReturn
+   */
+  export type BranchCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * The data used to create many Branches.
+     */
+    data: BranchCreateManyInput | BranchCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Branch update
+   */
+  export type BranchUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Branch.
+     */
+    data: XOR<BranchUpdateInput, BranchUncheckedUpdateInput>
+    /**
+     * Choose, which Branch to update.
+     */
+    where: BranchWhereUniqueInput
+  }
+
+  /**
+   * Branch updateMany
+   */
+  export type BranchUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Branches.
+     */
+    data: XOR<BranchUpdateManyMutationInput, BranchUncheckedUpdateManyInput>
+    /**
+     * Filter which Branches to update
+     */
+    where?: BranchWhereInput
+    /**
+     * Limit how many Branches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Branch updateManyAndReturn
+   */
+  export type BranchUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * The data used to update Branches.
+     */
+    data: XOR<BranchUpdateManyMutationInput, BranchUncheckedUpdateManyInput>
+    /**
+     * Filter which Branches to update
+     */
+    where?: BranchWhereInput
+    /**
+     * Limit how many Branches to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Branch upsert
+   */
+  export type BranchUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Branch to update in case it exists.
+     */
+    where: BranchWhereUniqueInput
+    /**
+     * In case the Branch found by the `where` argument doesn't exist, create a new Branch with this data.
+     */
+    create: XOR<BranchCreateInput, BranchUncheckedCreateInput>
+    /**
+     * In case the Branch was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BranchUpdateInput, BranchUncheckedUpdateInput>
+  }
+
+  /**
+   * Branch delete
+   */
+  export type BranchDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    /**
+     * Filter which Branch to delete.
+     */
+    where: BranchWhereUniqueInput
+  }
+
+  /**
+   * Branch deleteMany
+   */
+  export type BranchDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Branches to delete
+     */
+    where?: BranchWhereInput
+    /**
+     * Limit how many Branches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Branch.user
+   */
+  export type Branch$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Branch without action
+   */
+  export type BranchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -31660,11 +34552,16 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
+    name: 'name',
     username: 'username',
     password: 'password',
+    region_id: 'region_id',
+    branch_id: 'branch_id',
+    supervisor_id: 'supervisor_id',
     role: 'role',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -31718,6 +34615,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31770,6 +34668,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31815,6 +34714,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31849,6 +34749,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31880,6 +34781,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31933,6 +34835,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -31985,6 +34888,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32037,6 +34941,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32091,6 +34996,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32142,6 +35048,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32195,6 +35102,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32246,6 +35154,7 @@ export namespace Prisma {
     created_at: 'created_at',
     updated_at: 'updated_at',
     submitted_at: 'submitted_at',
+    deleted_at: 'deleted_at',
     userID: 'userID'
   };
 
@@ -32259,7 +35168,8 @@ export namespace Prisma {
     tipe: 'tipe',
     harga: 'harga',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type FleksiBarangElektronikScalarFieldEnum = (typeof FleksiBarangElektronikScalarFieldEnum)[keyof typeof FleksiBarangElektronikScalarFieldEnum]
@@ -32272,7 +35182,8 @@ export namespace Prisma {
     tipe: 'tipe',
     harga: 'harga',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type FleksiBarangFurnitureScalarFieldEnum = (typeof FleksiBarangFurnitureScalarFieldEnum)[keyof typeof FleksiBarangFurnitureScalarFieldEnum]
@@ -32283,7 +35194,8 @@ export namespace Prisma {
     fleksi_id: 'fleksi_id',
     nama_barang: 'nama_barang',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type FleksiBarangJaminanLainnyaScalarFieldEnum = (typeof FleksiBarangJaminanLainnyaScalarFieldEnum)[keyof typeof FleksiBarangJaminanLainnyaScalarFieldEnum]
@@ -32296,7 +35208,8 @@ export namespace Prisma {
     tipe: 'tipe',
     harga: 'harga',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type ProcimBarangElektronikScalarFieldEnum = (typeof ProcimBarangElektronikScalarFieldEnum)[keyof typeof ProcimBarangElektronikScalarFieldEnum]
@@ -32309,7 +35222,8 @@ export namespace Prisma {
     tipe: 'tipe',
     harga: 'harga',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type ProcimBarangFurnitureScalarFieldEnum = (typeof ProcimBarangFurnitureScalarFieldEnum)[keyof typeof ProcimBarangFurnitureScalarFieldEnum]
@@ -32320,7 +35234,8 @@ export namespace Prisma {
     procim_id: 'procim_id',
     nama_barang: 'nama_barang',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type ProcimBarangJaminanLainnyaScalarFieldEnum = (typeof ProcimBarangJaminanLainnyaScalarFieldEnum)[keyof typeof ProcimBarangJaminanLainnyaScalarFieldEnum]
@@ -32335,10 +35250,34 @@ export namespace Prisma {
     method: 'method',
     description: 'description',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
   };
 
   export type SystemLogScalarFieldEnum = (typeof SystemLogScalarFieldEnum)[keyof typeof SystemLogScalarFieldEnum]
+
+
+  export const RegionScalarFieldEnum: {
+    id: 'id',
+    region: 'region',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
+  };
+
+  export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
+
+
+  export const BranchScalarFieldEnum: {
+    id: 'id',
+    branch: 'branch',
+    region_id: 'region_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
+  };
+
+  export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof BranchScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -32434,11 +35373,16 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     username?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    region_id?: StringNullableFilter<"User"> | string | null
+    branch_id?: StringNullableFilter<"User"> | string | null
+    supervisor_id?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
     KSSM?: KSSMListRelationFilter
     KSS?: KSSListRelationFilter
     PINEK?: PINEKListRelationFilter
@@ -32451,16 +35395,25 @@ export namespace Prisma {
     KMS?: KMSListRelationFilter
     KEF?: KEFListRelationFilter
     KAR?: KARListRelationFilter
+    region?: XOR<RegionNullableScalarRelationFilter, RegionWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    supervisor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    subordinates?: UserListRelationFilter
     system_logs?: SystemLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
+    name?: SortOrderInput | SortOrder
     username?: SortOrder
     password?: SortOrder
+    region_id?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
+    supervisor_id?: SortOrderInput | SortOrder
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     KSSM?: KSSMOrderByRelationAggregateInput
     KSS?: KSSOrderByRelationAggregateInput
     PINEK?: PINEKOrderByRelationAggregateInput
@@ -32473,6 +35426,10 @@ export namespace Prisma {
     KMS?: KMSOrderByRelationAggregateInput
     KEF?: KEFOrderByRelationAggregateInput
     KAR?: KAROrderByRelationAggregateInput
+    region?: RegionOrderByWithRelationInput
+    branch?: BranchOrderByWithRelationInput
+    supervisor?: UserOrderByWithRelationInput
+    subordinates?: UserOrderByRelationAggregateInput
     system_logs?: SystemLogOrderByRelationAggregateInput
   }
 
@@ -32482,10 +35439,15 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
+    name?: StringNullableFilter<"User"> | string | null
     password?: StringFilter<"User"> | string
+    region_id?: StringNullableFilter<"User"> | string | null
+    branch_id?: StringNullableFilter<"User"> | string | null
+    supervisor_id?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
     KSSM?: KSSMListRelationFilter
     KSS?: KSSListRelationFilter
     PINEK?: PINEKListRelationFilter
@@ -32498,16 +35460,25 @@ export namespace Prisma {
     KMS?: KMSListRelationFilter
     KEF?: KEFListRelationFilter
     KAR?: KARListRelationFilter
+    region?: XOR<RegionNullableScalarRelationFilter, RegionWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    supervisor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    subordinates?: UserListRelationFilter
     system_logs?: SystemLogListRelationFilter
   }, "id" | "username">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
+    name?: SortOrderInput | SortOrder
     username?: SortOrder
     password?: SortOrder
+    region_id?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
+    supervisor_id?: SortOrderInput | SortOrder
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -32518,11 +35489,16 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     username?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    region_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    branch_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    supervisor_id?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringWithAggregatesFilter<"User"> | string
     created_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type KSSMWhereInput = {
@@ -32576,6 +35552,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     userID?: StringFilter<"KSSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -32628,6 +35605,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -32683,6 +35661,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     userID?: StringFilter<"KSSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -32735,6 +35714,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KSSMCountOrderByAggregateInput
     _avg?: KSSMAvgOrderByAggregateInput
@@ -32794,6 +35774,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KSSM"> | string
   }
 
@@ -32846,6 +35827,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     userID?: StringFilter<"KSS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -32896,6 +35878,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -32949,6 +35932,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     userID?: StringFilter<"KSS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -32999,6 +35983,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KSSCountOrderByAggregateInput
     _avg?: KSSAvgOrderByAggregateInput
@@ -33056,6 +36041,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KSS"> | string
   }
 
@@ -33101,6 +36087,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     userID?: StringFilter<"PINEK"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -33144,6 +36131,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -33190,6 +36178,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     userID?: StringFilter<"PINEK"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -33233,6 +36222,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: PINEKCountOrderByAggregateInput
     _avg?: PINEKAvgOrderByAggregateInput
@@ -33283,6 +36273,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     userID?: StringWithAggregatesFilter<"PINEK"> | string
   }
 
@@ -33317,6 +36308,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     userID?: StringFilter<"FLEKSI"> | string
     barang_elektronik?: FleksiBarangElektronikListRelationFilter
     barang_furniture?: FleksiBarangFurnitureListRelationFilter
@@ -33352,6 +36344,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     barang_elektronik?: FleksiBarangElektronikOrderByRelationAggregateInput
     barang_furniture?: FleksiBarangFurnitureOrderByRelationAggregateInput
@@ -33390,6 +36383,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     userID?: StringFilter<"FLEKSI"> | string
     barang_elektronik?: FleksiBarangElektronikListRelationFilter
     barang_furniture?: FleksiBarangFurnitureListRelationFilter
@@ -33425,6 +36419,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: FLEKSICountOrderByAggregateInput
     _avg?: FLEKSIAvgOrderByAggregateInput
@@ -33464,6 +36459,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
     userID?: StringWithAggregatesFilter<"FLEKSI"> | string
   }
 
@@ -33495,6 +36491,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     userID?: StringFilter<"PROCIM"> | string
     barang_elektronik?: ProcimBarangElektronikListRelationFilter
     barang_furniture?: ProcimBarangFurnitureListRelationFilter
@@ -33527,6 +36524,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     barang_elektronik?: ProcimBarangElektronikOrderByRelationAggregateInput
     barang_furniture?: ProcimBarangFurnitureOrderByRelationAggregateInput
@@ -33562,6 +36560,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     userID?: StringFilter<"PROCIM"> | string
     barang_elektronik?: ProcimBarangElektronikListRelationFilter
     barang_furniture?: ProcimBarangFurnitureListRelationFilter
@@ -33594,6 +36593,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: PROCIMCountOrderByAggregateInput
     _avg?: PROCIMAvgOrderByAggregateInput
@@ -33630,6 +36630,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
     userID?: StringWithAggregatesFilter<"PROCIM"> | string
   }
 
@@ -33683,6 +36684,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     userID?: StringFilter<"KSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -33734,6 +36736,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -33788,6 +36791,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     userID?: StringFilter<"KSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -33839,6 +36843,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KSMCountOrderByAggregateInput
     _avg?: KSMAvgOrderByAggregateInput
@@ -33897,6 +36902,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KSM"> | string
   }
 
@@ -33949,6 +36955,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     userID?: StringFilter<"KMSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -33999,6 +37006,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -34052,6 +37060,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     userID?: StringFilter<"KMSM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -34102,6 +37111,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KMSMCountOrderByAggregateInput
     _avg?: KMSMAvgOrderByAggregateInput
@@ -34159,6 +37169,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KMSM"> | string
   }
 
@@ -34211,6 +37222,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     userID?: StringFilter<"KRS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -34261,6 +37273,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -34314,6 +37327,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     userID?: StringFilter<"KRS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -34364,6 +37378,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KRSCountOrderByAggregateInput
     _avg?: KRSAvgOrderByAggregateInput
@@ -34421,6 +37436,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KRS"> | string
   }
 
@@ -34475,6 +37491,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     userID?: StringFilter<"KMM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -34527,6 +37544,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -34582,6 +37600,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     userID?: StringFilter<"KMM"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -34634,6 +37653,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KMMCountOrderByAggregateInput
     _avg?: KMMAvgOrderByAggregateInput
@@ -34693,6 +37713,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KMM"> | string
   }
 
@@ -34744,6 +37765,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     userID?: StringFilter<"KMS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -34793,6 +37815,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -34845,6 +37868,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     userID?: StringFilter<"KMS"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -34894,6 +37918,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KMSCountOrderByAggregateInput
     _avg?: KMSAvgOrderByAggregateInput
@@ -34950,6 +37975,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KMS"> | string
   }
 
@@ -35003,6 +38029,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     userID?: StringFilter<"KEF"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -35054,6 +38081,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -35108,6 +38136,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     userID?: StringFilter<"KEF"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -35159,6 +38188,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KEFCountOrderByAggregateInput
     _avg?: KEFAvgOrderByAggregateInput
@@ -35217,6 +38247,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KEF"> | string
   }
 
@@ -35268,6 +38299,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     userID?: StringFilter<"KAR"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -35317,6 +38349,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     User?: UserOrderByWithRelationInput
   }
@@ -35369,6 +38402,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     userID?: StringFilter<"KAR"> | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -35418,6 +38452,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     submitted_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     userID?: SortOrder
     _count?: KARCountOrderByAggregateInput
     _avg?: KARAvgOrderByAggregateInput
@@ -35474,6 +38509,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     userID?: StringWithAggregatesFilter<"KAR"> | string
   }
 
@@ -35488,6 +38524,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }
 
@@ -35499,6 +38536,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     fleksi?: FLEKSIOrderByWithRelationInput
   }
 
@@ -35513,6 +38551,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }, "id">
 
@@ -35524,6 +38563,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: FleksiBarangElektronikCountOrderByAggregateInput
     _avg?: FleksiBarangElektronikAvgOrderByAggregateInput
     _max?: FleksiBarangElektronikMaxOrderByAggregateInput
@@ -35542,6 +38582,7 @@ export namespace Prisma {
     harga?: IntNullableWithAggregatesFilter<"FleksiBarangElektronik"> | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangElektronik"> | Date | string | null
   }
 
   export type FleksiBarangFurnitureWhereInput = {
@@ -35555,6 +38596,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }
 
@@ -35566,6 +38608,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     fleksi?: FLEKSIOrderByWithRelationInput
   }
 
@@ -35580,6 +38623,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }, "id">
 
@@ -35591,6 +38635,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: FleksiBarangFurnitureCountOrderByAggregateInput
     _avg?: FleksiBarangFurnitureAvgOrderByAggregateInput
     _max?: FleksiBarangFurnitureMaxOrderByAggregateInput
@@ -35609,6 +38654,7 @@ export namespace Prisma {
     harga?: IntNullableWithAggregatesFilter<"FleksiBarangFurniture"> | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangFurniture"> | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaWhereInput = {
@@ -35620,6 +38666,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"FleksiBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }
 
@@ -35629,6 +38676,7 @@ export namespace Prisma {
     nama_barang?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     fleksi?: FLEKSIOrderByWithRelationInput
   }
 
@@ -35641,6 +38689,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"FleksiBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
   }, "id">
 
@@ -35650,6 +38699,7 @@ export namespace Prisma {
     nama_barang?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: FleksiBarangJaminanLainnyaCountOrderByAggregateInput
     _max?: FleksiBarangJaminanLainnyaMaxOrderByAggregateInput
     _min?: FleksiBarangJaminanLainnyaMinOrderByAggregateInput
@@ -35664,6 +38714,7 @@ export namespace Prisma {
     nama_barang?: StringNullableWithAggregatesFilter<"FleksiBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
   }
 
   export type ProcimBarangElektronikWhereInput = {
@@ -35677,6 +38728,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }
 
@@ -35688,6 +38740,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     procim?: PROCIMOrderByWithRelationInput
   }
 
@@ -35702,6 +38755,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }, "id">
 
@@ -35713,6 +38767,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: ProcimBarangElektronikCountOrderByAggregateInput
     _avg?: ProcimBarangElektronikAvgOrderByAggregateInput
     _max?: ProcimBarangElektronikMaxOrderByAggregateInput
@@ -35731,6 +38786,7 @@ export namespace Prisma {
     harga?: IntNullableWithAggregatesFilter<"ProcimBarangElektronik"> | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangElektronik"> | Date | string | null
   }
 
   export type ProcimBarangFurnitureWhereInput = {
@@ -35744,6 +38800,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }
 
@@ -35755,6 +38812,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     procim?: PROCIMOrderByWithRelationInput
   }
 
@@ -35769,6 +38827,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }, "id">
 
@@ -35780,6 +38839,7 @@ export namespace Prisma {
     harga?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: ProcimBarangFurnitureCountOrderByAggregateInput
     _avg?: ProcimBarangFurnitureAvgOrderByAggregateInput
     _max?: ProcimBarangFurnitureMaxOrderByAggregateInput
@@ -35798,6 +38858,7 @@ export namespace Prisma {
     harga?: IntNullableWithAggregatesFilter<"ProcimBarangFurniture"> | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangFurniture"> | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaWhereInput = {
@@ -35809,6 +38870,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"ProcimBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }
 
@@ -35818,6 +38880,7 @@ export namespace Prisma {
     nama_barang?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     procim?: PROCIMOrderByWithRelationInput
   }
 
@@ -35830,6 +38893,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"ProcimBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
   }, "id">
 
@@ -35839,6 +38903,7 @@ export namespace Prisma {
     nama_barang?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: ProcimBarangJaminanLainnyaCountOrderByAggregateInput
     _max?: ProcimBarangJaminanLainnyaMaxOrderByAggregateInput
     _min?: ProcimBarangJaminanLainnyaMinOrderByAggregateInput
@@ -35853,6 +38918,7 @@ export namespace Prisma {
     nama_barang?: StringNullableWithAggregatesFilter<"ProcimBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
   }
 
   export type SystemLogWhereInput = {
@@ -35868,6 +38934,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"SystemLog"> | string | null
     created_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
@@ -35881,6 +38948,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -35897,6 +38965,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"SystemLog"> | string | null
     created_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
@@ -35910,6 +38979,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
     _count?: SystemLogCountOrderByAggregateInput
     _max?: SystemLogMaxOrderByAggregateInput
     _min?: SystemLogMinOrderByAggregateInput
@@ -35928,15 +38998,139 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"SystemLog"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"SystemLog"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"SystemLog"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"SystemLog"> | Date | string | null
+  }
+
+  export type RegionWhereInput = {
+    AND?: RegionWhereInput | RegionWhereInput[]
+    OR?: RegionWhereInput[]
+    NOT?: RegionWhereInput | RegionWhereInput[]
+    id?: StringFilter<"Region"> | string
+    region?: StringFilter<"Region"> | string
+    created_at?: DateTimeFilter<"Region"> | Date | string
+    updated_at?: DateTimeFilter<"Region"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"Region"> | Date | string | null
+    branches?: BranchListRelationFilter
+    user?: UserListRelationFilter
+  }
+
+  export type RegionOrderByWithRelationInput = {
+    id?: SortOrder
+    region?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    branches?: BranchOrderByRelationAggregateInput
+    user?: UserOrderByRelationAggregateInput
+  }
+
+  export type RegionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RegionWhereInput | RegionWhereInput[]
+    OR?: RegionWhereInput[]
+    NOT?: RegionWhereInput | RegionWhereInput[]
+    region?: StringFilter<"Region"> | string
+    created_at?: DateTimeFilter<"Region"> | Date | string
+    updated_at?: DateTimeFilter<"Region"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"Region"> | Date | string | null
+    branches?: BranchListRelationFilter
+    user?: UserListRelationFilter
+  }, "id">
+
+  export type RegionOrderByWithAggregationInput = {
+    id?: SortOrder
+    region?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    _count?: RegionCountOrderByAggregateInput
+    _max?: RegionMaxOrderByAggregateInput
+    _min?: RegionMinOrderByAggregateInput
+  }
+
+  export type RegionScalarWhereWithAggregatesInput = {
+    AND?: RegionScalarWhereWithAggregatesInput | RegionScalarWhereWithAggregatesInput[]
+    OR?: RegionScalarWhereWithAggregatesInput[]
+    NOT?: RegionScalarWhereWithAggregatesInput | RegionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Region"> | string
+    region?: StringWithAggregatesFilter<"Region"> | string
+    created_at?: DateTimeWithAggregatesFilter<"Region"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Region"> | Date | string
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"Region"> | Date | string | null
+  }
+
+  export type BranchWhereInput = {
+    AND?: BranchWhereInput | BranchWhereInput[]
+    OR?: BranchWhereInput[]
+    NOT?: BranchWhereInput | BranchWhereInput[]
+    id?: StringFilter<"Branch"> | string
+    branch?: StringFilter<"Branch"> | string
+    region_id?: StringFilter<"Branch"> | string
+    created_at?: DateTimeFilter<"Branch"> | Date | string
+    updated_at?: DateTimeFilter<"Branch"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"Branch"> | Date | string | null
+    region?: XOR<RegionScalarRelationFilter, RegionWhereInput>
+    user?: UserListRelationFilter
+  }
+
+  export type BranchOrderByWithRelationInput = {
+    id?: SortOrder
+    branch?: SortOrder
+    region_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    region?: RegionOrderByWithRelationInput
+    user?: UserOrderByRelationAggregateInput
+  }
+
+  export type BranchWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BranchWhereInput | BranchWhereInput[]
+    OR?: BranchWhereInput[]
+    NOT?: BranchWhereInput | BranchWhereInput[]
+    branch?: StringFilter<"Branch"> | string
+    region_id?: StringFilter<"Branch"> | string
+    created_at?: DateTimeFilter<"Branch"> | Date | string
+    updated_at?: DateTimeFilter<"Branch"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"Branch"> | Date | string | null
+    region?: XOR<RegionScalarRelationFilter, RegionWhereInput>
+    user?: UserListRelationFilter
+  }, "id">
+
+  export type BranchOrderByWithAggregationInput = {
+    id?: SortOrder
+    branch?: SortOrder
+    region_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    _count?: BranchCountOrderByAggregateInput
+    _max?: BranchMaxOrderByAggregateInput
+    _min?: BranchMinOrderByAggregateInput
+  }
+
+  export type BranchScalarWhereWithAggregatesInput = {
+    AND?: BranchScalarWhereWithAggregatesInput | BranchScalarWhereWithAggregatesInput[]
+    OR?: BranchScalarWhereWithAggregatesInput[]
+    NOT?: BranchScalarWhereWithAggregatesInput | BranchScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Branch"> | string
+    branch?: StringWithAggregatesFilter<"Branch"> | string
+    region_id?: StringWithAggregatesFilter<"Branch"> | string
+    created_at?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"Branch"> | Date | string | null
   }
 
   export type UserCreateInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -35949,16 +39143,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -35971,16 +39174,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -35993,16 +39199,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -36015,34 +39230,47 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSMCreateInput = {
@@ -36093,6 +39321,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKSSMInput
   }
 
@@ -36144,6 +39373,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36195,6 +39425,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKSSMNestedInput
   }
 
@@ -36246,6 +39477,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -36297,6 +39529,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36348,6 +39581,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSMUncheckedUpdateManyInput = {
@@ -36398,6 +39632,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -36447,6 +39682,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKSSInput
   }
 
@@ -36496,6 +39732,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36545,6 +39782,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKSSNestedInput
   }
 
@@ -36594,6 +39832,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -36643,6 +39882,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36692,6 +39932,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSUncheckedUpdateManyInput = {
@@ -36740,6 +39981,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -36782,6 +40024,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutPINEKInput
   }
 
@@ -36824,6 +40067,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36866,6 +40110,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutPINEKNestedInput
   }
 
@@ -36908,6 +40153,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -36950,6 +40196,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -36992,6 +40239,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PINEKUncheckedUpdateManyInput = {
@@ -37033,6 +40281,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -37064,6 +40313,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: FleksiBarangElektronikCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaCreateNestedManyWithoutFleksiInput
@@ -37098,6 +40348,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: FleksiBarangElektronikUncheckedCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureUncheckedCreateNestedManyWithoutFleksiInput
@@ -37132,6 +40383,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: FleksiBarangElektronikUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUpdateManyWithoutFleksiNestedInput
@@ -37166,6 +40418,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: FleksiBarangElektronikUncheckedUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUncheckedUpdateManyWithoutFleksiNestedInput
@@ -37200,6 +40453,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -37231,6 +40485,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FLEKSIUncheckedUpdateManyInput = {
@@ -37261,6 +40516,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -37289,6 +40545,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: ProcimBarangElektronikCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaCreateNestedManyWithoutProcimInput
@@ -37320,6 +40577,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: ProcimBarangElektronikUncheckedCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureUncheckedCreateNestedManyWithoutProcimInput
@@ -37351,6 +40609,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: ProcimBarangElektronikUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUpdateManyWithoutProcimNestedInput
@@ -37382,6 +40641,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: ProcimBarangElektronikUncheckedUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUncheckedUpdateManyWithoutProcimNestedInput
@@ -37413,6 +40673,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -37441,6 +40702,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PROCIMUncheckedUpdateManyInput = {
@@ -37468,6 +40730,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -37518,6 +40781,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKSMInput
   }
 
@@ -37568,6 +40832,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -37618,6 +40883,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKSMNestedInput
   }
 
@@ -37668,6 +40934,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -37718,6 +40985,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -37768,6 +41036,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSMUncheckedUpdateManyInput = {
@@ -37817,6 +41086,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -37866,6 +41136,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKMSMInput
   }
 
@@ -37915,6 +41186,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -37964,6 +41236,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKMSMNestedInput
   }
 
@@ -38013,6 +41286,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38062,6 +41336,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -38111,6 +41386,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSMUncheckedUpdateManyInput = {
@@ -38159,6 +41435,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38208,6 +41485,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKRSInput
   }
 
@@ -38257,6 +41535,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -38306,6 +41585,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKRSNestedInput
   }
 
@@ -38355,6 +41635,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38404,6 +41685,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -38453,6 +41735,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KRSUncheckedUpdateManyInput = {
@@ -38501,6 +41784,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38552,6 +41836,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKMMInput
   }
 
@@ -38603,6 +41888,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -38654,6 +41940,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKMMNestedInput
   }
 
@@ -38705,6 +41992,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38756,6 +42044,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -38807,6 +42096,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMMUncheckedUpdateManyInput = {
@@ -38857,6 +42147,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -38905,6 +42196,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKMSInput
   }
 
@@ -38953,6 +42245,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39001,6 +42294,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKMSNestedInput
   }
 
@@ -39049,6 +42343,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39097,6 +42392,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39145,6 +42441,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSUncheckedUpdateManyInput = {
@@ -39192,6 +42489,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39242,6 +42540,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKEFInput
   }
 
@@ -39292,6 +42591,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39342,6 +42642,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKEFNestedInput
   }
 
@@ -39392,6 +42693,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39442,6 +42744,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39492,6 +42795,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KEFUncheckedUpdateManyInput = {
@@ -39541,6 +42845,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39589,6 +42894,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     User: UserCreateNestedOneWithoutKARInput
   }
 
@@ -39637,6 +42943,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39685,6 +42992,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     User?: UserUpdateOneRequiredWithoutKARNestedInput
   }
 
@@ -39733,6 +43041,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39781,6 +43090,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
   }
 
@@ -39829,6 +43139,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KARUncheckedUpdateManyInput = {
@@ -39876,6 +43187,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
   }
 
@@ -39886,6 +43198,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     fleksi: FLEKSICreateNestedOneWithoutBarang_elektronikInput
   }
 
@@ -39897,6 +43210,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangElektronikUpdateInput = {
@@ -39906,6 +43220,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fleksi?: FLEKSIUpdateOneRequiredWithoutBarang_elektronikNestedInput
   }
 
@@ -39917,6 +43232,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangElektronikCreateManyInput = {
@@ -39927,6 +43243,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangElektronikUpdateManyMutationInput = {
@@ -39936,6 +43253,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangElektronikUncheckedUpdateManyInput = {
@@ -39946,6 +43264,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureCreateInput = {
@@ -39955,6 +43274,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     fleksi: FLEKSICreateNestedOneWithoutBarang_furnitureInput
   }
 
@@ -39966,6 +43286,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangFurnitureUpdateInput = {
@@ -39975,6 +43296,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fleksi?: FLEKSIUpdateOneRequiredWithoutBarang_furnitureNestedInput
   }
 
@@ -39986,6 +43308,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureCreateManyInput = {
@@ -39996,6 +43319,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangFurnitureUpdateManyMutationInput = {
@@ -40005,6 +43329,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureUncheckedUpdateManyInput = {
@@ -40015,6 +43340,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaCreateInput = {
@@ -40022,6 +43348,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     fleksi: FLEKSICreateNestedOneWithoutBarang_jaminan_lainnyaInput
   }
 
@@ -40031,6 +43358,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUpdateInput = {
@@ -40038,6 +43366,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fleksi?: FLEKSIUpdateOneRequiredWithoutBarang_jaminan_lainnyaNestedInput
   }
 
@@ -40047,6 +43376,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaCreateManyInput = {
@@ -40055,6 +43385,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUpdateManyMutationInput = {
@@ -40062,6 +43393,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUncheckedUpdateManyInput = {
@@ -40070,6 +43402,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikCreateInput = {
@@ -40079,6 +43412,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     procim: PROCIMCreateNestedOneWithoutBarang_elektronikInput
   }
 
@@ -40090,6 +43424,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangElektronikUpdateInput = {
@@ -40099,6 +43434,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     procim?: PROCIMUpdateOneRequiredWithoutBarang_elektronikNestedInput
   }
 
@@ -40110,6 +43446,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikCreateManyInput = {
@@ -40120,6 +43457,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangElektronikUpdateManyMutationInput = {
@@ -40129,6 +43467,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikUncheckedUpdateManyInput = {
@@ -40139,6 +43478,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureCreateInput = {
@@ -40148,6 +43488,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     procim: PROCIMCreateNestedOneWithoutBarang_furnitureInput
   }
 
@@ -40159,6 +43500,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangFurnitureUpdateInput = {
@@ -40168,6 +43510,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     procim?: PROCIMUpdateOneRequiredWithoutBarang_furnitureNestedInput
   }
 
@@ -40179,6 +43522,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureCreateManyInput = {
@@ -40189,6 +43533,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangFurnitureUpdateManyMutationInput = {
@@ -40198,6 +43543,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureUncheckedUpdateManyInput = {
@@ -40208,6 +43554,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaCreateInput = {
@@ -40215,6 +43562,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     procim: PROCIMCreateNestedOneWithoutBarang_jaminan_lainnyaInput
   }
 
@@ -40224,6 +43572,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUpdateInput = {
@@ -40231,6 +43580,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     procim?: PROCIMUpdateOneRequiredWithoutBarang_jaminan_lainnyaNestedInput
   }
 
@@ -40240,6 +43590,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaCreateManyInput = {
@@ -40248,6 +43599,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUpdateManyMutationInput = {
@@ -40255,6 +43607,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUncheckedUpdateManyInput = {
@@ -40263,6 +43616,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogCreateInput = {
@@ -40274,6 +43628,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
     user?: UserCreateNestedOneWithoutSystem_logsInput
   }
 
@@ -40287,6 +43642,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type SystemLogUpdateInput = {
@@ -40298,6 +43654,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneWithoutSystem_logsNestedInput
   }
 
@@ -40311,6 +43668,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogCreateManyInput = {
@@ -40323,6 +43681,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type SystemLogUpdateManyMutationInput = {
@@ -40334,6 +43693,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogUncheckedUpdateManyInput = {
@@ -40346,6 +43706,137 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RegionCreateInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    branches?: BranchCreateNestedManyWithoutRegionInput
+    user?: UserCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionUncheckedCreateInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    branches?: BranchUncheckedCreateNestedManyWithoutRegionInput
+    user?: UserUncheckedCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUpdateManyWithoutRegionNestedInput
+    user?: UserUpdateManyWithoutRegionNestedInput
+  }
+
+  export type RegionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUncheckedUpdateManyWithoutRegionNestedInput
+    user?: UserUncheckedUpdateManyWithoutRegionNestedInput
+  }
+
+  export type RegionCreateManyInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type RegionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RegionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BranchCreateInput = {
+    id?: string
+    branch: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    region: RegionCreateNestedOneWithoutBranchesInput
+    user?: UserCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateInput = {
+    id?: string
+    branch: string
+    region_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    region?: RegionUpdateOneRequiredWithoutBranchesNestedInput
+    user?: UserUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    region_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchCreateManyInput = {
+    id?: string
+    branch: string
+    region_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type BranchUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BranchUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    region_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -40363,6 +43854,21 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -40372,6 +43878,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type KSSMListRelationFilter = {
@@ -40446,10 +43963,36 @@ export namespace Prisma {
     none?: KARWhereInput
   }
 
+  export type RegionNullableScalarRelationFilter = {
+    is?: RegionWhereInput | null
+    isNot?: RegionWhereInput | null
+  }
+
+  export type BranchNullableScalarRelationFilter = {
+    is?: BranchWhereInput | null
+    isNot?: BranchWhereInput | null
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
   export type SystemLogListRelationFilter = {
     every?: SystemLogWhereInput
     some?: SystemLogWhereInput
     none?: SystemLogWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type KSSMOrderByRelationAggregateInput = {
@@ -40500,35 +44043,54 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type SystemLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    region_id?: SortOrder
+    branch_id?: SortOrder
+    supervisor_id?: SortOrder
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    region_id?: SortOrder
+    branch_id?: SortOrder
+    supervisor_id?: SortOrder
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     username?: SortOrder
     password?: SortOrder
+    region_id?: SortOrder
+    branch_id?: SortOrder
+    supervisor_id?: SortOrder
     role?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -40549,6 +44111,24 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -40563,22 +44143,7 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -40586,7 +44151,10 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -40614,11 +44182,6 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type KSSMCountOrderByAggregateInput = {
@@ -40669,6 +44232,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -40739,6 +44303,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -40790,6 +44355,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -40810,38 +44376,6 @@ export namespace Prisma {
     asuransi_tlo_nominal?: SortOrder
     notaris_nominal?: SortOrder
     total_biaya?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -40922,6 +44456,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -40987,6 +44522,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41036,6 +44572,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41094,6 +44631,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41150,6 +44688,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41192,6 +44731,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41267,6 +44807,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41305,6 +44846,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41336,6 +44878,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41401,6 +44944,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41436,6 +44980,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41464,6 +45009,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41521,6 +45067,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41590,6 +45137,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41640,6 +45188,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41708,6 +45257,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41775,6 +45325,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41824,6 +45375,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41891,6 +45443,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -41956,6 +45509,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42005,6 +45559,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42072,6 +45627,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42142,6 +45698,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42193,6 +45750,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42260,6 +45818,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42325,6 +45884,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42373,6 +45933,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42440,6 +46001,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42507,6 +46069,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42557,6 +46120,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42622,6 +46186,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42686,6 +46251,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42734,6 +46300,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     submitted_at?: SortOrder
+    deleted_at?: SortOrder
     userID?: SortOrder
   }
 
@@ -42766,6 +46333,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangElektronikAvgOrderByAggregateInput = {
@@ -42780,6 +46348,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangElektronikMinOrderByAggregateInput = {
@@ -42790,6 +46359,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangElektronikSumOrderByAggregateInput = {
@@ -42804,6 +46374,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangFurnitureAvgOrderByAggregateInput = {
@@ -42818,6 +46389,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangFurnitureMinOrderByAggregateInput = {
@@ -42828,6 +46400,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangFurnitureSumOrderByAggregateInput = {
@@ -42840,6 +46413,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangJaminanLainnyaMaxOrderByAggregateInput = {
@@ -42848,6 +46422,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type FleksiBarangJaminanLainnyaMinOrderByAggregateInput = {
@@ -42856,6 +46431,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type PROCIMScalarRelationFilter = {
@@ -42871,6 +46447,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangElektronikAvgOrderByAggregateInput = {
@@ -42885,6 +46462,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangElektronikMinOrderByAggregateInput = {
@@ -42895,6 +46473,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangElektronikSumOrderByAggregateInput = {
@@ -42909,6 +46488,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangFurnitureAvgOrderByAggregateInput = {
@@ -42923,6 +46503,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangFurnitureMinOrderByAggregateInput = {
@@ -42933,6 +46514,7 @@ export namespace Prisma {
     harga?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangFurnitureSumOrderByAggregateInput = {
@@ -42945,6 +46527,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangJaminanLainnyaMaxOrderByAggregateInput = {
@@ -42953,6 +46536,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type ProcimBarangJaminanLainnyaMinOrderByAggregateInput = {
@@ -42961,11 +46545,7 @@ export namespace Prisma {
     nama_barang?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
+    deleted_at?: SortOrder
   }
 
   export type SystemLogCountOrderByAggregateInput = {
@@ -42978,6 +46558,7 @@ export namespace Prisma {
     description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type SystemLogMaxOrderByAggregateInput = {
@@ -42990,6 +46571,7 @@ export namespace Prisma {
     description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type SystemLogMinOrderByAggregateInput = {
@@ -43002,6 +46584,73 @@ export namespace Prisma {
     description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type BranchListRelationFilter = {
+    every?: BranchWhereInput
+    some?: BranchWhereInput
+    none?: BranchWhereInput
+  }
+
+  export type BranchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RegionCountOrderByAggregateInput = {
+    id?: SortOrder
+    region?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type RegionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    region?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type RegionMinOrderByAggregateInput = {
+    id?: SortOrder
+    region?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type RegionScalarRelationFilter = {
+    is?: RegionWhereInput
+    isNot?: RegionWhereInput
+  }
+
+  export type BranchCountOrderByAggregateInput = {
+    id?: SortOrder
+    branch?: SortOrder
+    region_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type BranchMaxOrderByAggregateInput = {
+    id?: SortOrder
+    branch?: SortOrder
+    region_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type BranchMinOrderByAggregateInput = {
+    id?: SortOrder
+    branch?: SortOrder
+    region_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
   }
 
   export type KSSMCreateNestedManyWithoutUserInput = {
@@ -43086,6 +46735,31 @@ export namespace Prisma {
     connectOrCreate?: KARCreateOrConnectWithoutUserInput | KARCreateOrConnectWithoutUserInput[]
     createMany?: KARCreateManyUserInputEnvelope
     connect?: KARWhereUniqueInput | KARWhereUniqueInput[]
+  }
+
+  export type RegionCreateNestedOneWithoutUserInput = {
+    create?: XOR<RegionCreateWithoutUserInput, RegionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RegionCreateOrConnectWithoutUserInput
+    connect?: RegionWhereUniqueInput
+  }
+
+  export type BranchCreateNestedOneWithoutUserInput = {
+    create?: XOR<BranchCreateWithoutUserInput, BranchUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutUserInput
+    connect?: BranchWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSubordinatesInput = {
+    create?: XOR<UserCreateWithoutSubordinatesInput, UserUncheckedCreateWithoutSubordinatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubordinatesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedManyWithoutSupervisorInput = {
+    create?: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput> | UserCreateWithoutSupervisorInput[] | UserUncheckedCreateWithoutSupervisorInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutSupervisorInput | UserCreateOrConnectWithoutSupervisorInput[]
+    createMany?: UserCreateManySupervisorInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type SystemLogCreateNestedManyWithoutUserInput = {
@@ -43179,6 +46853,13 @@ export namespace Prisma {
     connect?: KARWhereUniqueInput | KARWhereUniqueInput[]
   }
 
+  export type UserUncheckedCreateNestedManyWithoutSupervisorInput = {
+    create?: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput> | UserCreateWithoutSupervisorInput[] | UserUncheckedCreateWithoutSupervisorInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutSupervisorInput | UserCreateOrConnectWithoutSupervisorInput[]
+    createMany?: UserCreateManySupervisorInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type SystemLogUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SystemLogCreateWithoutUserInput, SystemLogUncheckedCreateWithoutUserInput> | SystemLogCreateWithoutUserInput[] | SystemLogUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SystemLogCreateOrConnectWithoutUserInput | SystemLogCreateOrConnectWithoutUserInput[]
@@ -43190,8 +46871,16 @@ export namespace Prisma {
     set?: string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type KSSMUpdateManyWithoutUserNestedInput = {
@@ -43360,6 +47049,50 @@ export namespace Prisma {
     update?: KARUpdateWithWhereUniqueWithoutUserInput | KARUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: KARUpdateManyWithWhereWithoutUserInput | KARUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: KARScalarWhereInput | KARScalarWhereInput[]
+  }
+
+  export type RegionUpdateOneWithoutUserNestedInput = {
+    create?: XOR<RegionCreateWithoutUserInput, RegionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RegionCreateOrConnectWithoutUserInput
+    upsert?: RegionUpsertWithoutUserInput
+    disconnect?: RegionWhereInput | boolean
+    delete?: RegionWhereInput | boolean
+    connect?: RegionWhereUniqueInput
+    update?: XOR<XOR<RegionUpdateToOneWithWhereWithoutUserInput, RegionUpdateWithoutUserInput>, RegionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BranchUpdateOneWithoutUserNestedInput = {
+    create?: XOR<BranchCreateWithoutUserInput, BranchUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutUserInput
+    upsert?: BranchUpsertWithoutUserInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutUserInput, BranchUpdateWithoutUserInput>, BranchUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserUpdateOneWithoutSubordinatesNestedInput = {
+    create?: XOR<UserCreateWithoutSubordinatesInput, UserUncheckedCreateWithoutSubordinatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubordinatesInput
+    upsert?: UserUpsertWithoutSubordinatesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSubordinatesInput, UserUpdateWithoutSubordinatesInput>, UserUncheckedUpdateWithoutSubordinatesInput>
+  }
+
+  export type UserUpdateManyWithoutSupervisorNestedInput = {
+    create?: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput> | UserCreateWithoutSupervisorInput[] | UserUncheckedCreateWithoutSupervisorInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutSupervisorInput | UserCreateOrConnectWithoutSupervisorInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutSupervisorInput | UserUpsertWithWhereUniqueWithoutSupervisorInput[]
+    createMany?: UserCreateManySupervisorInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutSupervisorInput | UserUpdateWithWhereUniqueWithoutSupervisorInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutSupervisorInput | UserUpdateManyWithWhereWithoutSupervisorInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type SystemLogUpdateManyWithoutUserNestedInput = {
@@ -43544,6 +47277,20 @@ export namespace Prisma {
     deleteMany?: KARScalarWhereInput | KARScalarWhereInput[]
   }
 
+  export type UserUncheckedUpdateManyWithoutSupervisorNestedInput = {
+    create?: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput> | UserCreateWithoutSupervisorInput[] | UserUncheckedCreateWithoutSupervisorInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutSupervisorInput | UserCreateOrConnectWithoutSupervisorInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutSupervisorInput | UserUpsertWithWhereUniqueWithoutSupervisorInput[]
+    createMany?: UserCreateManySupervisorInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutSupervisorInput | UserUpdateWithWhereUniqueWithoutSupervisorInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutSupervisorInput | UserUpdateManyWithWhereWithoutSupervisorInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type SystemLogUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SystemLogCreateWithoutUserInput, SystemLogUncheckedCreateWithoutUserInput> | SystemLogCreateWithoutUserInput[] | SystemLogUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SystemLogCreateOrConnectWithoutUserInput | SystemLogCreateOrConnectWithoutUserInput[]
@@ -43562,14 +47309,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutKSSMInput, UserUncheckedCreateWithoutKSSMInput>
     connectOrCreate?: UserCreateOrConnectWithoutKSSMInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -44102,6 +47841,146 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSystem_logsInput, UserUpdateWithoutSystem_logsInput>, UserUncheckedUpdateWithoutSystem_logsInput>
   }
 
+  export type BranchCreateNestedManyWithoutRegionInput = {
+    create?: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput> | BranchCreateWithoutRegionInput[] | BranchUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: BranchCreateOrConnectWithoutRegionInput | BranchCreateOrConnectWithoutRegionInput[]
+    createMany?: BranchCreateManyRegionInputEnvelope
+    connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutRegionInput = {
+    create?: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput> | UserCreateWithoutRegionInput[] | UserUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutRegionInput | UserCreateOrConnectWithoutRegionInput[]
+    createMany?: UserCreateManyRegionInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type BranchUncheckedCreateNestedManyWithoutRegionInput = {
+    create?: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput> | BranchCreateWithoutRegionInput[] | BranchUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: BranchCreateOrConnectWithoutRegionInput | BranchCreateOrConnectWithoutRegionInput[]
+    createMany?: BranchCreateManyRegionInputEnvelope
+    connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutRegionInput = {
+    create?: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput> | UserCreateWithoutRegionInput[] | UserUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutRegionInput | UserCreateOrConnectWithoutRegionInput[]
+    createMany?: UserCreateManyRegionInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type BranchUpdateManyWithoutRegionNestedInput = {
+    create?: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput> | BranchCreateWithoutRegionInput[] | BranchUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: BranchCreateOrConnectWithoutRegionInput | BranchCreateOrConnectWithoutRegionInput[]
+    upsert?: BranchUpsertWithWhereUniqueWithoutRegionInput | BranchUpsertWithWhereUniqueWithoutRegionInput[]
+    createMany?: BranchCreateManyRegionInputEnvelope
+    set?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    disconnect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    delete?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    update?: BranchUpdateWithWhereUniqueWithoutRegionInput | BranchUpdateWithWhereUniqueWithoutRegionInput[]
+    updateMany?: BranchUpdateManyWithWhereWithoutRegionInput | BranchUpdateManyWithWhereWithoutRegionInput[]
+    deleteMany?: BranchScalarWhereInput | BranchScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutRegionNestedInput = {
+    create?: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput> | UserCreateWithoutRegionInput[] | UserUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutRegionInput | UserCreateOrConnectWithoutRegionInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutRegionInput | UserUpsertWithWhereUniqueWithoutRegionInput[]
+    createMany?: UserCreateManyRegionInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutRegionInput | UserUpdateWithWhereUniqueWithoutRegionInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutRegionInput | UserUpdateManyWithWhereWithoutRegionInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type BranchUncheckedUpdateManyWithoutRegionNestedInput = {
+    create?: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput> | BranchCreateWithoutRegionInput[] | BranchUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: BranchCreateOrConnectWithoutRegionInput | BranchCreateOrConnectWithoutRegionInput[]
+    upsert?: BranchUpsertWithWhereUniqueWithoutRegionInput | BranchUpsertWithWhereUniqueWithoutRegionInput[]
+    createMany?: BranchCreateManyRegionInputEnvelope
+    set?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    disconnect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    delete?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+    update?: BranchUpdateWithWhereUniqueWithoutRegionInput | BranchUpdateWithWhereUniqueWithoutRegionInput[]
+    updateMany?: BranchUpdateManyWithWhereWithoutRegionInput | BranchUpdateManyWithWhereWithoutRegionInput[]
+    deleteMany?: BranchScalarWhereInput | BranchScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutRegionNestedInput = {
+    create?: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput> | UserCreateWithoutRegionInput[] | UserUncheckedCreateWithoutRegionInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutRegionInput | UserCreateOrConnectWithoutRegionInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutRegionInput | UserUpsertWithWhereUniqueWithoutRegionInput[]
+    createMany?: UserCreateManyRegionInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutRegionInput | UserUpdateWithWhereUniqueWithoutRegionInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutRegionInput | UserUpdateManyWithWhereWithoutRegionInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type RegionCreateNestedOneWithoutBranchesInput = {
+    create?: XOR<RegionCreateWithoutBranchesInput, RegionUncheckedCreateWithoutBranchesInput>
+    connectOrCreate?: RegionCreateOrConnectWithoutBranchesInput
+    connect?: RegionWhereUniqueInput
+  }
+
+  export type UserCreateNestedManyWithoutBranchInput = {
+    create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
+    createMany?: UserCreateManyBranchInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
+    createMany?: UserCreateManyBranchInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type RegionUpdateOneRequiredWithoutBranchesNestedInput = {
+    create?: XOR<RegionCreateWithoutBranchesInput, RegionUncheckedCreateWithoutBranchesInput>
+    connectOrCreate?: RegionCreateOrConnectWithoutBranchesInput
+    upsert?: RegionUpsertWithoutBranchesInput
+    connect?: RegionWhereUniqueInput
+    update?: XOR<XOR<RegionUpdateToOneWithWhereWithoutBranchesInput, RegionUpdateWithoutBranchesInput>, RegionUncheckedUpdateWithoutBranchesInput>
+  }
+
+  export type UserUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutBranchInput | UserUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: UserCreateManyBranchInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutBranchInput | UserUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutBranchInput | UserUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutBranchInput | UserUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: UserCreateManyBranchInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutBranchInput | UserUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutBranchInput | UserUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -44116,6 +47995,20 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -44125,6 +48018,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -44155,67 +48059,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -44233,6 +48076,31 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -44245,6 +48113,17 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -44327,6 +48206,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSMUncheckedCreateWithoutUserInput = {
@@ -44377,6 +48257,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSMCreateOrConnectWithoutUserInput = {
@@ -44435,6 +48316,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSUncheckedCreateWithoutUserInput = {
@@ -44483,6 +48365,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSCreateOrConnectWithoutUserInput = {
@@ -44534,6 +48417,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type PINEKUncheckedCreateWithoutUserInput = {
@@ -44575,6 +48459,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type PINEKCreateOrConnectWithoutUserInput = {
@@ -44615,6 +48500,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: FleksiBarangElektronikCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaCreateNestedManyWithoutFleksiInput
@@ -44648,6 +48534,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: FleksiBarangElektronikUncheckedCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureUncheckedCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedCreateNestedManyWithoutFleksiInput
@@ -44688,6 +48575,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: ProcimBarangElektronikCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaCreateNestedManyWithoutProcimInput
@@ -44718,6 +48606,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: ProcimBarangElektronikUncheckedCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureUncheckedCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedCreateNestedManyWithoutProcimInput
@@ -44780,6 +48669,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSMUncheckedCreateWithoutUserInput = {
@@ -44829,6 +48719,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSMCreateOrConnectWithoutUserInput = {
@@ -44887,6 +48778,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSMUncheckedCreateWithoutUserInput = {
@@ -44935,6 +48827,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSMCreateOrConnectWithoutUserInput = {
@@ -44993,6 +48886,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KRSUncheckedCreateWithoutUserInput = {
@@ -45041,6 +48935,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KRSCreateOrConnectWithoutUserInput = {
@@ -45101,6 +48996,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMMUncheckedCreateWithoutUserInput = {
@@ -45151,6 +49047,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMMCreateOrConnectWithoutUserInput = {
@@ -45208,6 +49105,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSUncheckedCreateWithoutUserInput = {
@@ -45255,6 +49153,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSCreateOrConnectWithoutUserInput = {
@@ -45314,6 +49213,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KEFUncheckedCreateWithoutUserInput = {
@@ -45363,6 +49263,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KEFCreateOrConnectWithoutUserInput = {
@@ -45420,6 +49321,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KARUncheckedCreateWithoutUserInput = {
@@ -45467,6 +49369,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KARCreateOrConnectWithoutUserInput = {
@@ -45479,6 +49382,175 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type RegionCreateWithoutUserInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    branches?: BranchCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionUncheckedCreateWithoutUserInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    branches?: BranchUncheckedCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionCreateOrConnectWithoutUserInput = {
+    where: RegionWhereUniqueInput
+    create: XOR<RegionCreateWithoutUserInput, RegionUncheckedCreateWithoutUserInput>
+  }
+
+  export type BranchCreateWithoutUserInput = {
+    id?: string
+    branch: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    region: RegionCreateNestedOneWithoutBranchesInput
+  }
+
+  export type BranchUncheckedCreateWithoutUserInput = {
+    id?: string
+    branch: string
+    region_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type BranchCreateOrConnectWithoutUserInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutUserInput, BranchUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserCreateWithoutSubordinatesInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMCreateNestedManyWithoutUserInput
+    KSS?: KSSCreateNestedManyWithoutUserInput
+    PINEK?: PINEKCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMCreateNestedManyWithoutUserInput
+    KSM?: KSMCreateNestedManyWithoutUserInput
+    KMSM?: KMSMCreateNestedManyWithoutUserInput
+    KRS?: KRSCreateNestedManyWithoutUserInput
+    KMM?: KMMCreateNestedManyWithoutUserInput
+    KMS?: KMSCreateNestedManyWithoutUserInput
+    KEF?: KEFCreateNestedManyWithoutUserInput
+    KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    system_logs?: SystemLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSubordinatesInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
+    KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
+    PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMUncheckedCreateNestedManyWithoutUserInput
+    KSM?: KSMUncheckedCreateNestedManyWithoutUserInput
+    KMSM?: KMSMUncheckedCreateNestedManyWithoutUserInput
+    KRS?: KRSUncheckedCreateNestedManyWithoutUserInput
+    KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
+    KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
+    KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
+    KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSubordinatesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSubordinatesInput, UserUncheckedCreateWithoutSubordinatesInput>
+  }
+
+  export type UserCreateWithoutSupervisorInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMCreateNestedManyWithoutUserInput
+    KSS?: KSSCreateNestedManyWithoutUserInput
+    PINEK?: PINEKCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMCreateNestedManyWithoutUserInput
+    KSM?: KSMCreateNestedManyWithoutUserInput
+    KMSM?: KMSMCreateNestedManyWithoutUserInput
+    KRS?: KRSCreateNestedManyWithoutUserInput
+    KMM?: KMMCreateNestedManyWithoutUserInput
+    KMS?: KMSCreateNestedManyWithoutUserInput
+    KEF?: KEFCreateNestedManyWithoutUserInput
+    KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSupervisorInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    region_id?: string | null
+    branch_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
+    KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
+    PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMUncheckedCreateNestedManyWithoutUserInput
+    KSM?: KSMUncheckedCreateNestedManyWithoutUserInput
+    KMSM?: KMSMUncheckedCreateNestedManyWithoutUserInput
+    KRS?: KRSUncheckedCreateNestedManyWithoutUserInput
+    KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
+    KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
+    KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
+    KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSupervisorInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput>
+  }
+
+  export type UserCreateManySupervisorInputEnvelope = {
+    data: UserCreateManySupervisorInput | UserCreateManySupervisorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SystemLogCreateWithoutUserInput = {
     id?: string
     ip_address?: string | null
@@ -45488,6 +49560,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type SystemLogUncheckedCreateWithoutUserInput = {
@@ -45499,6 +49572,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type SystemLogCreateOrConnectWithoutUserInput = {
@@ -45578,6 +49652,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     userID?: StringFilter<"KSSM"> | string
   }
 
@@ -45646,6 +49721,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     userID?: StringFilter<"KSS"> | string
   }
 
@@ -45707,6 +49783,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     userID?: StringFilter<"PINEK"> | string
   }
 
@@ -45757,6 +49834,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     userID?: StringFilter<"FLEKSI"> | string
   }
 
@@ -45804,6 +49882,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     userID?: StringFilter<"PROCIM"> | string
   }
 
@@ -45873,6 +49952,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     userID?: StringFilter<"KSM"> | string
   }
 
@@ -45941,6 +50021,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     userID?: StringFilter<"KMSM"> | string
   }
 
@@ -46009,6 +50090,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     userID?: StringFilter<"KRS"> | string
   }
 
@@ -46079,6 +50161,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     userID?: StringFilter<"KMM"> | string
   }
 
@@ -46146,6 +50229,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     userID?: StringFilter<"KMS"> | string
   }
 
@@ -46215,6 +50299,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     userID?: StringFilter<"KEF"> | string
   }
 
@@ -46282,7 +50367,164 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     userID?: StringFilter<"KAR"> | string
+  }
+
+  export type RegionUpsertWithoutUserInput = {
+    update: XOR<RegionUpdateWithoutUserInput, RegionUncheckedUpdateWithoutUserInput>
+    create: XOR<RegionCreateWithoutUserInput, RegionUncheckedCreateWithoutUserInput>
+    where?: RegionWhereInput
+  }
+
+  export type RegionUpdateToOneWithWhereWithoutUserInput = {
+    where?: RegionWhereInput
+    data: XOR<RegionUpdateWithoutUserInput, RegionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RegionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUpdateManyWithoutRegionNestedInput
+  }
+
+  export type RegionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUncheckedUpdateManyWithoutRegionNestedInput
+  }
+
+  export type BranchUpsertWithoutUserInput = {
+    update: XOR<BranchUpdateWithoutUserInput, BranchUncheckedUpdateWithoutUserInput>
+    create: XOR<BranchCreateWithoutUserInput, BranchUncheckedCreateWithoutUserInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutUserInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutUserInput, BranchUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BranchUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    region?: RegionUpdateOneRequiredWithoutBranchesNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    region_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpsertWithoutSubordinatesInput = {
+    update: XOR<UserUpdateWithoutSubordinatesInput, UserUncheckedUpdateWithoutSubordinatesInput>
+    create: XOR<UserCreateWithoutSubordinatesInput, UserUncheckedCreateWithoutSubordinatesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSubordinatesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSubordinatesInput, UserUncheckedUpdateWithoutSubordinatesInput>
+  }
+
+  export type UserUpdateWithoutSubordinatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUpdateManyWithoutUserNestedInput
+    KSS?: KSSUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUpdateManyWithoutUserNestedInput
+    KSM?: KSMUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUpdateManyWithoutUserNestedInput
+    KRS?: KRSUpdateManyWithoutUserNestedInput
+    KMM?: KMMUpdateManyWithoutUserNestedInput
+    KMS?: KMSUpdateManyWithoutUserNestedInput
+    KEF?: KEFUpdateManyWithoutUserNestedInput
+    KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    system_logs?: SystemLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSubordinatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
+    KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUncheckedUpdateManyWithoutUserNestedInput
+    KSM?: KSMUncheckedUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUncheckedUpdateManyWithoutUserNestedInput
+    KRS?: KRSUncheckedUpdateManyWithoutUserNestedInput
+    KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
+    KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
+    KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
+    KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutSupervisorInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutSupervisorInput, UserUncheckedUpdateWithoutSupervisorInput>
+    create: XOR<UserCreateWithoutSupervisorInput, UserUncheckedCreateWithoutSupervisorInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutSupervisorInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutSupervisorInput, UserUncheckedUpdateWithoutSupervisorInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutSupervisorInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutSupervisorInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
+    username?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    region_id?: StringNullableFilter<"User"> | string | null
+    branch_id?: StringNullableFilter<"User"> | string | null
+    supervisor_id?: StringNullableFilter<"User"> | string | null
+    role?: StringFilter<"User"> | string
+    created_at?: DateTimeFilter<"User"> | Date | string
+    updated_at?: DateTimeFilter<"User"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
   export type SystemLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -46314,15 +50556,18 @@ export namespace Prisma {
     description?: StringNullableFilter<"SystemLog"> | string | null
     created_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"SystemLog"> | Date | string | null
   }
 
   export type UserCreateWithoutKSSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
@@ -46334,16 +50579,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKSSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
@@ -46355,6 +50609,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46376,11 +50631,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKSSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
@@ -46392,16 +50649,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKSSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
@@ -46413,16 +50679,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKSSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
@@ -46434,16 +50703,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKSSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
@@ -46455,6 +50733,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46476,11 +50755,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKSSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
@@ -46492,16 +50773,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKSSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
@@ -46513,16 +50803,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutPINEKInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
@@ -46534,16 +50827,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPINEKInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
@@ -46555,6 +50857,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46576,11 +50879,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutPINEKInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
@@ -46592,16 +50897,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPINEKInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
@@ -46613,6 +50927,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46623,6 +50938,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangElektronikUncheckedCreateWithoutFleksiInput = {
@@ -46632,6 +50948,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangElektronikCreateOrConnectWithoutFleksiInput = {
@@ -46651,6 +50968,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangFurnitureUncheckedCreateWithoutFleksiInput = {
@@ -46660,6 +50978,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangFurnitureCreateOrConnectWithoutFleksiInput = {
@@ -46677,6 +50996,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUncheckedCreateWithoutFleksiInput = {
@@ -46684,6 +51004,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaCreateOrConnectWithoutFleksiInput = {
@@ -46698,11 +51019,13 @@ export namespace Prisma {
 
   export type UserCreateWithoutFLEKSIInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -46714,16 +51037,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFLEKSIInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -46735,6 +51067,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46770,6 +51103,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
   }
 
   export type FleksiBarangFurnitureUpsertWithWhereUniqueWithoutFleksiInput = {
@@ -46799,6 +51133,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUpsertWithWhereUniqueWithoutFleksiInput = {
@@ -46826,6 +51161,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"FleksiBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"FleksiBarangJaminanLainnya"> | Date | string | null
   }
 
   export type UserUpsertWithoutFLEKSIInput = {
@@ -46841,11 +51177,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutFLEKSIInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -46857,16 +51195,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFLEKSIInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -46878,6 +51225,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46888,6 +51236,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangElektronikUncheckedCreateWithoutProcimInput = {
@@ -46897,6 +51246,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangElektronikCreateOrConnectWithoutProcimInput = {
@@ -46916,6 +51266,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangFurnitureUncheckedCreateWithoutProcimInput = {
@@ -46925,6 +51276,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangFurnitureCreateOrConnectWithoutProcimInput = {
@@ -46942,6 +51294,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUncheckedCreateWithoutProcimInput = {
@@ -46949,6 +51302,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaCreateOrConnectWithoutProcimInput = {
@@ -46963,11 +51317,13 @@ export namespace Prisma {
 
   export type UserCreateWithoutPROCIMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -46979,16 +51335,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPROCIMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47000,6 +51365,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47035,6 +51401,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
   }
 
   export type ProcimBarangFurnitureUpsertWithWhereUniqueWithoutProcimInput = {
@@ -47064,6 +51431,7 @@ export namespace Prisma {
     harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUpsertWithWhereUniqueWithoutProcimInput = {
@@ -47091,6 +51459,7 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"ProcimBarangJaminanLainnya"> | string | null
     created_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"ProcimBarangJaminanLainnya"> | Date | string | null
   }
 
   export type UserUpsertWithoutPROCIMInput = {
@@ -47106,11 +51475,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutPROCIMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47122,16 +51493,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPROCIMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47143,16 +51523,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47164,16 +51547,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47185,6 +51577,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47206,11 +51599,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47222,16 +51617,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47243,16 +51647,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKMSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47264,16 +51671,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKMSMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47285,6 +51701,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47306,11 +51723,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKMSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47322,16 +51741,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKMSMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47343,16 +51771,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKRSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47364,16 +51795,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKRSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47385,6 +51825,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47406,11 +51847,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKRSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47422,16 +51865,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKRSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47443,16 +51895,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKMMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47464,16 +51919,25 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKMMInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47485,6 +51949,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47506,11 +51971,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKMMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47522,16 +51989,25 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKMMInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47543,16 +52019,19 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKMSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47564,16 +52043,25 @@ export namespace Prisma {
     KMM?: KMMCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKMSInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47585,6 +52073,7 @@ export namespace Prisma {
     KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47606,11 +52095,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKMSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47622,16 +52113,25 @@ export namespace Prisma {
     KMM?: KMMUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKMSInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47643,16 +52143,19 @@ export namespace Prisma {
     KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKEFInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47664,16 +52167,25 @@ export namespace Prisma {
     KMM?: KMMCreateNestedManyWithoutUserInput
     KMS?: KMSCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKEFInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47685,6 +52197,7 @@ export namespace Prisma {
     KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47706,11 +52219,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKEFInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47722,16 +52237,25 @@ export namespace Prisma {
     KMM?: KMMUpdateManyWithoutUserNestedInput
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKEFInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47743,16 +52267,19 @@ export namespace Prisma {
     KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKARInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -47764,16 +52291,25 @@ export namespace Prisma {
     KMM?: KMMCreateNestedManyWithoutUserInput
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKARInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -47785,6 +52321,7 @@ export namespace Prisma {
     KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
     system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47806,11 +52343,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutKARInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -47822,16 +52361,25 @@ export namespace Prisma {
     KMM?: KMMUpdateManyWithoutUserNestedInput
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKARInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -47843,6 +52391,7 @@ export namespace Prisma {
     KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
     system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -47874,6 +52423,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_furniture?: FleksiBarangFurnitureCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaCreateNestedManyWithoutFleksiInput
     User: UserCreateNestedOneWithoutFLEKSIInput
@@ -47907,6 +52457,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_furniture?: FleksiBarangFurnitureUncheckedCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedCreateNestedManyWithoutFleksiInput
@@ -47956,6 +52507,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_furniture?: FleksiBarangFurnitureUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUpdateManyWithoutFleksiNestedInput
     User?: UserUpdateOneRequiredWithoutFLEKSINestedInput
@@ -47989,6 +52541,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_furniture?: FleksiBarangFurnitureUncheckedUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedUpdateManyWithoutFleksiNestedInput
@@ -48022,6 +52575,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: FleksiBarangElektronikCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaCreateNestedManyWithoutFleksiInput
     User: UserCreateNestedOneWithoutFLEKSIInput
@@ -48055,6 +52609,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: FleksiBarangElektronikUncheckedCreateNestedManyWithoutFleksiInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedCreateNestedManyWithoutFleksiInput
@@ -48104,6 +52659,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: FleksiBarangElektronikUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUpdateManyWithoutFleksiNestedInput
     User?: UserUpdateOneRequiredWithoutFLEKSINestedInput
@@ -48137,6 +52693,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: FleksiBarangElektronikUncheckedUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedUpdateManyWithoutFleksiNestedInput
@@ -48170,6 +52727,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: FleksiBarangElektronikCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureCreateNestedManyWithoutFleksiInput
     User: UserCreateNestedOneWithoutFLEKSIInput
@@ -48203,6 +52761,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: FleksiBarangElektronikUncheckedCreateNestedManyWithoutFleksiInput
     barang_furniture?: FleksiBarangFurnitureUncheckedCreateNestedManyWithoutFleksiInput
@@ -48252,6 +52811,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: FleksiBarangElektronikUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUpdateManyWithoutFleksiNestedInput
     User?: UserUpdateOneRequiredWithoutFLEKSINestedInput
@@ -48285,6 +52845,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: FleksiBarangElektronikUncheckedUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUncheckedUpdateManyWithoutFleksiNestedInput
@@ -48315,6 +52876,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_furniture?: ProcimBarangFurnitureCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaCreateNestedManyWithoutProcimInput
     User: UserCreateNestedOneWithoutPROCIMInput
@@ -48345,6 +52907,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_furniture?: ProcimBarangFurnitureUncheckedCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedCreateNestedManyWithoutProcimInput
@@ -48391,6 +52954,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_furniture?: ProcimBarangFurnitureUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUpdateManyWithoutProcimNestedInput
     User?: UserUpdateOneRequiredWithoutPROCIMNestedInput
@@ -48421,6 +52985,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_furniture?: ProcimBarangFurnitureUncheckedUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedUpdateManyWithoutProcimNestedInput
@@ -48451,6 +53016,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: ProcimBarangElektronikCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaCreateNestedManyWithoutProcimInput
     User: UserCreateNestedOneWithoutPROCIMInput
@@ -48481,6 +53047,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: ProcimBarangElektronikUncheckedCreateNestedManyWithoutProcimInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedCreateNestedManyWithoutProcimInput
@@ -48527,6 +53094,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: ProcimBarangElektronikUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUpdateManyWithoutProcimNestedInput
     User?: UserUpdateOneRequiredWithoutPROCIMNestedInput
@@ -48557,6 +53125,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: ProcimBarangElektronikUncheckedUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedUpdateManyWithoutProcimNestedInput
@@ -48587,6 +53156,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     barang_elektronik?: ProcimBarangElektronikCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureCreateNestedManyWithoutProcimInput
     User: UserCreateNestedOneWithoutPROCIMInput
@@ -48617,6 +53187,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
     userID: string
     barang_elektronik?: ProcimBarangElektronikUncheckedCreateNestedManyWithoutProcimInput
     barang_furniture?: ProcimBarangFurnitureUncheckedCreateNestedManyWithoutProcimInput
@@ -48663,6 +53234,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: ProcimBarangElektronikUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUpdateManyWithoutProcimNestedInput
     User?: UserUpdateOneRequiredWithoutPROCIMNestedInput
@@ -48693,6 +53265,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userID?: StringFieldUpdateOperationsInput | string
     barang_elektronik?: ProcimBarangElektronikUncheckedUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUncheckedUpdateManyWithoutProcimNestedInput
@@ -48700,11 +53273,13 @@ export namespace Prisma {
 
   export type UserCreateWithoutSystem_logsInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMCreateNestedManyWithoutUserInput
     KSS?: KSSCreateNestedManyWithoutUserInput
     PINEK?: PINEKCreateNestedManyWithoutUserInput
@@ -48717,15 +53292,24 @@ export namespace Prisma {
     KMS?: KMSCreateNestedManyWithoutUserInput
     KEF?: KEFCreateNestedManyWithoutUserInput
     KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
   }
 
   export type UserUncheckedCreateWithoutSystem_logsInput = {
     id?: string
+    name?: string | null
     username: string
     password: string
+    region_id?: string | null
+    branch_id?: string | null
+    supervisor_id?: string | null
     role?: string
     created_at?: Date | string
     updated_at?: Date | string
+    deleted_at?: Date | string | null
     KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
     KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
     PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
@@ -48738,6 +53322,7 @@ export namespace Prisma {
     KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
     KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
     KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
   }
 
   export type UserCreateOrConnectWithoutSystem_logsInput = {
@@ -48758,11 +53343,13 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSystem_logsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUpdateManyWithoutUserNestedInput
     KSS?: KSSUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUpdateManyWithoutUserNestedInput
@@ -48775,15 +53362,24 @@ export namespace Prisma {
     KMS?: KMSUpdateManyWithoutUserNestedInput
     KEF?: KEFUpdateManyWithoutUserNestedInput
     KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystem_logsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
     KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
     PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
@@ -48796,6 +53392,275 @@ export namespace Prisma {
     KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
     KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
     KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
+  }
+
+  export type BranchCreateWithoutRegionInput = {
+    id?: string
+    branch: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutRegionInput = {
+    id?: string
+    branch: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutRegionInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput>
+  }
+
+  export type BranchCreateManyRegionInputEnvelope = {
+    data: BranchCreateManyRegionInput | BranchCreateManyRegionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutRegionInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMCreateNestedManyWithoutUserInput
+    KSS?: KSSCreateNestedManyWithoutUserInput
+    PINEK?: PINEKCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMCreateNestedManyWithoutUserInput
+    KSM?: KSMCreateNestedManyWithoutUserInput
+    KMSM?: KMSMCreateNestedManyWithoutUserInput
+    KRS?: KRSCreateNestedManyWithoutUserInput
+    KMM?: KMMCreateNestedManyWithoutUserInput
+    KMS?: KMSCreateNestedManyWithoutUserInput
+    KEF?: KEFCreateNestedManyWithoutUserInput
+    KAR?: KARCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutRegionInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    branch_id?: string | null
+    supervisor_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
+    KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
+    PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMUncheckedCreateNestedManyWithoutUserInput
+    KSM?: KSMUncheckedCreateNestedManyWithoutUserInput
+    KMSM?: KMSMUncheckedCreateNestedManyWithoutUserInput
+    KRS?: KRSUncheckedCreateNestedManyWithoutUserInput
+    KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
+    KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
+    KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
+    KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutRegionInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput>
+  }
+
+  export type UserCreateManyRegionInputEnvelope = {
+    data: UserCreateManyRegionInput | UserCreateManyRegionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BranchUpsertWithWhereUniqueWithoutRegionInput = {
+    where: BranchWhereUniqueInput
+    update: XOR<BranchUpdateWithoutRegionInput, BranchUncheckedUpdateWithoutRegionInput>
+    create: XOR<BranchCreateWithoutRegionInput, BranchUncheckedCreateWithoutRegionInput>
+  }
+
+  export type BranchUpdateWithWhereUniqueWithoutRegionInput = {
+    where: BranchWhereUniqueInput
+    data: XOR<BranchUpdateWithoutRegionInput, BranchUncheckedUpdateWithoutRegionInput>
+  }
+
+  export type BranchUpdateManyWithWhereWithoutRegionInput = {
+    where: BranchScalarWhereInput
+    data: XOR<BranchUpdateManyMutationInput, BranchUncheckedUpdateManyWithoutRegionInput>
+  }
+
+  export type BranchScalarWhereInput = {
+    AND?: BranchScalarWhereInput | BranchScalarWhereInput[]
+    OR?: BranchScalarWhereInput[]
+    NOT?: BranchScalarWhereInput | BranchScalarWhereInput[]
+    id?: StringFilter<"Branch"> | string
+    branch?: StringFilter<"Branch"> | string
+    region_id?: StringFilter<"Branch"> | string
+    created_at?: DateTimeFilter<"Branch"> | Date | string
+    updated_at?: DateTimeFilter<"Branch"> | Date | string
+    deleted_at?: DateTimeNullableFilter<"Branch"> | Date | string | null
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutRegionInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutRegionInput, UserUncheckedUpdateWithoutRegionInput>
+    create: XOR<UserCreateWithoutRegionInput, UserUncheckedCreateWithoutRegionInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutRegionInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutRegionInput, UserUncheckedUpdateWithoutRegionInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutRegionInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutRegionInput>
+  }
+
+  export type RegionCreateWithoutBranchesInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionUncheckedCreateWithoutBranchesInput = {
+    id?: string
+    region: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    user?: UserUncheckedCreateNestedManyWithoutRegionInput
+  }
+
+  export type RegionCreateOrConnectWithoutBranchesInput = {
+    where: RegionWhereUniqueInput
+    create: XOR<RegionCreateWithoutBranchesInput, RegionUncheckedCreateWithoutBranchesInput>
+  }
+
+  export type UserCreateWithoutBranchInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMCreateNestedManyWithoutUserInput
+    KSS?: KSSCreateNestedManyWithoutUserInput
+    PINEK?: PINEKCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSICreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMCreateNestedManyWithoutUserInput
+    KSM?: KSMCreateNestedManyWithoutUserInput
+    KMSM?: KMSMCreateNestedManyWithoutUserInput
+    KRS?: KRSCreateNestedManyWithoutUserInput
+    KMM?: KMMCreateNestedManyWithoutUserInput
+    KMS?: KMSCreateNestedManyWithoutUserInput
+    KEF?: KEFCreateNestedManyWithoutUserInput
+    KAR?: KARCreateNestedManyWithoutUserInput
+    region?: RegionCreateNestedOneWithoutUserInput
+    supervisor?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutBranchInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    region_id?: string | null
+    supervisor_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+    KSSM?: KSSMUncheckedCreateNestedManyWithoutUserInput
+    KSS?: KSSUncheckedCreateNestedManyWithoutUserInput
+    PINEK?: PINEKUncheckedCreateNestedManyWithoutUserInput
+    FLEKSI?: FLEKSIUncheckedCreateNestedManyWithoutUserInput
+    PROCIM?: PROCIMUncheckedCreateNestedManyWithoutUserInput
+    KSM?: KSMUncheckedCreateNestedManyWithoutUserInput
+    KMSM?: KMSMUncheckedCreateNestedManyWithoutUserInput
+    KRS?: KRSUncheckedCreateNestedManyWithoutUserInput
+    KMM?: KMMUncheckedCreateNestedManyWithoutUserInput
+    KMS?: KMSUncheckedCreateNestedManyWithoutUserInput
+    KEF?: KEFUncheckedCreateNestedManyWithoutUserInput
+    KAR?: KARUncheckedCreateNestedManyWithoutUserInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutSupervisorInput
+    system_logs?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutBranchInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput>
+  }
+
+  export type UserCreateManyBranchInputEnvelope = {
+    data: UserCreateManyBranchInput | UserCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RegionUpsertWithoutBranchesInput = {
+    update: XOR<RegionUpdateWithoutBranchesInput, RegionUncheckedUpdateWithoutBranchesInput>
+    create: XOR<RegionCreateWithoutBranchesInput, RegionUncheckedCreateWithoutBranchesInput>
+    where?: RegionWhereInput
+  }
+
+  export type RegionUpdateToOneWithWhereWithoutBranchesInput = {
+    where?: RegionWhereInput
+    data: XOR<RegionUpdateWithoutBranchesInput, RegionUncheckedUpdateWithoutBranchesInput>
+  }
+
+  export type RegionUpdateWithoutBranchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateManyWithoutRegionNestedInput
+  }
+
+  export type RegionUncheckedUpdateWithoutBranchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    region?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUncheckedUpdateManyWithoutRegionNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutBranchInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutBranchInput, UserUncheckedUpdateWithoutBranchInput>
+    create: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutBranchInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutBranchInput, UserUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutBranchInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutBranchInput>
   }
 
   export type KSSMCreateManyUserInput = {
@@ -48846,6 +53711,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSCreateManyUserInput = {
@@ -48894,6 +53760,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type PINEKCreateManyUserInput = {
@@ -48935,6 +53802,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FLEKSICreateManyUserInput = {
@@ -48965,6 +53833,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type PROCIMCreateManyUserInput = {
@@ -48992,6 +53861,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSMCreateManyUserInput = {
@@ -49041,6 +53911,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSMCreateManyUserInput = {
@@ -49089,6 +53960,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KRSCreateManyUserInput = {
@@ -49137,6 +54009,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMMCreateManyUserInput = {
@@ -49187,6 +54060,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KMSCreateManyUserInput = {
@@ -49234,6 +54108,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KEFCreateManyUserInput = {
@@ -49283,6 +54158,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KARCreateManyUserInput = {
@@ -49330,6 +54206,20 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type UserCreateManySupervisorInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    region_id?: string | null
+    branch_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
   }
 
   export type SystemLogCreateManyUserInput = {
@@ -49341,6 +54231,7 @@ export namespace Prisma {
     description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type KSSMUpdateWithoutUserInput = {
@@ -49391,6 +54282,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSMUncheckedUpdateWithoutUserInput = {
@@ -49441,6 +54333,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSMUncheckedUpdateManyWithoutUserInput = {
@@ -49491,6 +54384,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSUpdateWithoutUserInput = {
@@ -49539,6 +54433,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSUncheckedUpdateWithoutUserInput = {
@@ -49587,6 +54482,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSSUncheckedUpdateManyWithoutUserInput = {
@@ -49635,6 +54531,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PINEKUpdateWithoutUserInput = {
@@ -49676,6 +54573,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PINEKUncheckedUpdateWithoutUserInput = {
@@ -49717,6 +54615,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PINEKUncheckedUpdateManyWithoutUserInput = {
@@ -49758,6 +54657,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FLEKSIUpdateWithoutUserInput = {
@@ -49788,6 +54688,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: FleksiBarangElektronikUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUpdateManyWithoutFleksiNestedInput
@@ -49821,6 +54722,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: FleksiBarangElektronikUncheckedUpdateManyWithoutFleksiNestedInput
     barang_furniture?: FleksiBarangFurnitureUncheckedUpdateManyWithoutFleksiNestedInput
     barang_jaminan_lainnya?: FleksiBarangJaminanLainnyaUncheckedUpdateManyWithoutFleksiNestedInput
@@ -49854,6 +54756,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PROCIMUpdateWithoutUserInput = {
@@ -49881,6 +54784,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: ProcimBarangElektronikUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUpdateManyWithoutProcimNestedInput
@@ -49911,6 +54815,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     barang_elektronik?: ProcimBarangElektronikUncheckedUpdateManyWithoutProcimNestedInput
     barang_furniture?: ProcimBarangFurnitureUncheckedUpdateManyWithoutProcimNestedInput
     barang_jaminan_lainnya?: ProcimBarangJaminanLainnyaUncheckedUpdateManyWithoutProcimNestedInput
@@ -49941,6 +54846,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSMUpdateWithoutUserInput = {
@@ -49990,6 +54896,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSMUncheckedUpdateWithoutUserInput = {
@@ -50039,6 +54946,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KSMUncheckedUpdateManyWithoutUserInput = {
@@ -50088,6 +54996,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSMUpdateWithoutUserInput = {
@@ -50136,6 +55045,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSMUncheckedUpdateWithoutUserInput = {
@@ -50184,6 +55094,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSMUncheckedUpdateManyWithoutUserInput = {
@@ -50232,6 +55143,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KRSUpdateWithoutUserInput = {
@@ -50280,6 +55192,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KRSUncheckedUpdateWithoutUserInput = {
@@ -50328,6 +55241,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KRSUncheckedUpdateManyWithoutUserInput = {
@@ -50376,6 +55290,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMMUpdateWithoutUserInput = {
@@ -50426,6 +55341,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMMUncheckedUpdateWithoutUserInput = {
@@ -50476,6 +55392,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMMUncheckedUpdateManyWithoutUserInput = {
@@ -50526,6 +55443,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSUpdateWithoutUserInput = {
@@ -50573,6 +55491,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSUncheckedUpdateWithoutUserInput = {
@@ -50620,6 +55539,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KMSUncheckedUpdateManyWithoutUserInput = {
@@ -50667,6 +55587,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KEFUpdateWithoutUserInput = {
@@ -50716,6 +55637,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KEFUncheckedUpdateWithoutUserInput = {
@@ -50765,6 +55687,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KEFUncheckedUpdateManyWithoutUserInput = {
@@ -50814,6 +55737,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KARUpdateWithoutUserInput = {
@@ -50861,6 +55785,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KARUncheckedUpdateWithoutUserInput = {
@@ -50908,6 +55833,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KARUncheckedUpdateManyWithoutUserInput = {
@@ -50955,6 +55881,74 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpdateWithoutSupervisorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUpdateManyWithoutUserNestedInput
+    KSS?: KSSUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUpdateManyWithoutUserNestedInput
+    KSM?: KSMUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUpdateManyWithoutUserNestedInput
+    KRS?: KRSUpdateManyWithoutUserNestedInput
+    KMM?: KMMUpdateManyWithoutUserNestedInput
+    KMS?: KMSUpdateManyWithoutUserNestedInput
+    KEF?: KEFUpdateManyWithoutUserNestedInput
+    KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSupervisorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
+    KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUncheckedUpdateManyWithoutUserNestedInput
+    KSM?: KSMUncheckedUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUncheckedUpdateManyWithoutUserNestedInput
+    KRS?: KRSUncheckedUpdateManyWithoutUserNestedInput
+    KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
+    KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
+    KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
+    KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutSupervisorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogUpdateWithoutUserInput = {
@@ -50966,6 +55960,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogUncheckedUpdateWithoutUserInput = {
@@ -50977,6 +55972,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SystemLogUncheckedUpdateManyWithoutUserInput = {
@@ -50988,6 +55984,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangElektronikCreateManyFleksiInput = {
@@ -50997,6 +55994,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangFurnitureCreateManyFleksiInput = {
@@ -51006,6 +56004,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaCreateManyFleksiInput = {
@@ -51013,6 +56012,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type FleksiBarangElektronikUpdateWithoutFleksiInput = {
@@ -51022,6 +56022,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangElektronikUncheckedUpdateWithoutFleksiInput = {
@@ -51031,6 +56032,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangElektronikUncheckedUpdateManyWithoutFleksiInput = {
@@ -51040,6 +56042,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureUpdateWithoutFleksiInput = {
@@ -51049,6 +56052,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureUncheckedUpdateWithoutFleksiInput = {
@@ -51058,6 +56062,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangFurnitureUncheckedUpdateManyWithoutFleksiInput = {
@@ -51067,6 +56072,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUpdateWithoutFleksiInput = {
@@ -51074,6 +56080,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUncheckedUpdateWithoutFleksiInput = {
@@ -51081,6 +56088,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FleksiBarangJaminanLainnyaUncheckedUpdateManyWithoutFleksiInput = {
@@ -51088,6 +56096,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikCreateManyProcimInput = {
@@ -51097,6 +56106,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangFurnitureCreateManyProcimInput = {
@@ -51106,6 +56116,7 @@ export namespace Prisma {
     harga?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaCreateManyProcimInput = {
@@ -51113,6 +56124,7 @@ export namespace Prisma {
     nama_barang?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    deleted_at?: Date | string | null
   }
 
   export type ProcimBarangElektronikUpdateWithoutProcimInput = {
@@ -51122,6 +56134,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikUncheckedUpdateWithoutProcimInput = {
@@ -51131,6 +56144,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangElektronikUncheckedUpdateManyWithoutProcimInput = {
@@ -51140,6 +56154,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureUpdateWithoutProcimInput = {
@@ -51149,6 +56164,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureUncheckedUpdateWithoutProcimInput = {
@@ -51158,6 +56174,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangFurnitureUncheckedUpdateManyWithoutProcimInput = {
@@ -51167,6 +56184,7 @@ export namespace Prisma {
     harga?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUpdateWithoutProcimInput = {
@@ -51174,6 +56192,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUncheckedUpdateWithoutProcimInput = {
@@ -51181,6 +56200,7 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProcimBarangJaminanLainnyaUncheckedUpdateManyWithoutProcimInput = {
@@ -51188,6 +56208,201 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BranchCreateManyRegionInput = {
+    id?: string
+    branch: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type UserCreateManyRegionInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    branch_id?: string | null
+    supervisor_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type BranchUpdateWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateManyWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpdateWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUpdateManyWithoutUserNestedInput
+    KSS?: KSSUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUpdateManyWithoutUserNestedInput
+    KSM?: KSMUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUpdateManyWithoutUserNestedInput
+    KRS?: KRSUpdateManyWithoutUserNestedInput
+    KMM?: KMMUpdateManyWithoutUserNestedInput
+    KMS?: KMSUpdateManyWithoutUserNestedInput
+    KEF?: KEFUpdateManyWithoutUserNestedInput
+    KAR?: KARUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
+    KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUncheckedUpdateManyWithoutUserNestedInput
+    KSM?: KSMUncheckedUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUncheckedUpdateManyWithoutUserNestedInput
+    KRS?: KRSUncheckedUpdateManyWithoutUserNestedInput
+    KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
+    KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
+    KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
+    KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutRegionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserCreateManyBranchInput = {
+    id?: string
+    name?: string | null
+    username: string
+    password: string
+    region_id?: string | null
+    supervisor_id?: string | null
+    role?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    deleted_at?: Date | string | null
+  }
+
+  export type UserUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUpdateManyWithoutUserNestedInput
+    KSS?: KSSUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUpdateManyWithoutUserNestedInput
+    KSM?: KSMUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUpdateManyWithoutUserNestedInput
+    KRS?: KRSUpdateManyWithoutUserNestedInput
+    KMM?: KMMUpdateManyWithoutUserNestedInput
+    KMS?: KMSUpdateManyWithoutUserNestedInput
+    KEF?: KEFUpdateManyWithoutUserNestedInput
+    KAR?: KARUpdateManyWithoutUserNestedInput
+    region?: RegionUpdateOneWithoutUserNestedInput
+    supervisor?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KSSM?: KSSMUncheckedUpdateManyWithoutUserNestedInput
+    KSS?: KSSUncheckedUpdateManyWithoutUserNestedInput
+    PINEK?: PINEKUncheckedUpdateManyWithoutUserNestedInput
+    FLEKSI?: FLEKSIUncheckedUpdateManyWithoutUserNestedInput
+    PROCIM?: PROCIMUncheckedUpdateManyWithoutUserNestedInput
+    KSM?: KSMUncheckedUpdateManyWithoutUserNestedInput
+    KMSM?: KMSMUncheckedUpdateManyWithoutUserNestedInput
+    KRS?: KRSUncheckedUpdateManyWithoutUserNestedInput
+    KMM?: KMMUncheckedUpdateManyWithoutUserNestedInput
+    KMS?: KMSUncheckedUpdateManyWithoutUserNestedInput
+    KEF?: KEFUncheckedUpdateManyWithoutUserNestedInput
+    KAR?: KARUncheckedUpdateManyWithoutUserNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutSupervisorNestedInput
+    system_logs?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    supervisor_id?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 
