@@ -1,5 +1,5 @@
-import { successResponse } from "../../../utils/response.js";
-import AuthService from "./auth-service.js";
+import { createdResponse, successResponse } from '../../../utils/response.js';
+import AuthService from './auth-service.js';
 
 class AuthController {
   async login(req, res) {
@@ -8,7 +8,7 @@ class AuthController {
     const token = await AuthService.login(username, password);
 
     if (!token) {
-      throw Error("Failed to login");
+      throw Error('Failed to login');
     }
 
     return successResponse(res, { token });
@@ -35,10 +35,10 @@ class AuthController {
     });
 
     if (!message) {
-      throw Error("Failed to register");
+      throw Error('Failed to register');
     }
 
-    return successResponse(res, message);
+    return createdResponse(res, message);
   }
 
   // async registerLO(req, res) {
@@ -121,20 +121,20 @@ class AuthController {
     const token = await AuthService.refreshToken(refresh_token);
 
     if (!token) {
-      throw Error("Failed to refresh token");
+      throw Error('Failed to refresh token');
     }
 
-    return successResponse(res, { access_token: token });
+    return createdResponse(res, { access_token: token });
   }
 
   async getProfile(req, res) {
-    const user = await AuthService.getProfile(req.user);
+    const user = await AuthService.getProfile(req.user.id);
 
     if (!user) {
-      throw Error("Failed to get user profile");
+      throw Error('Failed to get user profile');
     }
 
-    return successResponse(res, user);
+    return createdResponse(res, user);
   }
 }
 
