@@ -26,16 +26,19 @@ class ReportService {
   }
 
   async generateXlsx({ currentUser, query }) {
-    // Data dummy untuk nasabah
+    const selectedMonth = query.month || "October"; // Bulan yang dipilih oleh pengguna, default "October"
+    const selectedYear = query.year || "2025"; // Tahun yang dipilih oleh pengguna, default "2025"
+
+    // Data dummy untuk nasabah (untuk semua sheet)
     const nasabahData = [
       {
-        created_at: "2025-10-01",
-        customer_name: "John Doe",
-        address: "Jl. Merdeka No. 1, Jakarta",
-        rt_rw: "001/002",
-        village: "Jakarta Barat",
-        employment: null,
-        business: "Technology",
+        created_at: "2025-01-23",
+        customer_name: "Christopher Gibbs",
+        address: "2689 Barbara Run, Lake Robert, DE 74712",
+        rt_rw: "009/009",
+        village: "East Johnmouth",
+        employment: "Retail buyer",
+        business: null,
         salary_frequency: "Bulanan",
         lo: "LO Name",
         slo: "SLO Name",
@@ -43,13 +46,657 @@ class ReportService {
         status: "Active",
       },
       {
-        created_at: "2025-11-01",
-        customer_name: "Jane Doe",
-        address: "Jl. Raya No. 2, Bandung",
-        rt_rw: "003/004",
-        village: "Bandung Tengah",
-        employment: "Graphic Designer",
+        created_at: "2025-08-11",
+        customer_name: "Brent Bell III",
+        address: "1749 Kaylee Port Apt. 436, Walkerfort, ID 13821",
+        rt_rw: "008/007",
+        village: "West Rickyton",
+        employment: null,
+        business: "Montgomery LLC",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-01-12",
+        customer_name: "William Long",
+        address: "PSC 4996, Box 9800, APO AE 87285",
+        rt_rw: "003/005",
+        village: "Brooksberg",
+        employment: "Information systems manager",
         business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-10",
+        customer_name: "Luke Franklin",
+        address: "745 Lisa Throughway Apt. 955, Krystalstad, IL 48572",
+        rt_rw: "007/004",
+        village: "Curtiston",
+        employment: null,
+        business: "Cook-Rivera",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-02-07",
+        customer_name: "Morgan Barnes",
+        address: "5244 Mccall Estates Suite 372, Heathtown, MS 94487",
+        rt_rw: "010/002",
+        village: "Johnfort",
+        employment: null,
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-07-19",
+        customer_name: "Ava Mason",
+        address: "1786 Travis Ranch, Hinesfort, CA 94577",
+        rt_rw: "001/005",
+        village: "Newport",
+        employment: "Software Engineer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-06-04",
+        customer_name: "Dylan Brooks",
+        address: "2094 Dalton Highway, Oakstone, TX 54680",
+        rt_rw: "010/002",
+        village: "Barrett",
+        employment: null,
+        business: "Byte Dynamics",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-03-15",
+        customer_name: "Olivia Scott",
+        address: "3694 Oakwood Drive, Parkston, NJ 30974",
+        rt_rw: "005/003",
+        village: "Eastbridge",
+        employment: "Project Manager",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-25",
+        customer_name: "Liam Cooper",
+        address: "2873 Glenwood Way, Westford, OH 22568",
+        rt_rw: "002/001",
+        village: "Silverlake",
+        employment: null,
+        business: "Global Tech",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-04-18",
+        customer_name: "Sophia Harris",
+        address: "9812 Maple Road, Greenview, MA 93200",
+        rt_rw: "004/009",
+        village: "Clearwater",
+        employment: "Product Designer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-01-23",
+        customer_name: "Christopher Gibbs",
+        address: "2689 Barbara Run, Lake Robert, DE 74712",
+        rt_rw: "009/009",
+        village: "East Johnmouth",
+        employment: "Retail buyer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-08-11",
+        customer_name: "Brent Bell III",
+        address: "1749 Kaylee Port Apt. 436, Walkerfort, ID 13821",
+        rt_rw: "008/007",
+        village: "West Rickyton",
+        employment: null,
+        business: "Montgomery LLC",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-01-12",
+        customer_name: "William Long",
+        address: "PSC 4996, Box 9800, APO AE 87285",
+        rt_rw: "003/005",
+        village: "Brooksberg",
+        employment: "Information systems manager",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-10",
+        customer_name: "Luke Franklin",
+        address: "745 Lisa Throughway Apt. 955, Krystalstad, IL 48572",
+        rt_rw: "007/004",
+        village: "Curtiston",
+        employment: null,
+        business: "Cook-Rivera",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-02-07",
+        customer_name: "Morgan Barnes",
+        address: "5244 Mccall Estates Suite 372, Heathtown, MS 94487",
+        rt_rw: "010/002",
+        village: "Johnfort",
+        employment: null,
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-07-19",
+        customer_name: "Ava Mason",
+        address: "1786 Travis Ranch, Hinesfort, CA 94577",
+        rt_rw: "001/005",
+        village: "Newport",
+        employment: "Software Engineer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-06-04",
+        customer_name: "Dylan Brooks",
+        address: "2094 Dalton Highway, Oakstone, TX 54680",
+        rt_rw: "010/002",
+        village: "Barrett",
+        employment: null,
+        business: "Byte Dynamics",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-03-15",
+        customer_name: "Olivia Scott",
+        address: "3694 Oakwood Drive, Parkston, NJ 30974",
+        rt_rw: "005/003",
+        village: "Eastbridge",
+        employment: "Project Manager",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-25",
+        customer_name: "Liam Cooper",
+        address: "2873 Glenwood Way, Westford, OH 22568",
+        rt_rw: "002/001",
+        village: "Silverlake",
+        employment: null,
+        business: "Global Tech",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-04-18",
+        customer_name: "Sophia Harris",
+        address: "9812 Maple Road, Greenview, MA 93200",
+        rt_rw: "004/009",
+        village: "Clearwater",
+        employment: "Product Designer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-01-17",
+        customer_name: "Ethan James",
+        address: "4726 Logan Parkway, Eastland, TX 78629",
+        rt_rw: "010/003",
+        village: "Lakeside",
+        employment: "Architect",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-06-28",
+        customer_name: "Mason Edwards",
+        address: "3845 Granite Blvd, Glenwood, OH 65528",
+        rt_rw: "008/004",
+        village: "Westview",
+        employment: null,
+        business: "Fox Industries",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-03-29",
+        customer_name: "Lucas Wright",
+        address: "5650 Valley Ridge Road, Meadowview, IL 48530",
+        rt_rw: "009/001",
+        village: "Sunnydale",
+        employment: "Marketing Specialist",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-08-02",
+        customer_name: "Isabella Brooks",
+        address: "3721 Meadowhill Avenue, Riverton, UT 65129",
+        rt_rw: "006/008",
+        village: "Riverwood",
+        employment: null,
+        business: "Tech Solutions",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-09-10",
+        customer_name: "Benjamin Clark",
+        address: "1125 Greenway Street, Mountville, PA 83102",
+        rt_rw: "003/008",
+        village: "Cedar Hills",
+        employment: "Business Analyst",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-07-10",
+        customer_name: "Charlotte Smith",
+        address: "1227 Alpine Blvd, Riverbrook, KS 41534",
+        rt_rw: "007/003",
+        village: "Springfield",
+        employment: null,
+        business: "GreenTech Innovations",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-04-22",
+        customer_name: "Amelia Moore",
+        address: "3765 Harbor Point, Clifftown, TX 54321",
+        rt_rw: "004/002",
+        village: "Coastline",
+        employment: "Nurse",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-06-15",
+        customer_name: "Henry Harris",
+        address: "2453 Cypress Street, Newtown, CO 76432",
+        rt_rw: "008/001",
+        village: "Woodland",
+        employment: null,
+        business: "SunTech Enterprises",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-05-04",
+        customer_name: "Jacob Adams",
+        address: "1245 Oak Street, Hilltop, CA 23654",
+        rt_rw: "005/006",
+        village: "Silver Valley",
+        employment: "Electrical Engineer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-09-03",
+        customer_name: "Ella Morgan",
+        address: "5567 Birch Avenue, Greenfield, NJ 83219",
+        rt_rw: "009/002",
+        village: "Riverstone",
+        employment: null,
+        business: "Global Industries",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-07-01",
+        customer_name: "Matthew Williams",
+        address: "2458 Sandstone Road, Hillcrest, NY 76341",
+        rt_rw: "003/009",
+        village: "Pinewood",
+        employment: "Financial Advisor",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-28",
+        customer_name: "Mia Johnson",
+        address: "3142 Pine Valley Drive, Summit, CA 38570",
+        rt_rw: "010/005",
+        village: "Highland",
+        employment: null,
+        business: "Creative Solutions",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-04-12",
+        customer_name: "Sophia Turner",
+        address: "6578 Redwood Street, Lakeside, IL 76890",
+        rt_rw: "006/004",
+        village: "Silver Beach",
+        employment: "Marketing Executive",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-02-24",
+        customer_name: "Benjamin Lee",
+        address: "8123 Maple Street, Treetown, TX 65928",
+        rt_rw: "001/002",
+        village: "Riverside",
+        employment: null,
+        business: "Tech Innovations",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-08-25",
+        customer_name: "Jackson Taylor",
+        address: "1024 Spruce Avenue, Greenfield, MA 98451",
+        rt_rw: "009/008",
+        village: "Lakeview",
+        employment: null,
+        business: "Design Studios",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-07-30",
+        customer_name: "Harper Scott",
+        address: "2859 Cedarwood Drive, Brightwood, CO 50361",
+        rt_rw: "003/007",
+        village: "Redwood Heights",
+        employment: "Human Resources Manager",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-06-08",
+        customer_name: "Lily Mitchell",
+        address: "5932 Pinewood Road, Hillcrest, TX 47126",
+        rt_rw: "007/002",
+        village: "Hill Valley",
+        employment: null,
+        business: "Media Works",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-03-10",
+        customer_name: "Evelyn Rodriguez",
+        address: "4185 Oceanfront Blvd, Clearwater, FL 32211",
+        rt_rw: "002/008",
+        village: "Beachside",
+        employment: "Nurse Practitioner",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-01-19",
+        customer_name: "Jacob Walker",
+        address: "3445 Mountainview Drive, Brightfield, IL 62473",
+        rt_rw: "005/002",
+        village: "Hilltown",
+        employment: null,
+        business: "HealthTech Solutions",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-07-22",
+        customer_name: "Mason Nelson",
+        address: "2945 Sunset Blvd, Oceanview, CA 84290",
+        rt_rw: "004/003",
+        village: "Silver Springs",
+        employment: null,
+        business: "Retail Enterprises",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-09-01",
+        customer_name: "Zoe Robinson",
+        address: "3745 Lakeshore Drive, Oakwood, MI 76540",
+        rt_rw: "009/004",
+        village: "Greenstone",
+        employment: "Content Writer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-05-09",
+        customer_name: "Aiden Perez",
+        address: "2339 Birchwood Road, Springdale, NY 45531",
+        rt_rw: "008/003",
+        village: "Forest Heights",
+        employment: null,
+        business: "Prime Solutions",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-06-21",
+        customer_name: "Charlotte Phillips",
+        address: "1097 Willow Way, Greenfield, NJ 92456",
+        rt_rw: "007/006",
+        village: "Westwood",
+        employment: "Real Estate Agent",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-05-14",
+        customer_name: "Liam Carter",
+        address: "4621 Willowbrook Drive, Lakeside, OH 73249",
+        rt_rw: "006/005",
+        village: "Clearwater",
+        employment: null,
+        business: "Finance Solutions",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-04-20",
+        customer_name: "Nora Green",
+        address: "3746 Laurel Road, Newtown, CT 67432",
+        rt_rw: "003/004",
+        village: "Mapleton",
+        employment: "Mechanical Engineer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-03-28",
+        customer_name: "Luna Bennett",
+        address: "5246 Ocean Blvd, Bayside, CA 89512",
+        rt_rw: "010/001",
+        village: "Bayview",
+        employment: null,
+        business: "Bayside Ventures",
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Inactive",
+      },
+      {
+        created_at: "2025-02-18",
+        customer_name: "James King",
+        address: "2315 Pine Street, Hilltop, TX 45123",
+        rt_rw: "002/007",
+        village: "Edgewood",
+        employment: "Software Developer",
+        business: null,
+        salary_frequency: "Bulanan",
+        lo: "LO Name",
+        slo: "SLO Name",
+        am: "AM Name",
+        status: "Active",
+      },
+      {
+        created_at: "2025-09-05",
+        customer_name: "Eleanor Walker",
+        address: "5641 Grandview Blvd, Westport, OH 34965",
+        rt_rw: "009/005",
+        village: "Parkwood",
+        employment: null,
+        business: "Horizon Logistics",
         salary_frequency: "Bulanan",
         lo: "LO Name",
         slo: "SLO Name",
@@ -61,158 +708,158 @@ class ReportService {
 
     // Membuat workbook baru
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Laporan Nasabah");
 
-    // Menambahkan Header: "DATA KUNJUNGAN PMS"
-    worksheet.mergeCells("A1:M1");
-    const headerCell = worksheet.getCell("A1");
-    headerCell.value = "DATA KUNJUNGAN PMS";
-    headerCell.font = { bold: true, size: 16 };
-    headerCell.alignment = { horizontal: "center", vertical: "middle" };
+    // Fungsi untuk menambahkan worksheet
+    const addWorksheet = (sheetName) => {
+      const worksheet = workbook.addWorksheet(sheetName);
 
-    // Menambahkan header untuk kolom
-    worksheet.mergeCells("A2:A3");
-    worksheet.getCell("A2").value = "NO";
-    worksheet.getCell("A2").font = { bold: true, size: 11 };
-    worksheet.getCell("A2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      // Menambahkan Header: "DATA KUNJUNGAN PMS"
+      worksheet.mergeCells("A1:M1");
+      const headerCell = worksheet.getCell("A1");
+      headerCell.value = "DATA KUNJUNGAN PMS";
+      headerCell.font = { bold: true, size: 16 };
+      headerCell.alignment = { horizontal: "center", vertical: "middle" };
 
-    worksheet.mergeCells("B2:B3");
-    worksheet.getCell("B2").value = "TANGGAL";
-    worksheet.getCell("B2").font = { bold: true, size: 11 };
-    worksheet.getCell("B2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      // Menambahkan header untuk kolom
+      worksheet.mergeCells("A2:A3");
+      worksheet.getCell("A2").value = "NO";
+      worksheet.getCell("A2").font = { bold: true, size: 11 };
+      worksheet.getCell("A2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("C2:C3");
-    worksheet.getCell("C2").value = "NAMA LENGKAP";
-    worksheet.getCell("C2").font = { bold: true, size: 11 };
-    worksheet.getCell("C2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("B2:B3");
+      worksheet.getCell("B2").value = "TANGGAL";
+      worksheet.getCell("B2").font = { bold: true, size: 11 };
+      worksheet.getCell("B2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    // Menambahkan header "DOMISILI" di baris ke-3 dan merge
-    worksheet.mergeCells("D2:F2");
-    worksheet.getCell("D2").value = "DOMISILI";
-    worksheet.getCell("D2").font = { bold: true, size: 11 };
-    worksheet.getCell("D2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("C2:C3");
+      worksheet.getCell("C2").value = "NAMA LENGKAP";
+      worksheet.getCell("C2").font = { bold: true, size: 11 };
+      worksheet.getCell("C2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    // Menambahkan sub-header untuk DOMISILI
-    worksheet.getCell("D3").value = "ALAMAT";
-    worksheet.getCell("D3").font = { bold: true, size: 11 };
-    worksheet.getCell("E3").value = "RT/RW";
-    worksheet.getCell("E3").font = { bold: true, size: 11 };
-    worksheet.getCell("F3").value = "DESA";
-    worksheet.getCell("F3").font = { bold: true, size: 11 };
+      // Menambahkan header "DOMISILI" di baris ke-3 dan merge
+      worksheet.mergeCells("D2:F2");
+      worksheet.getCell("D2").value = "DOMISILI";
+      worksheet.getCell("D2").font = { bold: true, size: 11 };
+      worksheet.getCell("D2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("G2:G3");
-    worksheet.getCell("G2").value = "PEKERJAAN";
-    worksheet.getCell("G2").font = { bold: true, size: 11 };
-    worksheet.getCell("G2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      // Menambahkan sub-header untuk DOMISILI
+      worksheet.getCell("D3").value = "ALAMAT";
+      worksheet.getCell("D3").font = { bold: true, size: 11 };
+      worksheet.getCell("E3").value = "RT/RW";
+      worksheet.getCell("E3").font = { bold: true, size: 11 };
+      worksheet.getCell("F3").value = "DESA";
+      worksheet.getCell("F3").font = { bold: true, size: 11 };
 
-    worksheet.mergeCells("H2:H3");
-    worksheet.getCell("H2").value = "USAHA";
-    worksheet.getCell("H2").font = { bold: true, size: 11 };
-    worksheet.getCell("H2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("G2:G3");
+      worksheet.getCell("G2").value = "PEKERJAAN";
+      worksheet.getCell("G2").font = { bold: true, size: 11 };
+      worksheet.getCell("G2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("I2:I3");
-    worksheet.getCell("I2").value = "PENDAPATAN";
-    worksheet.getCell("I2").font = { bold: true, size: 11 };
-    worksheet.getCell("I2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("H2:H3");
+      worksheet.getCell("H2").value = "USAHA";
+      worksheet.getCell("H2").font = { bold: true, size: 11 };
+      worksheet.getCell("H2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("J2:J3");
-    worksheet.getCell("J2").value = "LO";
-    worksheet.getCell("J2").font = { bold: true, size: 11 };
-    worksheet.getCell("J2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("I2:I3");
+      worksheet.getCell("I2").value = "PENDAPATAN";
+      worksheet.getCell("I2").font = { bold: true, size: 11 };
+      worksheet.getCell("I2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("K2:K3");
-    worksheet.getCell("K2").value = "SLO";
-    worksheet.getCell("K2").font = { bold: true, size: 11 };
-    worksheet.getCell("K2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("J2:J3");
+      worksheet.getCell("J2").value = "LO";
+      worksheet.getCell("J2").font = { bold: true, size: 11 };
+      worksheet.getCell("J2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("L2:L3");
-    worksheet.getCell("L2").value = "AM";
-    worksheet.getCell("L2").font = { bold: true, size: 11 };
-    worksheet.getCell("L2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("K2:K3");
+      worksheet.getCell("K2").value = "SLO";
+      worksheet.getCell("K2").font = { bold: true, size: 11 };
+      worksheet.getCell("K2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    worksheet.mergeCells("M2:M3");
-    worksheet.getCell("M2").value = "STATUS";
-    worksheet.getCell("M2").font = { bold: true, size: 11 };
-    worksheet.getCell("M2").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
+      worksheet.mergeCells("L2:L3");
+      worksheet.getCell("L2").value = "AM";
+      worksheet.getCell("L2").font = { bold: true, size: 11 };
+      worksheet.getCell("L2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    // Menambahkan data nasabah
-    nasabahData.forEach((nasabah, index) => {
-      worksheet.addRow([
-        index + 1,
-        nasabah.created_at,
-        nasabah.customer_name,
-        nasabah.address,
-        nasabah.rt_rw,
-        nasabah.village,
-        nasabah.employment ?? " - ",
-        nasabah.business ?? " - ",
-        nasabah.salary_frequency,
-        nasabah.lo,
-        nasabah.slo,
-        nasabah.am,
-        nasabah.status,
-      ]);
-    });
+      worksheet.mergeCells("M2:M3");
+      worksheet.getCell("M2").value = "STATUS";
+      worksheet.getCell("M2").font = { bold: true, size: 11 };
+      worksheet.getCell("M2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
-    // Menentukan lebar kolom (menyesuaikan panjang data)
-    worksheet.getColumn(1).width = 5; // No
-    worksheet.getColumn(2).width = 15; // Tanggal
-    worksheet.getColumn(3).width = 25; // Nama Lengkap
-    worksheet.getColumn(4).width = 35; // DOMISILI (ALAMAT)
-    worksheet.getColumn(5).width = 15; // RT/RW
-    worksheet.getColumn(6).width = 20; // Desa
-    worksheet.getColumn(7).width = 20; // Pekerjaan
-    worksheet.getColumn(8).width = 20; // Usaha
-    worksheet.getColumn(9).width = 15; // Pendapatan
-    worksheet.getColumn(10).width = 15; // LO
-    worksheet.getColumn(11).width = 15; // SLO
-    worksheet.getColumn(12).width = 15; // AM
-    worksheet.getColumn(13).width = 10; // Status
-
-    // Menambahkan border hitam pada semua cell
-    worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
-      row.eachCell({ includeEmpty: true }, function (cell, colNumber) {
-        cell.border = {
-          top: { style: "thin", color: { argb: "FF000000" } },
-          left: { style: "thin", color: { argb: "FF000000" } },
-          bottom: { style: "thin", color: { argb: "FF000000" } },
-          right: { style: "thin", color: { argb: "FF000000" } },
-        };
+      // Menambahkan data nasabah
+      nasabahData.forEach((nasabah, index) => {
+        worksheet.addRow([
+          index + 1,
+          nasabah.created_at,
+          nasabah.customer_name,
+          nasabah.address,
+          nasabah.rt_rw,
+          nasabah.village,
+          nasabah.employment ?? " - ",
+          nasabah.business ?? " - ",
+          nasabah.salary_frequency,
+          nasabah.lo,
+          nasabah.slo,
+          nasabah.am,
+          nasabah.status,
+        ]);
       });
-    });
+
+      // Menentukan lebar kolom (menyesuaikan panjang data)
+      worksheet.getColumn(1).width = 5; // No
+      worksheet.getColumn(2).width = 15; // Tanggal
+      worksheet.getColumn(3).width = 25; // Nama Lengkap
+      worksheet.getColumn(4).width = 35; // DOMISILI (ALAMAT)
+      worksheet.getColumn(5).width = 15; // RT/RW
+      worksheet.getColumn(6).width = 20; // Desa
+      worksheet.getColumn(7).width = 20; // Pekerjaan
+      worksheet.getColumn(8).width = 20; // Usaha
+      worksheet.getColumn(9).width = 15; // Pendapatan
+      worksheet.getColumn(10).width = 15; // LO
+      worksheet.getColumn(11).width = 15; // SLO
+      worksheet.getColumn(12).width = 15; // AM
+      worksheet.getColumn(13).width = 10; // Status
+    };
+
+    // Tambahkan sheet berdasarkan bulan dan minggu
+    addWorksheet(selectedMonth); // Bulan yang dipilih untuk sheet pertama
+
+    // Menambahkan sheet untuk minggu-minggu berikutnya
+    for (let i = 1; i <= 4; i++) {
+      addWorksheet(`${selectedMonth} Minggu ${i}`);
+    }
 
     // Menghasilkan file XLSX sebagai buffer (tanpa menyimpan ke disk)
     const xlsxBuffer = await workbook.xlsx.writeBuffer();

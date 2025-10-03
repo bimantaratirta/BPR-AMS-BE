@@ -3,7 +3,6 @@ import cors from "cors";
 const allowedOrigins = [
   "http://localhost:3000",
   "https://laskara.dev.cciunitel.com",
-  "https://html-css-js.com",
 ];
 
 const corsMiddleware = cors({
