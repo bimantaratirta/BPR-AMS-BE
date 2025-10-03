@@ -10,7 +10,7 @@ class RegionRoutes extends BaseRoutes {
   routes() {
     // List
     this.router.get('/', [
-      AuthMiddleware.authenticate,
+      // AuthMiddleware.authenticate,
       tryCatch(RegionController.list),
     ]);
 
@@ -23,7 +23,7 @@ class RegionRoutes extends BaseRoutes {
 
     // Detail
     this.router.get('/:id', [
-      AuthMiddleware.authenticate,
+      // AuthMiddleware.authenticate,
       tryCatch(RegionController.detail),
     ]);
 

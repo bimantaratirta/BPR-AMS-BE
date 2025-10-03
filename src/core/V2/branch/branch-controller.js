@@ -8,15 +8,15 @@ class BranchController {
   }
 
   async list(req, res) {
-    const { q, page, per_page, order_by, order } = req.query;
-    const result = await BranchService.list({
-      q,
-      page,
-      per_page,
-      order_by,
-      order,
-    });
-    return successResponse(res, result);
+    const query = req.query;
+    const result = await BranchService.list({ query });
+
+    return successResponse(
+      res,
+      result.data,
+      'branch retrieved successfully',
+      result.meta
+    );
   }
 
   async detail(req, res) {

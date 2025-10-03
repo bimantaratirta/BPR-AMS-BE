@@ -124,7 +124,7 @@ class AuthController {
       throw Error('Failed to refresh token');
     }
 
-    return createdResponse(res, { access_token: token });
+    return successResponse(res, { token: { access_token: token } });
   }
 
   async getProfile(req, res) {

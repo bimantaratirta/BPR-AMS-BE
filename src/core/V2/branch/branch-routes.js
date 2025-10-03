@@ -10,7 +10,7 @@ class BranchRoutes extends BaseRoutes {
   routes() {
     // List
     this.router.get('/', [
-      AuthMiddleware.authenticate,
+      // AuthMiddleware.authenticate,
       tryCatch(BranchController.list),
     ]);
 
@@ -23,7 +23,7 @@ class BranchRoutes extends BaseRoutes {
 
     // Detail
     this.router.get('/:id', [
-      AuthMiddleware.authenticate,
+      // AuthMiddleware.authenticate,
       tryCatch(BranchController.detail),
     ]);
 

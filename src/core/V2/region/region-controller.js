@@ -8,15 +8,15 @@ class RegionController {
   }
 
   async list(req, res) {
-    const { q, page, per_page, order_by, order } = req.query;
-    const result = await RegionService.list({
-      q,
-      page,
-      per_page,
-      order_by,
-      order,
-    });
-    return successResponse(res, result);
+    const query = req.query;
+    const result = await RegionService.list({ query });
+
+    return successResponse(
+      res,
+      result.data,
+      'region retrieved successfully',
+      result.meta
+    );
   }
 
   async detail(req, res) {

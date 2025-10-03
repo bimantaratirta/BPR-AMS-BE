@@ -1,6 +1,8 @@
 import joi from 'joi';
 import BaseError from '../../../base_classes/base-error.js';
 import { PrismaService } from '../../../common/service/prisma.service.js';
+import { buildQueryOptions } from '../../../utils/buildQueryOptions.js';
+import ragionQueryConfig from './region-query-config.js';
 
 class RegionService {
   constructor() {
@@ -39,36 +41,29 @@ class RegionService {
     });
   }
 
-  async list({
-    q,
-    page = 1,
-    per_page = 10,
-    order_by = 'created_at',
-    order = 'desc',
-  } = {}) {
-    const where = q ? { region: { contains: q, mode: 'insensitive' } } : {};
+  async list({ query } = {}) {
+    const options = buildQueryOptions(ragionQueryConfig, query);
 
-    const skip = (Number(page) - 1) * Number(per_page);
-    const take = Number(per_page);
-
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.region.findMany({
-        where,
-        orderBy: { [order_by]: order },
-        skip,
-        take,
-      }),
-      this.prisma.region.count({ where }),
+    const [data, count] = await Promise.all([
+      this.prisma.region.findMany(options),
+      this.prisma.region.count({ where: options.where }),
     ]);
 
+    const page = query?.pagination?.page ?? 1;
+    const limit = query?.pagination?.limit ?? 10;
+    const hasPagination = !!(query?.pagination && !query?.get_all);
+    const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
+
     return {
-      data: items,
-      meta: {
-        page: Number(page),
-        per_page: Number(per_page),
-        total,
-        total_pages: Math.ceil(total / Number(per_page) || 1),
-      },
+      data,
+      meta: hasPagination
+        ? {
+            totalItems: count,
+            totalPages,
+            currentPage: Number(page),
+            itemsPerPage: Number(limit),
+          }
+        : null,
     };
   }
 
