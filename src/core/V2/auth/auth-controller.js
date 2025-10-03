@@ -124,7 +124,7 @@ class AuthController {
       throw Error('Failed to refresh token');
     }
 
-    return successResponse(res, { token: { access_token: token } });
+    return createdResponse(res, { access_token: token });
   }
 
   async getProfile(req, res) {
@@ -135,6 +135,27 @@ class AuthController {
     }
 
     return createdResponse(res, user);
+  }
+
+  async updateProfile(req, res) {
+    const { id } = req.user; // Assuming the user info is in req.user after authentication
+    const data = req.body;
+
+    try {
+      // Validate the incoming data using the updateProfileSchema
+      // await updateProfileSchema.validateAsync(data);
+
+      // Call the AuthService to update the profile
+      const updatedUser = await AuthService.updateProfile(id, data);
+
+      return successResponse(res, updatedUser);
+    } catch (error) {
+      // Handle validation or other errors
+      return errorResponse(
+        res,
+        error.message || 'An error occurred while updating the profile.'
+      );
+    }
   }
 }
 

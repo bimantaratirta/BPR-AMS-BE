@@ -172,4 +172,17 @@ const refreshTokenSchema = Joi.object({
   }),
 });
 
-export { loginSchema, registerSchema, refreshTokenSchema };
+const updateProfileSchema = Joi.object({
+  name: Joi.string().optional().min(3).max(50).messages({
+    'string.empty': 'Name cannot be empty.',
+    'string.min': 'Name must be at least 3 characters long.',
+    'string.max': 'Name cannot be longer than 50 characters.',
+  }),
+  username: Joi.string().optional().min(3).max(30).messages({
+    'string.empty': 'Username cannot be empty.',
+    'string.min': 'Username must be at least 3 characters long.',
+    'string.max': 'Username cannot be longer than 30 characters.',
+  }),
+});
+
+export { loginSchema, registerSchema, refreshTokenSchema, updateProfileSchema };

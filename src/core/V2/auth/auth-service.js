@@ -151,255 +151,6 @@ class AuthService {
     });
   }
 
-  // async registerLO(data) {
-  //   let validation = '';
-  //   let stack = [];
-  //   const fail = (message, path) => {
-  //     validation += (validation ? ' ' : '') + message;
-  //     stack.push({ message, path: [path] });
-  //   };
-
-  //   return this.prisma.$transaction(async (tx) => {
-  //     // 1) Username unik
-  //     const usernameExist = await tx.user.findFirst({
-  //       where: { username: data.username },
-  //     });
-  //     if (usernameExist) {
-  //       fail('Username already taken.', 'username');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 2) Region harus ada
-  //     const regionExist = await tx.region.findUnique({
-  //       where: { id: data.region_id },
-  //     });
-  //     if (!regionExist) {
-  //       fail("Region doesn't exist", 'region_id');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 3) Branch harus ada DAN memang milik region yang diberikan
-  //     const branchInRegion = await tx.branch.findFirst({
-  //       where: { id: data.branch_id, region_id: data.region_id },
-  //     });
-  //     if (!branchInRegion) {
-  //       fail('Branch does not belong to the given region', 'branch_id');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 4) Tentukan supervisor (SLO) di region & branch yang sama
-  //     //    - Jika supervisor_id diberikan -> validasi.
-  //     //    - Jika tidak -> auto-pilih SLO pertama (paling awal dibuat) di area tsb.
-  //     let supervisorId = data.supervisor_id;
-
-  //     if (supervisorId) {
-  //       const supervisorValid = await tx.user.findFirst({
-  //         where: {
-  //           id: supervisorId,
-  //           role: Role.SLO,
-  //           region_id: data.region_id,
-  //           branch_id: data.branch_id,
-  //         },
-  //       });
-  //       if (!supervisorValid) {
-  //         fail(
-  //           'Supervisors are not included in the given area',
-  //           'supervisor_id'
-  //         );
-  //         throw new joi.ValidationError(validation, stack);
-  //       }
-  //     } else {
-  //       const pickSLO = await tx.user.findFirst({
-  //         where: {
-  //           role: Role.SLO,
-  //           region_id: data.region_id,
-  //           branch_id: data.branch_id,
-  //         },
-  //         orderBy: { created_at: 'asc' }, // pilih yang paling awal ada
-  //         select: { id: true },
-  //       });
-  //       if (!pickSLO) {
-  //         fail(
-  //           'No SLO supervisor found for the given region and branch',
-  //           'supervisor_id'
-  //         );
-  //         throw new joi.ValidationError(validation, stack);
-  //       }
-  //       supervisorId = pickSLO.id;
-  //     }
-
-  //     // 5) Create user
-  //     const hashedPassword = await hashPassword(data.password);
-  //     const createdUser = await tx.user.create({
-  //       data: {
-  //         ...data,
-  //         password: hashedPassword,
-  //         supervisor_id: supervisorId,
-  //       },
-  //     });
-
-  //     if (!createdUser) throw Error('Failed to register');
-
-  //     return { message: 'User register successfully' };
-  //   });
-  // }
-
-  // async registerSLO(data) {
-  //   let validation = '';
-  //   let stack = [];
-  //   const fail = (message, path) => {
-  //     validation += (validation ? ' ' : '') + message;
-  //     stack.push({ message, path: [path] });
-  //   };
-
-  //   return this.prisma.$transaction(async (tx) => {
-  //     // 1) Username unik
-  //     const usernameExist = await tx.user.findFirst({
-  //       where: { username: data.username },
-  //     });
-  //     if (usernameExist) {
-  //       fail('Username already taken.', 'username');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 2) Region harus ada
-  //     const regionExist = await tx.region.findUnique({
-  //       where: { id: data.region_id },
-  //     });
-  //     if (!regionExist) {
-  //       fail("Region doesn't exist", 'region_id');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 3) Branch harus ada & milik region
-  //     const branchInRegion = await tx.branch.findFirst({
-  //       where: { id: data.branch_id, region_id: data.region_id },
-  //     });
-  //     if (!branchInRegion) {
-  //       fail('Branch does not belong to the given region', 'branch_id');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 4) Supervisor = AM pada region yang sama
-  //     let supervisorId = data.supervisor_id;
-
-  //     if (supervisorId) {
-  //       const supervisorValid = await tx.user.findFirst({
-  //         where: {
-  //           id: supervisorId,
-  //           role: Role.AM,
-  //           region_id: data.region_id,
-  //           // branch tidak wajib untuk AM
-  //         },
-  //       });
-  //       if (!supervisorValid) {
-  //         fail(
-  //           'Supervisors do not fall within the given area',
-  //           'supervisor_id'
-  //         );
-  //         throw new joi.ValidationError(validation, stack);
-  //       }
-  //     } else {
-  //       const pickAM = await tx.user.findFirst({
-  //         where: {
-  //           role: Role.AM,
-  //           region_id: data.region_id,
-  //         },
-  //         orderBy: { created_at: 'asc' },
-  //         select: { id: true },
-  //       });
-  //       if (!pickAM) {
-  //         fail('No AM supervisor found for the given region', 'supervisor_id');
-  //         throw new joi.ValidationError(validation, stack);
-  //       }
-  //       supervisorId = pickAM.id;
-  //     }
-
-  //     // 5) Pastikan belum ada SLO di branch tsb
-  //     const isAssignUserBranch = await tx.user.findFirst({
-  //       where: { role: Role.SLO, branch_id: data.branch_id },
-  //     });
-  //     if (isAssignUserBranch) {
-  //       throw BaseError.badRequest(
-  //         'Branch has already been assigned to another SLO'
-  //       );
-  //     }
-
-  //     // 6) Create user
-  //     const hashedPassword = await hashPassword(data.password);
-  //     const createdUser = await tx.user.create({
-  //       data: {
-  //         ...data,
-  //         password: hashedPassword,
-  //         supervisor_id: supervisorId,
-  //       },
-  //     });
-
-  //     if (!createdUser) throw Error('Failed to register');
-
-  //     return { message: 'User register successfully' };
-  //   });
-  // }
-
-  // async registerAM(data) {
-  //   let validation = '';
-  //   let stack = [];
-  //   const fail = (message, path) => {
-  //     validation += (validation ? ' ' : '') + message;
-  //     stack.push({ message, path: [path] });
-  //   };
-
-  //   return this.prisma.$transaction(async (tx) => {
-  //     // 1) Username unik
-  //     const usernameExist = await tx.user.findFirst({
-  //       where: {
-  //         username: data.username,
-  //       },
-  //     });
-  //     if (usernameExist) {
-  //       fail('Username already taken.', 'username');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 2) Region harus ada
-  //     const regionExist = await tx.region.findUnique({
-  //       where: { id: data.region_id },
-  //     });
-  //     if (!regionExist) {
-  //       fail("Region doesn't exist", 'region_id');
-  //       throw new joi.ValidationError(validation, stack);
-  //     }
-
-  //     // 3) Pastikan belum ada AM yang assigned di region tsb
-  //     const isAssignUserRegion = await tx.user.findFirst({
-  //       where: {
-  //         role: Role.AM,
-  //         region_id: data.region_id,
-  //       },
-  //     });
-  //     if (isAssignUserRegion) {
-  //       throw BaseError.badRequest(
-  //         'Region has already been assigned to another AM'
-  //       );
-  //     }
-
-  //     // 4) Create user
-  //     const hashedPassword = await hashPassword(data.password);
-  //     const createdUser = await tx.user.create({
-  //       data: {
-  //         ...data,
-  //         password: hashedPassword,
-  //       },
-  //     });
-
-  //     if (!createdUser) {
-  //       throw Error('Failed to register');
-  //     }
-
-  //     return { message: 'User register successfully' };
-  //   });
-  // }
-
   async refreshToken(token) {
     const decoded = parseJWT(token);
 
@@ -470,6 +221,45 @@ class AuthService {
     }
 
     return user;
+  }
+
+  async updateProfile(id, data) {
+    let validation = '';
+    let stack = [];
+    const fail = (message, path) => {
+      validation += (validation ? ' ' : '') + message;
+      stack.push({ message, path: [path] });
+    };
+
+    return this.prisma.$transaction(async (tx) => {
+      // 1) Username unique check (only if username is updated)
+      if (data.username) {
+        const usernameExist = await tx.user.findFirst({
+          where: { username: data.username },
+        });
+        if (usernameExist && usernameExist.id !== id) {
+          fail('Username already taken.', 'username');
+          throw new joi.ValidationError(validation, stack);
+        }
+      }
+
+      // Only update fields provided in the data object
+      const updatedData = {};
+      if (data.name) updatedData.name = data.name;
+      if (data.username) updatedData.username = data.username;
+
+      // Perform the update in the database
+      const updatedUser = await tx.user.update({
+        where: { id: id },
+        data: updatedData,
+      });
+
+      if (!updatedUser) {
+        throw Error('Failed to update profile');
+      }
+
+      return { message: 'User profile updated successfully' };
+    });
   }
 }
 

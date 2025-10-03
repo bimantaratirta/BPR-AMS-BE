@@ -7,6 +7,7 @@ import {
   loginSchema,
   refreshTokenSchema,
   registerSchema,
+  updateProfileSchema,
 } from './auth-schema.js';
 import AuthMiddleware from '../../../middlewares/auth-token-middleware.js';
 
@@ -43,6 +44,12 @@ class AuthRoutes extends BaseRoutes {
     this.router.get('/me', [
       AuthMiddleware.authenticate,
       tryCatch(AuthController.getProfile),
+    ]);
+
+    this.router.put('/me', [
+      AuthMiddleware.authenticate,
+      validateCredentials(updateProfileSchema),
+      tryCatch(AuthController.updateProfile),
     ]);
   }
 }
