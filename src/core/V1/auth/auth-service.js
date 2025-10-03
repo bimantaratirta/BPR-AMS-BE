@@ -25,9 +25,12 @@ class AuthService {
       throw BaseError.badRequest('Invalid credentials');
     }
 
-    const accessToken = generateToken({ id: user.id, type: 'access' }, '1d');
+    const accessToken = generateToken(
+      { id: user.id, role: user.role, type: 'access' },
+      '1d'
+    );
     const refreshToken = generateToken(
-      { id: user.id, type: 'refresh' },
+      { id: user.id, role: user.role, type: 'refresh' },
       '365d'
     );
 
@@ -68,11 +71,11 @@ class AuthService {
     }
 
     const accessToken = generateToken(
-      { id: createdUser.id, type: 'access' },
+      { id: createdUser.id, role: user.role, type: 'access' },
       '1d'
     );
     const refreshToken = generateToken(
-      { id: createdUser.id, type: 'refresh' },
+      { id: createdUser.id, role: user.role, type: 'refresh' },
       '365d'
     );
 
@@ -104,7 +107,10 @@ class AuthService {
       throw BaseError.notFound('User not found');
     }
 
-    const accessToken = generateToken({ id: user.id, type: 'access' }, '1d');
+    const accessToken = generateToken(
+      { id: user.id, role: user.role, type: 'access' },
+      '1d'
+    );
 
     return accessToken;
   }
@@ -116,7 +122,9 @@ class AuthService {
       },
       select: {
         id: true,
+        name: true,
         username: true,
+        role: true,
         created_at: true,
         updated_at: true,
       },
