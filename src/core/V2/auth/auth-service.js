@@ -30,9 +30,12 @@ class AuthService {
       throw BaseError.badRequest('Invalid credentials');
     }
 
-    const accessToken = generateToken({ id: user.id, type: 'access' }, '1d');
+    const accessToken = generateToken(
+      { id: user.id, role: user.role, type: 'access' },
+      '1d'
+    );
     const refreshToken = generateToken(
-      { id: user.id, type: 'refresh' },
+      { id: user.id, role: user.role, type: 'refresh' },
       '365d'
     );
 
@@ -418,7 +421,10 @@ class AuthService {
       throw BaseError.notFound('User not found');
     }
 
-    const accessToken = generateToken({ id: user.id, type: 'access' }, '1d');
+    const accessToken = generateToken(
+      { id: user.id, role: user.role, type: 'access' },
+      '1d'
+    );
 
     return accessToken;
   }
@@ -430,7 +436,30 @@ class AuthService {
       },
       select: {
         id: true,
+        name: true,
         username: true,
+        role: true,
+        region: {
+          select: {
+            id: true,
+            region: true,
+            // Add more fields from the region table as needed
+          },
+        },
+        branch: {
+          select: {
+            id: true,
+            branch: true,
+            // Add more fields from the branch table as needed
+          },
+        },
+        supervisor: {
+          select: {
+            id: true,
+            name: true,
+            // Add other fields you want from the supervisor
+          },
+        },
         created_at: true,
         updated_at: true,
       },

@@ -122,9 +122,7 @@ class AuthService {
       },
       select: {
         id: true,
-        name: true,
         username: true,
-        role: true,
         created_at: true,
         updated_at: true,
       },
