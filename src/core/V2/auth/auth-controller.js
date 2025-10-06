@@ -1,5 +1,9 @@
-import { createdResponse, successResponse } from '../../../utils/response.js';
-import AuthService from './auth-service.js';
+import {
+  createdResponse,
+  successResponse,
+  updatedResponse,
+} from "../../../utils/response.js";
+import AuthService from "./auth-service.js";
 
 class AuthController {
   async login(req, res) {
@@ -8,7 +12,7 @@ class AuthController {
     const token = await AuthService.login(username, password);
 
     if (!token) {
-      throw Error('Failed to login');
+      throw Error("Failed to login");
     }
 
     return successResponse(res, { token });
@@ -24,7 +28,7 @@ class AuthController {
       role,
     } = req.body;
 
-    const message = await AuthService.register({
+    const data = await AuthService.register({
       name,
       region_id,
       branch_id,
@@ -34,11 +38,11 @@ class AuthController {
       role,
     });
 
-    if (!message) {
-      throw Error('Failed to register');
+    if (!data) {
+      throw Error("Failed to register");
     }
 
-    return createdResponse(res, message);
+    return createdResponse(res, null, "User registered successfully");
   }
 
   // async registerLO(req, res) {
@@ -121,20 +125,20 @@ class AuthController {
     const token = await AuthService.refreshToken(refresh_token);
 
     if (!token) {
-      throw Error('Failed to refresh token');
+      throw Error("Failed to refresh token");
     }
 
-    return createdResponse(res, { access_token: token });
+    return successResponse(res, { access_token: token });
   }
 
   async getProfile(req, res) {
     const user = await AuthService.getProfile(req.user.id);
 
     if (!user) {
-      throw Error('Failed to get user profile');
+      throw Error("Failed to get user profile");
     }
 
-    return createdResponse(res, user);
+    return successResponse(res, user);
   }
 
   async updateProfile(req, res) {
@@ -148,12 +152,12 @@ class AuthController {
       // Call the AuthService to update the profile
       const updatedUser = await AuthService.updateProfile(id, data);
 
-      return successResponse(res, updatedUser);
+      return updatedResponse(res, updatedUser);
     } catch (error) {
       // Handle validation or other errors
       return errorResponse(
         res,
-        error.message || 'An error occurred while updating the profile.'
+        error.message || "An error occurred while updating the profile."
       );
     }
   }

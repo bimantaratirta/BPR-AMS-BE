@@ -1,12 +1,12 @@
-import BaseError from '../../../base_classes/base-error.js';
+import BaseError from "../../../base_classes/base-error.js";
 
-import joi from 'joi';
-import db from '../../../config/db.js';
-import { parseJWT, generateToken } from '../../../utils/jwtTokenConfig.js';
-import { matchPassword, hashPassword } from '../../../utils/passwordConfig.js';
-import { PrismaService } from '../../../common/service/prisma.service.js';
+import joi from "joi";
+import db from "../../../config/db.js";
+import { parseJWT, generateToken } from "../../../utils/jwtTokenConfig.js";
+import { matchPassword, hashPassword } from "../../../utils/passwordConfig.js";
+import { PrismaService } from "../../../common/service/prisma.service.js";
 
-import Role from '../../../common/enums/role.enum.js';
+import Role from "../../../common/enums/role.enum.js";
 
 class AuthService {
   constructor() {
@@ -21,32 +21,32 @@ class AuthService {
     });
 
     if (!user) {
-      throw BaseError.badRequest('Invalid credentials');
+      throw BaseError.badRequest("Invalid credentials");
     }
 
     const isMatch = await matchPassword(password, user.password);
 
     if (!isMatch) {
-      throw BaseError.badRequest('Invalid credentials');
+      throw BaseError.badRequest("Invalid credentials");
     }
 
     const accessToken = generateToken(
-      { id: user.id, role: user.role, type: 'access' },
-      '1d'
+      { id: user.id, role: user.role, type: "access" },
+      "1d"
     );
     const refreshToken = generateToken(
-      { id: user.id, role: user.role, type: 'refresh' },
-      '365d'
+      { id: user.id, role: user.role, type: "refresh" },
+      "365d"
     );
 
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
   async register(data) {
-    let validation = '';
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
 
@@ -56,7 +56,7 @@ class AuthService {
         where: { username: data.username },
       });
       if (usernameExist) {
-        fail('Username already taken.', 'username');
+        fail("Username already taken.", "username");
         throw new joi.ValidationError(validation, stack);
       }
 
@@ -69,7 +69,7 @@ class AuthService {
           where: { role: Role.AM, region_id: data.region_id },
         });
         if (existingAM) {
-          fail('Region has already been assigned to another AM', 'region_id');
+          fail("Region has already been assigned to another AM", "region_id");
           throw new joi.ValidationError(validation, stack);
         }
         // No branch or supervisor required for AM role
@@ -82,7 +82,7 @@ class AuthService {
           where: { role: Role.SLO, branch_id: data.branch_id },
         });
         if (existingSLO) {
-          fail('Branch has already been assigned to another SLO', 'branch_id');
+          fail("Branch has already been assigned to another SLO", "branch_id");
           throw new joi.ValidationError(validation, stack);
         }
 
@@ -100,7 +100,7 @@ class AuthService {
           },
         });
         if (!supervisor) {
-          fail('No AM supervisor found for the given region', 'supervisor_id');
+          fail("No AM supervisor found for the given region", "supervisor_id");
           throw new joi.ValidationError(validation, stack);
         }
         supervisorId = supervisor.id;
@@ -115,7 +115,7 @@ class AuthService {
           where: { id: data.branch_id },
         });
         if (!branch) {
-          fail('Branch does not exist', 'branch_id');
+          fail("Branch does not exist", "branch_id");
           throw new joi.ValidationError(validation, stack);
         }
 
@@ -124,7 +124,7 @@ class AuthService {
           where: { role: Role.SLO, branch_id: data.branch_id },
         });
         if (!supervisorForLO) {
-          fail('No SLO supervisor found for the given branch', 'supervisor_id');
+          fail("No SLO supervisor found for the given branch", "supervisor_id");
           throw new joi.ValidationError(validation, stack);
         }
         supervisorId = supervisorForLO.id;
@@ -144,10 +144,10 @@ class AuthService {
       });
 
       if (!createdUser) {
-        throw Error('Failed to register');
+        throw Error("Failed to register");
       }
 
-      return { message: 'User registered successfully' };
+      return createdUser;
     });
   }
 
@@ -155,11 +155,11 @@ class AuthService {
     const decoded = parseJWT(token);
 
     if (!decoded) {
-      throw BaseError.unauthorized('Invalid token');
+      throw BaseError.unauthorized("Invalid token");
     }
 
-    if (decoded.type !== 'refresh') {
-      throw BaseError.unauthorized('Invalid token type');
+    if (decoded.type !== "refresh") {
+      throw BaseError.unauthorized("Invalid token type");
     }
 
     const user = await db.user.findUnique({
@@ -169,12 +169,12 @@ class AuthService {
     });
 
     if (!user) {
-      throw BaseError.notFound('User not found');
+      throw BaseError.notFound("User not found");
     }
 
     const accessToken = generateToken(
-      { id: user.id, role: user.role, type: 'access' },
-      '1d'
+      { id: user.id, role: user.role, type: "access" },
+      "1d"
     );
 
     return accessToken;
@@ -217,17 +217,17 @@ class AuthService {
     });
 
     if (!user) {
-      throw BaseError.notFound('User not found');
+      throw BaseError.notFound("User not found");
     }
 
     return user;
   }
 
   async updateProfile(id, data) {
-    let validation = '';
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
 
@@ -238,7 +238,7 @@ class AuthService {
           where: { username: data.username },
         });
         if (usernameExist && usernameExist.id !== id) {
-          fail('Username already taken.', 'username');
+          fail("Username already taken.", "username");
           throw new joi.ValidationError(validation, stack);
         }
       }
@@ -255,10 +255,10 @@ class AuthService {
       });
 
       if (!updatedUser) {
-        throw Error('Failed to update profile');
+        throw Error("Failed to update profile");
       }
 
-      return { message: 'User profile updated successfully' };
+      return { message: "User profile updated successfully" };
     });
   }
 }
