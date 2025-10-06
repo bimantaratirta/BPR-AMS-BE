@@ -53,7 +53,7 @@ class ExpressApplication {
       process.env.NODE_ENV === "development" ? morgan("dev") : "",
       compression(),
       helmet(),
-      // cors(),
+      cors(),
     ]);
 
     this.fileStorage = multer.diskStorage({

@@ -1,6 +1,11 @@
 import ExpressApplication from "./app.js";
 import logger from "./utils/logger.js";
 
+// 🔧 FIX: Global BigInt serializer
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 const PORT = process.env.PORT || 3000;
 
 const app = new ExpressApplication(PORT);

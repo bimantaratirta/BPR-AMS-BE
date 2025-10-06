@@ -66,26 +66,26 @@ model KSSM {
   // nama_SHM                         String?
   nama_barang                      String?
   no_bpkb                          String?
-  harga_barang                     Int?
+  harga_barang                     BigInt?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   provisi_persen                   Float?
-  provisi_nominal                  Int?
+  provisi_nominal                  BigInt?
   administrasi_persen              Float?
-  administrasi_nominal             Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
-  asuransi_tlo_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  administrasi_nominal             BigInt?
+  materai_nominal                  BigInt?
+  asuransi_jiwa_nominal            BigInt?
+  asuransi_tlo_nominal             BigInt?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -119,23 +119,23 @@ model KSS {
   nik_shm                          String?
   alamat_shm                       String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_dimulai         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
+  hutang_keseluruhan               BigInt?
   provisi_persen                   Float?
   administrasi_persen              Float?
-  provisi_nominal                  Int?
-  administrasi_nominal             Int?
+  provisi_nominal                  BigInt?
+  administrasi_nominal             BigInt?
   nama_asuransi                    String?
-  asuransi_nominal                 Int?
-  materai_nominal                  Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  asuransi_nominal                 BigInt?
+  materai_nominal                  BigInt?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -164,22 +164,22 @@ model PINEK {
   // nama_shm                         String?
   nama_barang                      String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  nominal_angsuran                 Int?
+  jangka_waktu                     BigInt?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   rekening_pinjaman                String?
   tujuan_penggunaan                String?
   provisi_persen                   Float?
-  provisi_nominal                  Int?
+  provisi_nominal                  BigInt?
   nama_asuransi                    String?
-  asuransi_jiwa_nominal            Int?
-  materai_nominal                  Int?
-  total_biaya                      Int?
+  asuransi_jiwa_nominal            BigInt?
+  materai_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -204,12 +204,12 @@ model FLEKSI {
   tanggal_lahir_penjamin           DateTime?                    @db.Date
   hubungan_penjamin_debitur        String?
   alamat_rumah_penjamin            String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
   rekening_pinjaman                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime?                    @db.Date
   tenggat_angsuran                 String?
   barang_elektronik                FleksiBarangElektronik[]
@@ -237,11 +237,11 @@ model PROCIM {
   tempat_lahir_penjamin            String?
   tanggal_lahir_penjamin           DateTime?                    @db.Date
   alamat_rumah_penjamin            String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   rekening_pinjaman                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime?                    @db.Date
   tenggat_angsuran                 String?
   barang_elektronik                ProcimBarangElektronik[]
@@ -277,28 +277,28 @@ model KSM {
   tanggal_lahir_penjamin           DateTime? @db.Date
   hubungan_penjamin_debitur        String?
   nama_barang                      String?
-  harga_barang                     Int?
+  harga_barang                     BigInt?
   no_bpkb                          String?
   // nama_shm                         String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   provisi_persen                   Float?
   administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_nominal                 Int?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  provisi_nominal                  BigInt?
+  materai_nominal                  BigInt?
+  asuransi_nominal                 BigInt?
+  asuransi_tlo_nominal             BigInt?
+  administrasi_nominal             BigInt?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -329,27 +329,27 @@ model KMSM {
   nik_penjamin                     String?
   hubungan_penjamin_debitur        String?
   nama_barang                      String?
-  harga_barang                     Int?
+  harga_barang                     BigInt?
   no_bpkb                          String?
   // nama_shm                         String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   provisi_persen                   Float?
   administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  provisi_nominal                  BigInt?
+  materai_nominal                  BigInt?
+  asuransi_tlo_nominal             BigInt?
+  administrasi_nominal             BigInt?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -383,23 +383,23 @@ model KRS {
   nik_shm                          String?
   alamat_shm                       String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   provisi_persen                   Float?
   administrasi_persen              Float?
-  provisi_nominal                  Int?
-  administrasi_nominal             Int?
+  provisi_nominal                  BigInt?
+  administrasi_nominal             BigInt?
   nama_asuransi                    String?
-  asuransi_jiwa_nominal            Int?
-  materai_nominal                  Int?
-  total_biaya                      Int?
+  asuransi_jiwa_nominal            BigInt?
+  materai_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -430,29 +430,29 @@ model KMM {
   nik_penjamin                     String?
   hubungan_penjamin_debitur        String?
   nama_barang                      String?
-  harga_barang                     Int?
+  harga_barang                     BigInt?
   no_bpkb                          String?
   // nama_shm                         String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
+  jangka_waktu                     BigInt?
   tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   provisi_persen                   Float?
   administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
+  provisi_nominal                  BigInt?
+  materai_nominal                  BigInt?
+  asuransi_jiwa_nominal            BigInt?
   nama_asuransi                    String?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  asuransi_tlo_nominal             BigInt?
+  administrasi_nominal             BigInt?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -484,24 +484,24 @@ model KMS {
   alamat_shm                       String? // nama_SHM String?
   nik_shm                          String? // no_ktp_SHM String?
   detail_jaminan                   String? // detail_jaminan String?
-  nominal_pinjaman                 Int? // plafond Int?
+  nominal_pinjaman                 BigInt? // plafond BigInt?
   tujuan_penggunaan                String? // tujuan String?
-  jangka_waktu                     Int? // jangka_waktu Int?
+  jangka_waktu                     BigInt? // jangka_waktu BigInt?
   bunga_pinjaman                   Float? // bunga_pinjaman Float?
   tanggal_angsuran_terakhir        DateTime? @db.Date // tanggal_angsuran_terakhir DateTime?
-  tenggat_angsuran                 Int? // tanggal_angsuran_tiap_bulan Int?
+  tenggat_angsuran                 BigInt? // tanggal_angsuran_tiap_bulan BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date // tanggal_angsuran_pertama DateTime?
-  nominal_angsuran                 Int? // nominal_angsuran Int?
-  hutang_keseluruhan               Int? // melunasi_hutang_sebesar Int?
+  nominal_angsuran                 BigInt? // nominal_angsuran BigInt?
+  hutang_keseluruhan               BigInt? // melunasi_hutang_sebesar BigInt?
   provisi_persen                   Float? // provisi_persen Float?
-  provisi_nominal                  Int? // biaya_provisi_sebesar Int?
+  provisi_nominal                  BigInt? // biaya_provisi_sebesar BigInt?
   administrasi_persen              Float? // administrasi_persen Float?
-  administrasi_nominal             Int? // biaya_administrasi_sebesar Int?
-  materai_nominal                  Int? // biaya_materai_sebesar Int?
-  notaris_nominal                  Int? // biaya_notaris_sebesar Int?
+  administrasi_nominal             BigInt? // biaya_administrasi_sebesar BigInt?
+  materai_nominal                  BigInt? // biaya_materai_sebesar BigInt?
+  notaris_nominal                  BigInt? // biaya_notaris_sebesar BigInt?
   nama_asuransi_jiwa               String? // nama_asuransi_jiwa String?
-  asuransi_jiwa_nominal            Int? // biaya_asuransi_jiwa_sebesar Int?
-  total_biaya                      Int? // biaya_jumlah Int?
+  asuransi_jiwa_nominal            BigInt? // biaya_asuransi_jiwa_sebesar BigInt?
+  total_biaya                      BigInt? // biaya_jumlah BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -531,28 +531,28 @@ model KEF {
   tanggal_lahir_penjamin           DateTime? @db.Date // tanggal_lahir_penjamin DateTime?
   nik_penjamin                     String? // no_ktp_penjamin String?
   hubungan_penjamin_debitur        String? // telah_mendapat_persetujuan String?
-  jumlah_barang                    Int?
+  jumlah_barang                    BigInt?
   nama_barang                      String? // nama_barang String?
   merek_barang                     String? // merek_barang String?
   tipe_barang                      String? // tipe_barang String?
   ukuran_barang                    String? // ukuran_barang String?
   warna_barang                     String? // warna_barang String?
-  harga_barang                     Int? // harga_barang Int?
+  harga_barang                     BigInt? // harga_barang BigInt?
   detail_jaminan                   String? // detail_jaminan String?
   bunga_pinjaman                   Float? // bunga_pinjaman Float?
-  jangka_waktu                     Int? // jangka_waktu Int?
+  jangka_waktu                     BigInt? // jangka_waktu BigInt?
   tanggal_angsuran_terakhir        DateTime? @db.Date // tanggal_angsuran_berakhir DateTime?
-  tenggat_angsuran                 Int? // tenggat_angsuran_pada Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date // nominal_angsuran Int?
-  nominal_angsuran                 Int? // tanggal_angsuran_pertama DateTime?
-  hutang_keseluruhan               Int? // total_pinjaman Int?
+  tenggat_angsuran                 BigInt? // tenggat_angsuran_pada BigInt?
+  tanggal_angsuran_pertama         DateTime? @db.Date // nominal_angsuran BigInt?
+  nominal_angsuran                 BigInt? // tanggal_angsuran_pertama DateTime?
+  hutang_keseluruhan               BigInt? // total_pinjaman BigInt?
   provisi_persen                   Float? // provisi_persen Float?
-  provisi_nominal                  Int? // biaya_provisi_sebesar Int?
+  provisi_nominal                  BigInt? // biaya_provisi_sebesar BigInt?
   administrasi_persen              Float? // administrasi_persen Float?
-  administrasi_nominal             Int? // biaya_administrasi_sebesar Int?
-  materai_nominal                  Int? // biaya_materai_sebesar Int?
-  fidusia_nominal                  Int? // biaya_fidusia_sebesar Int?
-  total_biaya                      Int? // total_biaya Int?
+  administrasi_nominal             BigInt? // biaya_administrasi_sebesar BigInt?
+  materai_nominal                  BigInt? // biaya_materai_sebesar BigInt?
+  fidusia_nominal                  BigInt? // biaya_fidusia_sebesar BigInt?
+  total_biaya                      BigInt? // total_biaya BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -587,22 +587,22 @@ model KAR {
   no_bpkb                          String?
   // nama_shm                         String?
   detail_jaminan                   String?
-  nominal_pinjaman                 Int?
+  nominal_pinjaman                 BigInt?
   bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  nominal_angsuran                 Int?
+  jangka_waktu                     BigInt?
+  nominal_angsuran                 BigInt?
   tanggal_angsuran_pertama         DateTime? @db.Date
   tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
+  hutang_keseluruhan               BigInt?
+  tenggat_angsuran                 BigInt?
   provisi_persen                   Float?
-  administrasi_nominal             Int?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
+  administrasi_nominal             BigInt?
+  provisi_nominal                  BigInt?
+  materai_nominal                  BigInt?
+  asuransi_jiwa_nominal            BigInt?
   nama_asuransi                    String?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
+  notaris_nominal                  BigInt?
+  total_biaya                      BigInt?
   created_at                       DateTime? @default(now())
   updated_at                       DateTime? @updatedAt
   submitted_at                     DateTime?
@@ -615,7 +615,7 @@ model FleksiBarangElektronik {
   fleksi_id   String
   nama_barang String?
   tipe        String?
-  harga       Int?
+  harga       BigInt?
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
@@ -626,7 +626,7 @@ model FleksiBarangFurniture {
   fleksi_id   String
   nama_barang String?
   tipe        String?
-  harga       Int?
+  harga       BigInt?
   fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
@@ -646,7 +646,7 @@ model ProcimBarangElektronik {
   procim_id   String
   nama_barang String?
   tipe        String?
-  harga       Int?
+  harga       BigInt?
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
@@ -657,7 +657,7 @@ model ProcimBarangFurniture {
   procim_id   String
   nama_barang String?
   tipe        String?
-  harga       Int?
+  harga       BigInt?
   procim      PROCIM    @relation(fields: [procim_id], references: [id])
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt

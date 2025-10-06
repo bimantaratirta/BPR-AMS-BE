@@ -130,7 +130,7 @@ export type SystemLog = $Result.DefaultSelection<Prisma.$SystemLogPayload>
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  const U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -162,13 +162,6 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
-
-  /**
-   * Add a middleware
-   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
-   * @see https://pris.ly/d/extensions
-   */
-  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -496,8 +489,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.11.1
-   * Query Engine version: f40f79ec31188888a2e33acda0ecc8fd10a853a9
+   * Prisma Client JS version: 6.15.0
+   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
    */
   export type PrismaVersion = {
     client: string
@@ -2443,16 +2436,24 @@ export namespace Prisma {
     /**
      * @example
      * ```
-     * // Defaults to stdout
+     * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
      * 
-     * // Emit as events
+     * // Emit as events only
      * log: [
-     *   { emit: 'stdout', level: 'query' },
-     *   { emit: 'stdout', level: 'info' },
-     *   { emit: 'stdout', level: 'warn' }
-     *   { emit: 'stdout', level: 'error' }
+     *   { emit: 'event', level: 'query' },
+     *   { emit: 'event', level: 'info' },
+     *   { emit: 'event', level: 'warn' }
+     *   { emit: 'event', level: 'error' }
      * ]
+     * 
+     * / Emit as events and log to stdout
+     * og: [
+     *  { emit: 'stdout', level: 'query' },
+     *  { emit: 'stdout', level: 'info' },
+     *  { emit: 'stdout', level: 'warn' }
+     *  { emit: 'stdout', level: 'error' }
+     * 
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
@@ -2513,10 +2514,15 @@ export namespace Prisma {
     emit: 'stdout' | 'event'
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
-  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
-    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
-    : never
+  export type CheckIsLogLevel<T> = T extends LogLevel ? T : never;
+
+  export type GetLogType<T> = CheckIsLogLevel<
+    T extends LogDefinition ? T['level'] : T
+  >;
+
+  export type GetEvents<T extends any[]> = T extends Array<LogLevel | LogDefinition>
+    ? GetLogType<T[number]>
+    : never;
 
   export type QueryEvent = {
     timestamp: Date
@@ -2556,25 +2562,6 @@ export namespace Prisma {
     | 'runCommandRaw'
     | 'findRaw'
     | 'groupBy'
-
-  /**
-   * These options are being passed into the middleware as "params"
-   */
-  export type MiddlewareParams = {
-    model?: ModelName
-    action: PrismaAction
-    args: any
-    dataPath: string[]
-    runInTransaction: boolean
-  }
-
-  /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
-   */
-  export type Middleware<T = any> = (
-    params: MiddlewareParams,
-    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
-  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
@@ -4285,22 +4272,22 @@ export namespace Prisma {
   }
 
   export type KSSMSumAggregateOutputType = {
-    harga_barang: number | null
-    nominal_pinjaman: number | null
+    harga_barang: bigint | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KSSMMinAggregateOutputType = {
@@ -4328,26 +4315,26 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     no_bpkb: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -4379,26 +4366,26 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     no_bpkb: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -4761,26 +4748,26 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     no_bpkb: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -5054,26 +5041,26 @@ export namespace Prisma {
       alamat_rumah_penjamin: string | null
       nama_barang: string | null
       no_bpkb: string | null
-      harga_barang: number | null
+      harga_barang: bigint | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       provisi_persen: number | null
-      provisi_nominal: number | null
+      provisi_nominal: bigint | null
       administrasi_persen: number | null
-      administrasi_nominal: number | null
-      materai_nominal: number | null
-      asuransi_jiwa_nominal: number | null
-      asuransi_tlo_nominal: number | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      administrasi_nominal: bigint | null
+      materai_nominal: bigint | null
+      asuransi_jiwa_nominal: bigint | null
+      asuransi_tlo_nominal: bigint | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -5526,26 +5513,26 @@ export namespace Prisma {
     readonly alamat_rumah_penjamin: FieldRef<"KSSM", 'String'>
     readonly nama_barang: FieldRef<"KSSM", 'String'>
     readonly no_bpkb: FieldRef<"KSSM", 'String'>
-    readonly harga_barang: FieldRef<"KSSM", 'Int'>
+    readonly harga_barang: FieldRef<"KSSM", 'BigInt'>
     readonly detail_jaminan: FieldRef<"KSSM", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KSSM", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KSSM", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KSSM", 'Float'>
-    readonly jangka_waktu: FieldRef<"KSSM", 'Int'>
+    readonly jangka_waktu: FieldRef<"KSSM", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KSSM", 'String'>
-    readonly nominal_angsuran: FieldRef<"KSSM", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KSSM", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KSSM", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KSSM", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KSSM", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KSSM", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KSSM", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KSSM", 'BigInt'>
     readonly provisi_persen: FieldRef<"KSSM", 'Float'>
-    readonly provisi_nominal: FieldRef<"KSSM", 'Int'>
+    readonly provisi_nominal: FieldRef<"KSSM", 'BigInt'>
     readonly administrasi_persen: FieldRef<"KSSM", 'Float'>
-    readonly administrasi_nominal: FieldRef<"KSSM", 'Int'>
-    readonly materai_nominal: FieldRef<"KSSM", 'Int'>
-    readonly asuransi_jiwa_nominal: FieldRef<"KSSM", 'Int'>
-    readonly asuransi_tlo_nominal: FieldRef<"KSSM", 'Int'>
-    readonly notaris_nominal: FieldRef<"KSSM", 'Int'>
-    readonly total_biaya: FieldRef<"KSSM", 'Int'>
+    readonly administrasi_nominal: FieldRef<"KSSM", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KSSM", 'BigInt'>
+    readonly asuransi_jiwa_nominal: FieldRef<"KSSM", 'BigInt'>
+    readonly asuransi_tlo_nominal: FieldRef<"KSSM", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KSSM", 'BigInt'>
+    readonly total_biaya: FieldRef<"KSSM", 'BigInt'>
     readonly created_at: FieldRef<"KSSM", 'DateTime'>
     readonly updated_at: FieldRef<"KSSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KSSM", 'DateTime'>
@@ -5993,19 +5980,19 @@ export namespace Prisma {
   }
 
   export type KSSSumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
-    asuransi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    asuransi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KSSMinAggregateOutputType = {
@@ -6034,23 +6021,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_dimulai: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -6083,23 +6070,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_dimulai: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -6449,23 +6436,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_dimulai: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -6732,23 +6719,23 @@ export namespace Prisma {
       nik_shm: string | null
       alamat_shm: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_dimulai: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
+      hutang_keseluruhan: bigint | null
       provisi_persen: number | null
       administrasi_persen: number | null
-      provisi_nominal: number | null
-      administrasi_nominal: number | null
+      provisi_nominal: bigint | null
+      administrasi_nominal: bigint | null
       nama_asuransi: string | null
-      asuransi_nominal: number | null
-      materai_nominal: number | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      asuransi_nominal: bigint | null
+      materai_nominal: bigint | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -7202,23 +7189,23 @@ export namespace Prisma {
     readonly nik_shm: FieldRef<"KSS", 'String'>
     readonly alamat_shm: FieldRef<"KSS", 'String'>
     readonly detail_jaminan: FieldRef<"KSS", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KSS", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KSS", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KSS", 'Float'>
-    readonly jangka_waktu: FieldRef<"KSS", 'Int'>
+    readonly jangka_waktu: FieldRef<"KSS", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KSS", 'String'>
-    readonly nominal_angsuran: FieldRef<"KSS", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KSS", 'BigInt'>
     readonly tanggal_angsuran_dimulai: FieldRef<"KSS", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KSS", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KSS", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KSS", 'BigInt'>
     readonly provisi_persen: FieldRef<"KSS", 'Float'>
     readonly administrasi_persen: FieldRef<"KSS", 'Float'>
-    readonly provisi_nominal: FieldRef<"KSS", 'Int'>
-    readonly administrasi_nominal: FieldRef<"KSS", 'Int'>
+    readonly provisi_nominal: FieldRef<"KSS", 'BigInt'>
+    readonly administrasi_nominal: FieldRef<"KSS", 'BigInt'>
     readonly nama_asuransi: FieldRef<"KSS", 'String'>
-    readonly asuransi_nominal: FieldRef<"KSS", 'Int'>
-    readonly materai_nominal: FieldRef<"KSS", 'Int'>
-    readonly notaris_nominal: FieldRef<"KSS", 'Int'>
-    readonly total_biaya: FieldRef<"KSS", 'Int'>
+    readonly asuransi_nominal: FieldRef<"KSS", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KSS", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KSS", 'BigInt'>
+    readonly total_biaya: FieldRef<"KSS", 'BigInt'>
     readonly created_at: FieldRef<"KSS", 'DateTime'>
     readonly updated_at: FieldRef<"KSS", 'DateTime'>
     readonly submitted_at: FieldRef<"KSS", 'DateTime'>
@@ -7664,17 +7651,17 @@ export namespace Prisma {
   }
 
   export type PINEKSumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type PINEKMinAggregateOutputType = {
@@ -7697,22 +7684,22 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     rekening_pinjaman: string | null
     tujuan_penggunaan: string | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -7739,22 +7726,22 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     rekening_pinjaman: string | null
     tujuan_penggunaan: string | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -8066,22 +8053,22 @@ export namespace Prisma {
     alamat_rumah_penjamin: string | null
     nama_barang: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     rekening_pinjaman: string | null
     tujuan_penggunaan: string | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -8314,22 +8301,22 @@ export namespace Prisma {
       alamat_rumah_penjamin: string | null
       nama_barang: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
-      nominal_angsuran: number | null
+      jangka_waktu: bigint | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       rekening_pinjaman: string | null
       tujuan_penggunaan: string | null
       provisi_persen: number | null
-      provisi_nominal: number | null
+      provisi_nominal: bigint | null
       nama_asuransi: string | null
-      asuransi_jiwa_nominal: number | null
-      materai_nominal: number | null
-      total_biaya: number | null
+      asuransi_jiwa_nominal: bigint | null
+      materai_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -8777,22 +8764,22 @@ export namespace Prisma {
     readonly alamat_rumah_penjamin: FieldRef<"PINEK", 'String'>
     readonly nama_barang: FieldRef<"PINEK", 'String'>
     readonly detail_jaminan: FieldRef<"PINEK", 'String'>
-    readonly nominal_pinjaman: FieldRef<"PINEK", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"PINEK", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"PINEK", 'Float'>
-    readonly jangka_waktu: FieldRef<"PINEK", 'Int'>
-    readonly nominal_angsuran: FieldRef<"PINEK", 'Int'>
+    readonly jangka_waktu: FieldRef<"PINEK", 'BigInt'>
+    readonly nominal_angsuran: FieldRef<"PINEK", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"PINEK", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"PINEK", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"PINEK", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"PINEK", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"PINEK", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"PINEK", 'BigInt'>
     readonly rekening_pinjaman: FieldRef<"PINEK", 'String'>
     readonly tujuan_penggunaan: FieldRef<"PINEK", 'String'>
     readonly provisi_persen: FieldRef<"PINEK", 'Float'>
-    readonly provisi_nominal: FieldRef<"PINEK", 'Int'>
+    readonly provisi_nominal: FieldRef<"PINEK", 'BigInt'>
     readonly nama_asuransi: FieldRef<"PINEK", 'String'>
-    readonly asuransi_jiwa_nominal: FieldRef<"PINEK", 'Int'>
-    readonly materai_nominal: FieldRef<"PINEK", 'Int'>
-    readonly total_biaya: FieldRef<"PINEK", 'Int'>
+    readonly asuransi_jiwa_nominal: FieldRef<"PINEK", 'BigInt'>
+    readonly materai_nominal: FieldRef<"PINEK", 'BigInt'>
+    readonly total_biaya: FieldRef<"PINEK", 'BigInt'>
     readonly created_at: FieldRef<"PINEK", 'DateTime'>
     readonly updated_at: FieldRef<"PINEK", 'DateTime'>
     readonly submitted_at: FieldRef<"PINEK", 'DateTime'>
@@ -9231,10 +9218,10 @@ export namespace Prisma {
   }
 
   export type FLEKSISumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
   }
 
   export type FLEKSIMinAggregateOutputType = {
@@ -9254,12 +9241,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -9285,12 +9272,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -9543,12 +9530,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -9747,12 +9734,12 @@ export namespace Prisma {
       tanggal_lahir_penjamin: Date | null
       hubungan_penjamin_debitur: string | null
       alamat_rumah_penjamin: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
       rekening_pinjaman: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tenggat_angsuran: string | null
       created_at: Date | null
@@ -10202,12 +10189,12 @@ export namespace Prisma {
     readonly tanggal_lahir_penjamin: FieldRef<"FLEKSI", 'DateTime'>
     readonly hubungan_penjamin_debitur: FieldRef<"FLEKSI", 'String'>
     readonly alamat_rumah_penjamin: FieldRef<"FLEKSI", 'String'>
-    readonly nominal_pinjaman: FieldRef<"FLEKSI", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"FLEKSI", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"FLEKSI", 'Float'>
-    readonly jangka_waktu: FieldRef<"FLEKSI", 'Int'>
+    readonly jangka_waktu: FieldRef<"FLEKSI", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"FLEKSI", 'String'>
     readonly rekening_pinjaman: FieldRef<"FLEKSI", 'String'>
-    readonly nominal_angsuran: FieldRef<"FLEKSI", 'Int'>
+    readonly nominal_angsuran: FieldRef<"FLEKSI", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"FLEKSI", 'DateTime'>
     readonly tenggat_angsuran: FieldRef<"FLEKSI", 'String'>
     readonly created_at: FieldRef<"FLEKSI", 'DateTime'>
@@ -10720,10 +10707,10 @@ export namespace Prisma {
   }
 
   export type PROCIMSumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
   }
 
   export type PROCIMMinAggregateOutputType = {
@@ -10741,11 +10728,11 @@ export namespace Prisma {
     tempat_lahir_penjamin: string | null
     tanggal_lahir_penjamin: Date | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -10769,11 +10756,11 @@ export namespace Prisma {
     tempat_lahir_penjamin: string | null
     tanggal_lahir_penjamin: Date | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -11012,11 +10999,11 @@ export namespace Prisma {
     tempat_lahir_penjamin: string | null
     tanggal_lahir_penjamin: Date | null
     alamat_rumah_penjamin: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     rekening_pinjaman: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tenggat_angsuran: string | null
     created_at: Date | null
@@ -11201,11 +11188,11 @@ export namespace Prisma {
       tempat_lahir_penjamin: string | null
       tanggal_lahir_penjamin: Date | null
       alamat_rumah_penjamin: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       rekening_pinjaman: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tenggat_angsuran: string | null
       created_at: Date | null
@@ -11653,11 +11640,11 @@ export namespace Prisma {
     readonly tempat_lahir_penjamin: FieldRef<"PROCIM", 'String'>
     readonly tanggal_lahir_penjamin: FieldRef<"PROCIM", 'DateTime'>
     readonly alamat_rumah_penjamin: FieldRef<"PROCIM", 'String'>
-    readonly nominal_pinjaman: FieldRef<"PROCIM", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"PROCIM", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"PROCIM", 'Float'>
-    readonly jangka_waktu: FieldRef<"PROCIM", 'Int'>
+    readonly jangka_waktu: FieldRef<"PROCIM", 'BigInt'>
     readonly rekening_pinjaman: FieldRef<"PROCIM", 'String'>
-    readonly nominal_angsuran: FieldRef<"PROCIM", 'Int'>
+    readonly nominal_angsuran: FieldRef<"PROCIM", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"PROCIM", 'DateTime'>
     readonly tenggat_angsuran: FieldRef<"PROCIM", 'String'>
     readonly created_at: FieldRef<"PROCIM", 'DateTime'>
@@ -12182,22 +12169,22 @@ export namespace Prisma {
   }
 
   export type KSMSumAggregateOutputType = {
-    harga_barang: number | null
-    nominal_pinjaman: number | null
+    harga_barang: bigint | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KSMMinAggregateOutputType = {
@@ -12223,27 +12210,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -12273,27 +12260,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -12650,27 +12637,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -12938,27 +12925,27 @@ export namespace Prisma {
       tanggal_lahir_penjamin: Date | null
       hubungan_penjamin_debitur: string | null
       nama_barang: string | null
-      harga_barang: number | null
+      harga_barang: bigint | null
       no_bpkb: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       provisi_persen: number | null
       administrasi_persen: number | null
-      provisi_nominal: number | null
-      materai_nominal: number | null
-      asuransi_nominal: number | null
-      asuransi_tlo_nominal: number | null
-      administrasi_nominal: number | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      provisi_nominal: bigint | null
+      materai_nominal: bigint | null
+      asuransi_nominal: bigint | null
+      asuransi_tlo_nominal: bigint | null
+      administrasi_nominal: bigint | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -13409,27 +13396,27 @@ export namespace Prisma {
     readonly tanggal_lahir_penjamin: FieldRef<"KSM", 'DateTime'>
     readonly hubungan_penjamin_debitur: FieldRef<"KSM", 'String'>
     readonly nama_barang: FieldRef<"KSM", 'String'>
-    readonly harga_barang: FieldRef<"KSM", 'Int'>
+    readonly harga_barang: FieldRef<"KSM", 'BigInt'>
     readonly no_bpkb: FieldRef<"KSM", 'String'>
     readonly detail_jaminan: FieldRef<"KSM", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KSM", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KSM", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KSM", 'Float'>
-    readonly jangka_waktu: FieldRef<"KSM", 'Int'>
+    readonly jangka_waktu: FieldRef<"KSM", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KSM", 'String'>
-    readonly nominal_angsuran: FieldRef<"KSM", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KSM", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KSM", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KSM", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KSM", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KSM", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KSM", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KSM", 'BigInt'>
     readonly provisi_persen: FieldRef<"KSM", 'Float'>
     readonly administrasi_persen: FieldRef<"KSM", 'Float'>
-    readonly provisi_nominal: FieldRef<"KSM", 'Int'>
-    readonly materai_nominal: FieldRef<"KSM", 'Int'>
-    readonly asuransi_nominal: FieldRef<"KSM", 'Int'>
-    readonly asuransi_tlo_nominal: FieldRef<"KSM", 'Int'>
-    readonly administrasi_nominal: FieldRef<"KSM", 'Int'>
-    readonly notaris_nominal: FieldRef<"KSM", 'Int'>
-    readonly total_biaya: FieldRef<"KSM", 'Int'>
+    readonly provisi_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly asuransi_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly asuransi_tlo_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly administrasi_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KSM", 'BigInt'>
+    readonly total_biaya: FieldRef<"KSM", 'BigInt'>
     readonly created_at: FieldRef<"KSM", 'DateTime'>
     readonly updated_at: FieldRef<"KSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KSM", 'DateTime'>
@@ -13879,21 +13866,21 @@ export namespace Prisma {
   }
 
   export type KMSMSumAggregateOutputType = {
-    harga_barang: number | null
-    nominal_pinjaman: number | null
+    harga_barang: bigint | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KMSMMinAggregateOutputType = {
@@ -13919,26 +13906,26 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -13968,26 +13955,26 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -14338,26 +14325,26 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -14621,26 +14608,26 @@ export namespace Prisma {
       nik_penjamin: string | null
       hubungan_penjamin_debitur: string | null
       nama_barang: string | null
-      harga_barang: number | null
+      harga_barang: bigint | null
       no_bpkb: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       provisi_persen: number | null
       administrasi_persen: number | null
-      provisi_nominal: number | null
-      materai_nominal: number | null
-      asuransi_tlo_nominal: number | null
-      administrasi_nominal: number | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      provisi_nominal: bigint | null
+      materai_nominal: bigint | null
+      asuransi_tlo_nominal: bigint | null
+      administrasi_nominal: bigint | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -15091,26 +15078,26 @@ export namespace Prisma {
     readonly nik_penjamin: FieldRef<"KMSM", 'String'>
     readonly hubungan_penjamin_debitur: FieldRef<"KMSM", 'String'>
     readonly nama_barang: FieldRef<"KMSM", 'String'>
-    readonly harga_barang: FieldRef<"KMSM", 'Int'>
+    readonly harga_barang: FieldRef<"KMSM", 'BigInt'>
     readonly no_bpkb: FieldRef<"KMSM", 'String'>
     readonly detail_jaminan: FieldRef<"KMSM", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KMSM", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KMSM", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KMSM", 'Float'>
-    readonly jangka_waktu: FieldRef<"KMSM", 'Int'>
+    readonly jangka_waktu: FieldRef<"KMSM", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KMSM", 'String'>
-    readonly nominal_angsuran: FieldRef<"KMSM", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KMSM", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KMSM", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KMSM", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KMSM", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KMSM", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KMSM", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KMSM", 'BigInt'>
     readonly provisi_persen: FieldRef<"KMSM", 'Float'>
     readonly administrasi_persen: FieldRef<"KMSM", 'Float'>
-    readonly provisi_nominal: FieldRef<"KMSM", 'Int'>
-    readonly materai_nominal: FieldRef<"KMSM", 'Int'>
-    readonly asuransi_tlo_nominal: FieldRef<"KMSM", 'Int'>
-    readonly administrasi_nominal: FieldRef<"KMSM", 'Int'>
-    readonly notaris_nominal: FieldRef<"KMSM", 'Int'>
-    readonly total_biaya: FieldRef<"KMSM", 'Int'>
+    readonly provisi_nominal: FieldRef<"KMSM", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KMSM", 'BigInt'>
+    readonly asuransi_tlo_nominal: FieldRef<"KMSM", 'BigInt'>
+    readonly administrasi_nominal: FieldRef<"KMSM", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KMSM", 'BigInt'>
+    readonly total_biaya: FieldRef<"KMSM", 'BigInt'>
     readonly created_at: FieldRef<"KMSM", 'DateTime'>
     readonly updated_at: FieldRef<"KMSM", 'DateTime'>
     readonly submitted_at: FieldRef<"KMSM", 'DateTime'>
@@ -15558,19 +15545,19 @@ export namespace Prisma {
   }
 
   export type KRSSumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KRSMinAggregateOutputType = {
@@ -15599,23 +15586,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -15648,23 +15635,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -16014,23 +16001,23 @@ export namespace Prisma {
     nik_shm: string | null
     alamat_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    administrasi_nominal: number | null
+    provisi_nominal: bigint | null
+    administrasi_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_jiwa_nominal: number | null
-    materai_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    materai_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -16297,23 +16284,23 @@ export namespace Prisma {
       nik_shm: string | null
       alamat_shm: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       provisi_persen: number | null
       administrasi_persen: number | null
-      provisi_nominal: number | null
-      administrasi_nominal: number | null
+      provisi_nominal: bigint | null
+      administrasi_nominal: bigint | null
       nama_asuransi: string | null
-      asuransi_jiwa_nominal: number | null
-      materai_nominal: number | null
-      total_biaya: number | null
+      asuransi_jiwa_nominal: bigint | null
+      materai_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -16767,23 +16754,23 @@ export namespace Prisma {
     readonly nik_shm: FieldRef<"KRS", 'String'>
     readonly alamat_shm: FieldRef<"KRS", 'String'>
     readonly detail_jaminan: FieldRef<"KRS", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KRS", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KRS", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KRS", 'Float'>
-    readonly jangka_waktu: FieldRef<"KRS", 'Int'>
+    readonly jangka_waktu: FieldRef<"KRS", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KRS", 'String'>
-    readonly nominal_angsuran: FieldRef<"KRS", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KRS", 'BigInt'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KRS", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KRS", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KRS", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KRS", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KRS", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KRS", 'DateTime'>
     readonly provisi_persen: FieldRef<"KRS", 'Float'>
     readonly administrasi_persen: FieldRef<"KRS", 'Float'>
-    readonly provisi_nominal: FieldRef<"KRS", 'Int'>
-    readonly administrasi_nominal: FieldRef<"KRS", 'Int'>
+    readonly provisi_nominal: FieldRef<"KRS", 'BigInt'>
+    readonly administrasi_nominal: FieldRef<"KRS", 'BigInt'>
     readonly nama_asuransi: FieldRef<"KRS", 'String'>
-    readonly asuransi_jiwa_nominal: FieldRef<"KRS", 'Int'>
-    readonly materai_nominal: FieldRef<"KRS", 'Int'>
-    readonly total_biaya: FieldRef<"KRS", 'Int'>
+    readonly asuransi_jiwa_nominal: FieldRef<"KRS", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KRS", 'BigInt'>
+    readonly total_biaya: FieldRef<"KRS", 'BigInt'>
     readonly created_at: FieldRef<"KRS", 'DateTime'>
     readonly updated_at: FieldRef<"KRS", 'DateTime'>
     readonly submitted_at: FieldRef<"KRS", 'DateTime'>
@@ -17234,22 +17221,22 @@ export namespace Prisma {
   }
 
   export type KMMSumAggregateOutputType = {
-    harga_barang: number | null
-    nominal_pinjaman: number | null
+    harga_barang: bigint | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KMMMinAggregateOutputType = {
@@ -17275,28 +17262,28 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -17326,28 +17313,28 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -17708,28 +17695,28 @@ export namespace Prisma {
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
     nama_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tujuan_penggunaan: string | null
-    nominal_angsuran: number | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
     administrasi_persen: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    asuransi_tlo_nominal: number | null
-    administrasi_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    asuransi_tlo_nominal: bigint | null
+    administrasi_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -18001,28 +17988,28 @@ export namespace Prisma {
       nik_penjamin: string | null
       hubungan_penjamin_debitur: string | null
       nama_barang: string | null
-      harga_barang: number | null
+      harga_barang: bigint | null
       no_bpkb: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tujuan_penggunaan: string | null
-      nominal_angsuran: number | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       provisi_persen: number | null
       administrasi_persen: number | null
-      provisi_nominal: number | null
-      materai_nominal: number | null
-      asuransi_jiwa_nominal: number | null
+      provisi_nominal: bigint | null
+      materai_nominal: bigint | null
+      asuransi_jiwa_nominal: bigint | null
       nama_asuransi: string | null
-      asuransi_tlo_nominal: number | null
-      administrasi_nominal: number | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      asuransi_tlo_nominal: bigint | null
+      administrasi_nominal: bigint | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -18473,28 +18460,28 @@ export namespace Prisma {
     readonly nik_penjamin: FieldRef<"KMM", 'String'>
     readonly hubungan_penjamin_debitur: FieldRef<"KMM", 'String'>
     readonly nama_barang: FieldRef<"KMM", 'String'>
-    readonly harga_barang: FieldRef<"KMM", 'Int'>
+    readonly harga_barang: FieldRef<"KMM", 'BigInt'>
     readonly no_bpkb: FieldRef<"KMM", 'String'>
     readonly detail_jaminan: FieldRef<"KMM", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KMM", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KMM", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KMM", 'Float'>
-    readonly jangka_waktu: FieldRef<"KMM", 'Int'>
+    readonly jangka_waktu: FieldRef<"KMM", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KMM", 'String'>
-    readonly nominal_angsuran: FieldRef<"KMM", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KMM", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KMM", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KMM", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KMM", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KMM", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KMM", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KMM", 'BigInt'>
     readonly provisi_persen: FieldRef<"KMM", 'Float'>
     readonly administrasi_persen: FieldRef<"KMM", 'Float'>
-    readonly provisi_nominal: FieldRef<"KMM", 'Int'>
-    readonly materai_nominal: FieldRef<"KMM", 'Int'>
-    readonly asuransi_jiwa_nominal: FieldRef<"KMM", 'Int'>
+    readonly provisi_nominal: FieldRef<"KMM", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KMM", 'BigInt'>
+    readonly asuransi_jiwa_nominal: FieldRef<"KMM", 'BigInt'>
     readonly nama_asuransi: FieldRef<"KMM", 'String'>
-    readonly asuransi_tlo_nominal: FieldRef<"KMM", 'Int'>
-    readonly administrasi_nominal: FieldRef<"KMM", 'Int'>
-    readonly notaris_nominal: FieldRef<"KMM", 'Int'>
-    readonly total_biaya: FieldRef<"KMM", 'Int'>
+    readonly asuransi_tlo_nominal: FieldRef<"KMM", 'BigInt'>
+    readonly administrasi_nominal: FieldRef<"KMM", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KMM", 'BigInt'>
+    readonly total_biaya: FieldRef<"KMM", 'BigInt'>
     readonly created_at: FieldRef<"KMM", 'DateTime'>
     readonly updated_at: FieldRef<"KMM", 'DateTime'>
     readonly submitted_at: FieldRef<"KMM", 'DateTime'>
@@ -18943,20 +18930,20 @@ export namespace Prisma {
   }
 
   export type KMSSumAggregateOutputType = {
-    nominal_pinjaman: number | null
-    jangka_waktu: number | null
+    nominal_pinjaman: bigint | null
+    jangka_waktu: bigint | null
     bunga_pinjaman: number | null
-    tenggat_angsuran: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    tenggat_angsuran: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KMSMinAggregateOutputType = {
@@ -18983,24 +18970,24 @@ export namespace Prisma {
     alamat_shm: string | null
     nik_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     tujuan_penggunaan: string | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     bunga_pinjaman: number | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
     nama_asuransi_jiwa: string | null
-    asuransi_jiwa_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -19031,24 +19018,24 @@ export namespace Prisma {
     alamat_shm: string | null
     nik_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     tujuan_penggunaan: string | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     bunga_pinjaman: number | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
     nama_asuransi_jiwa: string | null
-    asuransi_jiwa_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -19394,24 +19381,24 @@ export namespace Prisma {
     alamat_shm: string | null
     nik_shm: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     tujuan_penggunaan: string | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     bunga_pinjaman: number | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    notaris_nominal: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    notaris_nominal: bigint | null
     nama_asuransi_jiwa: string | null
-    asuransi_jiwa_nominal: number | null
-    total_biaya: number | null
+    asuransi_jiwa_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -19672,24 +19659,24 @@ export namespace Prisma {
       alamat_shm: string | null
       nik_shm: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       tujuan_penggunaan: string | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       bunga_pinjaman: number | null
       tanggal_angsuran_terakhir: Date | null
-      tenggat_angsuran: number | null
+      tenggat_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
-      nominal_angsuran: number | null
-      hutang_keseluruhan: number | null
+      nominal_angsuran: bigint | null
+      hutang_keseluruhan: bigint | null
       provisi_persen: number | null
-      provisi_nominal: number | null
+      provisi_nominal: bigint | null
       administrasi_persen: number | null
-      administrasi_nominal: number | null
-      materai_nominal: number | null
-      notaris_nominal: number | null
+      administrasi_nominal: bigint | null
+      materai_nominal: bigint | null
+      notaris_nominal: bigint | null
       nama_asuransi_jiwa: string | null
-      asuransi_jiwa_nominal: number | null
-      total_biaya: number | null
+      asuransi_jiwa_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -20141,24 +20128,24 @@ export namespace Prisma {
     readonly alamat_shm: FieldRef<"KMS", 'String'>
     readonly nik_shm: FieldRef<"KMS", 'String'>
     readonly detail_jaminan: FieldRef<"KMS", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KMS", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KMS", 'BigInt'>
     readonly tujuan_penggunaan: FieldRef<"KMS", 'String'>
-    readonly jangka_waktu: FieldRef<"KMS", 'Int'>
+    readonly jangka_waktu: FieldRef<"KMS", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KMS", 'Float'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KMS", 'DateTime'>
-    readonly tenggat_angsuran: FieldRef<"KMS", 'Int'>
+    readonly tenggat_angsuran: FieldRef<"KMS", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KMS", 'DateTime'>
-    readonly nominal_angsuran: FieldRef<"KMS", 'Int'>
-    readonly hutang_keseluruhan: FieldRef<"KMS", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KMS", 'BigInt'>
+    readonly hutang_keseluruhan: FieldRef<"KMS", 'BigInt'>
     readonly provisi_persen: FieldRef<"KMS", 'Float'>
-    readonly provisi_nominal: FieldRef<"KMS", 'Int'>
+    readonly provisi_nominal: FieldRef<"KMS", 'BigInt'>
     readonly administrasi_persen: FieldRef<"KMS", 'Float'>
-    readonly administrasi_nominal: FieldRef<"KMS", 'Int'>
-    readonly materai_nominal: FieldRef<"KMS", 'Int'>
-    readonly notaris_nominal: FieldRef<"KMS", 'Int'>
+    readonly administrasi_nominal: FieldRef<"KMS", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KMS", 'BigInt'>
+    readonly notaris_nominal: FieldRef<"KMS", 'BigInt'>
     readonly nama_asuransi_jiwa: FieldRef<"KMS", 'String'>
-    readonly asuransi_jiwa_nominal: FieldRef<"KMS", 'Int'>
-    readonly total_biaya: FieldRef<"KMS", 'Int'>
+    readonly asuransi_jiwa_nominal: FieldRef<"KMS", 'BigInt'>
+    readonly total_biaya: FieldRef<"KMS", 'BigInt'>
     readonly created_at: FieldRef<"KMS", 'DateTime'>
     readonly updated_at: FieldRef<"KMS", 'DateTime'>
     readonly submitted_at: FieldRef<"KMS", 'DateTime'>
@@ -20607,20 +20594,20 @@ export namespace Prisma {
   }
 
   export type KEFSumAggregateOutputType = {
-    jumlah_barang: number | null
-    harga_barang: number | null
+    jumlah_barang: bigint | null
+    harga_barang: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    tenggat_angsuran: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    jangka_waktu: bigint | null
+    tenggat_angsuran: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    fidusia_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    fidusia_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KEFMinAggregateOutputType = {
@@ -20645,28 +20632,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
-    jumlah_barang: number | null
+    jumlah_barang: bigint | null
     nama_barang: string | null
     merek_barang: string | null
     tipe_barang: string | null
     ukuran_barang: string | null
     warna_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    fidusia_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    fidusia_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -20695,28 +20682,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
-    jumlah_barang: number | null
+    jumlah_barang: bigint | null
     nama_barang: string | null
     merek_barang: string | null
     tipe_barang: string | null
     ukuran_barang: string | null
     warna_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    fidusia_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    fidusia_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -21068,28 +21055,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin: Date | null
     nik_penjamin: string | null
     hubungan_penjamin_debitur: string | null
-    jumlah_barang: number | null
+    jumlah_barang: bigint | null
     nama_barang: string | null
     merek_barang: string | null
     tipe_barang: string | null
     ukuran_barang: string | null
     warna_barang: string | null
-    harga_barang: number | null
+    harga_barang: bigint | null
     detail_jaminan: string | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
+    jangka_waktu: bigint | null
     tanggal_angsuran_terakhir: Date | null
-    tenggat_angsuran: number | null
+    tenggat_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
     provisi_persen: number | null
-    provisi_nominal: number | null
+    provisi_nominal: bigint | null
     administrasi_persen: number | null
-    administrasi_nominal: number | null
-    materai_nominal: number | null
-    fidusia_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    materai_nominal: bigint | null
+    fidusia_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -21356,28 +21343,28 @@ export namespace Prisma {
       tanggal_lahir_penjamin: Date | null
       nik_penjamin: string | null
       hubungan_penjamin_debitur: string | null
-      jumlah_barang: number | null
+      jumlah_barang: bigint | null
       nama_barang: string | null
       merek_barang: string | null
       tipe_barang: string | null
       ukuran_barang: string | null
       warna_barang: string | null
-      harga_barang: number | null
+      harga_barang: bigint | null
       detail_jaminan: string | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
+      jangka_waktu: bigint | null
       tanggal_angsuran_terakhir: Date | null
-      tenggat_angsuran: number | null
+      tenggat_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
-      nominal_angsuran: number | null
-      hutang_keseluruhan: number | null
+      nominal_angsuran: bigint | null
+      hutang_keseluruhan: bigint | null
       provisi_persen: number | null
-      provisi_nominal: number | null
+      provisi_nominal: bigint | null
       administrasi_persen: number | null
-      administrasi_nominal: number | null
-      materai_nominal: number | null
-      fidusia_nominal: number | null
-      total_biaya: number | null
+      administrasi_nominal: bigint | null
+      materai_nominal: bigint | null
+      fidusia_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -21827,28 +21814,28 @@ export namespace Prisma {
     readonly tanggal_lahir_penjamin: FieldRef<"KEF", 'DateTime'>
     readonly nik_penjamin: FieldRef<"KEF", 'String'>
     readonly hubungan_penjamin_debitur: FieldRef<"KEF", 'String'>
-    readonly jumlah_barang: FieldRef<"KEF", 'Int'>
+    readonly jumlah_barang: FieldRef<"KEF", 'BigInt'>
     readonly nama_barang: FieldRef<"KEF", 'String'>
     readonly merek_barang: FieldRef<"KEF", 'String'>
     readonly tipe_barang: FieldRef<"KEF", 'String'>
     readonly ukuran_barang: FieldRef<"KEF", 'String'>
     readonly warna_barang: FieldRef<"KEF", 'String'>
-    readonly harga_barang: FieldRef<"KEF", 'Int'>
+    readonly harga_barang: FieldRef<"KEF", 'BigInt'>
     readonly detail_jaminan: FieldRef<"KEF", 'String'>
     readonly bunga_pinjaman: FieldRef<"KEF", 'Float'>
-    readonly jangka_waktu: FieldRef<"KEF", 'Int'>
+    readonly jangka_waktu: FieldRef<"KEF", 'BigInt'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KEF", 'DateTime'>
-    readonly tenggat_angsuran: FieldRef<"KEF", 'Int'>
+    readonly tenggat_angsuran: FieldRef<"KEF", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KEF", 'DateTime'>
-    readonly nominal_angsuran: FieldRef<"KEF", 'Int'>
-    readonly hutang_keseluruhan: FieldRef<"KEF", 'Int'>
+    readonly nominal_angsuran: FieldRef<"KEF", 'BigInt'>
+    readonly hutang_keseluruhan: FieldRef<"KEF", 'BigInt'>
     readonly provisi_persen: FieldRef<"KEF", 'Float'>
-    readonly provisi_nominal: FieldRef<"KEF", 'Int'>
+    readonly provisi_nominal: FieldRef<"KEF", 'BigInt'>
     readonly administrasi_persen: FieldRef<"KEF", 'Float'>
-    readonly administrasi_nominal: FieldRef<"KEF", 'Int'>
-    readonly materai_nominal: FieldRef<"KEF", 'Int'>
-    readonly fidusia_nominal: FieldRef<"KEF", 'Int'>
-    readonly total_biaya: FieldRef<"KEF", 'Int'>
+    readonly administrasi_nominal: FieldRef<"KEF", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KEF", 'BigInt'>
+    readonly fidusia_nominal: FieldRef<"KEF", 'BigInt'>
+    readonly total_biaya: FieldRef<"KEF", 'BigInt'>
     readonly created_at: FieldRef<"KEF", 'DateTime'>
     readonly updated_at: FieldRef<"KEF", 'DateTime'>
     readonly submitted_at: FieldRef<"KEF", 'DateTime'>
@@ -22296,19 +22283,19 @@ export namespace Prisma {
   }
 
   export type KARSumAggregateOutputType = {
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    administrasi_nominal: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    administrasi_nominal: bigint | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
   }
 
   export type KARMinAggregateOutputType = {
@@ -22337,22 +22324,22 @@ export namespace Prisma {
     nama_barang: string | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    administrasi_nominal: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    administrasi_nominal: bigint | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -22385,22 +22372,22 @@ export namespace Prisma {
     nama_barang: string | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    administrasi_nominal: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    administrasi_nominal: bigint | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -22746,22 +22733,22 @@ export namespace Prisma {
     nama_barang: string | null
     no_bpkb: string | null
     detail_jaminan: string | null
-    nominal_pinjaman: number | null
+    nominal_pinjaman: bigint | null
     bunga_pinjaman: number | null
-    jangka_waktu: number | null
-    nominal_angsuran: number | null
+    jangka_waktu: bigint | null
+    nominal_angsuran: bigint | null
     tanggal_angsuran_pertama: Date | null
     tanggal_angsuran_terakhir: Date | null
-    hutang_keseluruhan: number | null
-    tenggat_angsuran: number | null
+    hutang_keseluruhan: bigint | null
+    tenggat_angsuran: bigint | null
     provisi_persen: number | null
-    administrasi_nominal: number | null
-    provisi_nominal: number | null
-    materai_nominal: number | null
-    asuransi_jiwa_nominal: number | null
+    administrasi_nominal: bigint | null
+    provisi_nominal: bigint | null
+    materai_nominal: bigint | null
+    asuransi_jiwa_nominal: bigint | null
     nama_asuransi: string | null
-    notaris_nominal: number | null
-    total_biaya: number | null
+    notaris_nominal: bigint | null
+    total_biaya: bigint | null
     created_at: Date | null
     updated_at: Date | null
     submitted_at: Date | null
@@ -23024,22 +23011,22 @@ export namespace Prisma {
       nama_barang: string | null
       no_bpkb: string | null
       detail_jaminan: string | null
-      nominal_pinjaman: number | null
+      nominal_pinjaman: bigint | null
       bunga_pinjaman: number | null
-      jangka_waktu: number | null
-      nominal_angsuran: number | null
+      jangka_waktu: bigint | null
+      nominal_angsuran: bigint | null
       tanggal_angsuran_pertama: Date | null
       tanggal_angsuran_terakhir: Date | null
-      hutang_keseluruhan: number | null
-      tenggat_angsuran: number | null
+      hutang_keseluruhan: bigint | null
+      tenggat_angsuran: bigint | null
       provisi_persen: number | null
-      administrasi_nominal: number | null
-      provisi_nominal: number | null
-      materai_nominal: number | null
-      asuransi_jiwa_nominal: number | null
+      administrasi_nominal: bigint | null
+      provisi_nominal: bigint | null
+      materai_nominal: bigint | null
+      asuransi_jiwa_nominal: bigint | null
       nama_asuransi: string | null
-      notaris_nominal: number | null
-      total_biaya: number | null
+      notaris_nominal: bigint | null
+      total_biaya: bigint | null
       created_at: Date | null
       updated_at: Date | null
       submitted_at: Date | null
@@ -23493,22 +23480,22 @@ export namespace Prisma {
     readonly nama_barang: FieldRef<"KAR", 'String'>
     readonly no_bpkb: FieldRef<"KAR", 'String'>
     readonly detail_jaminan: FieldRef<"KAR", 'String'>
-    readonly nominal_pinjaman: FieldRef<"KAR", 'Int'>
+    readonly nominal_pinjaman: FieldRef<"KAR", 'BigInt'>
     readonly bunga_pinjaman: FieldRef<"KAR", 'Float'>
-    readonly jangka_waktu: FieldRef<"KAR", 'Int'>
-    readonly nominal_angsuran: FieldRef<"KAR", 'Int'>
+    readonly jangka_waktu: FieldRef<"KAR", 'BigInt'>
+    readonly nominal_angsuran: FieldRef<"KAR", 'BigInt'>
     readonly tanggal_angsuran_pertama: FieldRef<"KAR", 'DateTime'>
     readonly tanggal_angsuran_terakhir: FieldRef<"KAR", 'DateTime'>
-    readonly hutang_keseluruhan: FieldRef<"KAR", 'Int'>
-    readonly tenggat_angsuran: FieldRef<"KAR", 'Int'>
+    readonly hutang_keseluruhan: FieldRef<"KAR", 'BigInt'>
+    readonly tenggat_angsuran: FieldRef<"KAR", 'BigInt'>
     readonly provisi_persen: FieldRef<"KAR", 'Float'>
-    readonly administrasi_nominal: FieldRef<"KAR", 'Int'>
-    readonly provisi_nominal: FieldRef<"KAR", 'Int'>
-    readonly materai_nominal: FieldRef<"KAR", 'Int'>
-    readonly asuransi_jiwa_nominal: FieldRef<"KAR", 'Int'>
+    readonly administrasi_nominal: FieldRef<"KAR", 'BigInt'>
+    readonly provisi_nominal: FieldRef<"KAR", 'BigInt'>
+    readonly materai_nominal: FieldRef<"KAR", 'BigInt'>
+    readonly asuransi_jiwa_nominal: FieldRef<"KAR", 'BigInt'>
     readonly nama_asuransi: FieldRef<"KAR", 'String'>
-    readonly notaris_nominal: FieldRef<"KAR", 'Int'>
-    readonly total_biaya: FieldRef<"KAR", 'Int'>
+    readonly notaris_nominal: FieldRef<"KAR", 'BigInt'>
+    readonly total_biaya: FieldRef<"KAR", 'BigInt'>
     readonly created_at: FieldRef<"KAR", 'DateTime'>
     readonly updated_at: FieldRef<"KAR", 'DateTime'>
     readonly submitted_at: FieldRef<"KAR", 'DateTime'>
@@ -23944,7 +23931,7 @@ export namespace Prisma {
   }
 
   export type FleksiBarangElektronikSumAggregateOutputType = {
-    harga: number | null
+    harga: bigint | null
   }
 
   export type FleksiBarangElektronikMinAggregateOutputType = {
@@ -23952,7 +23939,7 @@ export namespace Prisma {
     fleksi_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -23962,7 +23949,7 @@ export namespace Prisma {
     fleksi_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -24109,7 +24096,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
     _count: FleksiBarangElektronikCountAggregateOutputType | null
@@ -24197,7 +24184,7 @@ export namespace Prisma {
       fleksi_id: string
       nama_barang: string | null
       tipe: string | null
-      harga: number | null
+      harga: bigint | null
       created_at: Date | null
       updated_at: Date | null
     }, ExtArgs["result"]["fleksiBarangElektronik"]>
@@ -24628,7 +24615,7 @@ export namespace Prisma {
     readonly fleksi_id: FieldRef<"FleksiBarangElektronik", 'String'>
     readonly nama_barang: FieldRef<"FleksiBarangElektronik", 'String'>
     readonly tipe: FieldRef<"FleksiBarangElektronik", 'String'>
-    readonly harga: FieldRef<"FleksiBarangElektronik", 'Int'>
+    readonly harga: FieldRef<"FleksiBarangElektronik", 'BigInt'>
     readonly created_at: FieldRef<"FleksiBarangElektronik", 'DateTime'>
     readonly updated_at: FieldRef<"FleksiBarangElektronik", 'DateTime'>
   }
@@ -25062,7 +25049,7 @@ export namespace Prisma {
   }
 
   export type FleksiBarangFurnitureSumAggregateOutputType = {
-    harga: number | null
+    harga: bigint | null
   }
 
   export type FleksiBarangFurnitureMinAggregateOutputType = {
@@ -25070,7 +25057,7 @@ export namespace Prisma {
     fleksi_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -25080,7 +25067,7 @@ export namespace Prisma {
     fleksi_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -25227,7 +25214,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
     _count: FleksiBarangFurnitureCountAggregateOutputType | null
@@ -25315,7 +25302,7 @@ export namespace Prisma {
       fleksi_id: string
       nama_barang: string | null
       tipe: string | null
-      harga: number | null
+      harga: bigint | null
       created_at: Date | null
       updated_at: Date | null
     }, ExtArgs["result"]["fleksiBarangFurniture"]>
@@ -25746,7 +25733,7 @@ export namespace Prisma {
     readonly fleksi_id: FieldRef<"FleksiBarangFurniture", 'String'>
     readonly nama_barang: FieldRef<"FleksiBarangFurniture", 'String'>
     readonly tipe: FieldRef<"FleksiBarangFurniture", 'String'>
-    readonly harga: FieldRef<"FleksiBarangFurniture", 'Int'>
+    readonly harga: FieldRef<"FleksiBarangFurniture", 'BigInt'>
     readonly created_at: FieldRef<"FleksiBarangFurniture", 'DateTime'>
     readonly updated_at: FieldRef<"FleksiBarangFurniture", 'DateTime'>
   }
@@ -27238,7 +27225,7 @@ export namespace Prisma {
   }
 
   export type ProcimBarangElektronikSumAggregateOutputType = {
-    harga: number | null
+    harga: bigint | null
   }
 
   export type ProcimBarangElektronikMinAggregateOutputType = {
@@ -27246,7 +27233,7 @@ export namespace Prisma {
     procim_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -27256,7 +27243,7 @@ export namespace Prisma {
     procim_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -27403,7 +27390,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
     _count: ProcimBarangElektronikCountAggregateOutputType | null
@@ -27491,7 +27478,7 @@ export namespace Prisma {
       procim_id: string
       nama_barang: string | null
       tipe: string | null
-      harga: number | null
+      harga: bigint | null
       created_at: Date | null
       updated_at: Date | null
     }, ExtArgs["result"]["procimBarangElektronik"]>
@@ -27922,7 +27909,7 @@ export namespace Prisma {
     readonly procim_id: FieldRef<"ProcimBarangElektronik", 'String'>
     readonly nama_barang: FieldRef<"ProcimBarangElektronik", 'String'>
     readonly tipe: FieldRef<"ProcimBarangElektronik", 'String'>
-    readonly harga: FieldRef<"ProcimBarangElektronik", 'Int'>
+    readonly harga: FieldRef<"ProcimBarangElektronik", 'BigInt'>
     readonly created_at: FieldRef<"ProcimBarangElektronik", 'DateTime'>
     readonly updated_at: FieldRef<"ProcimBarangElektronik", 'DateTime'>
   }
@@ -28356,7 +28343,7 @@ export namespace Prisma {
   }
 
   export type ProcimBarangFurnitureSumAggregateOutputType = {
-    harga: number | null
+    harga: bigint | null
   }
 
   export type ProcimBarangFurnitureMinAggregateOutputType = {
@@ -28364,7 +28351,7 @@ export namespace Prisma {
     procim_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -28374,7 +28361,7 @@ export namespace Prisma {
     procim_id: string | null
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -28521,7 +28508,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang: string | null
     tipe: string | null
-    harga: number | null
+    harga: bigint | null
     created_at: Date | null
     updated_at: Date | null
     _count: ProcimBarangFurnitureCountAggregateOutputType | null
@@ -28609,7 +28596,7 @@ export namespace Prisma {
       procim_id: string
       nama_barang: string | null
       tipe: string | null
-      harga: number | null
+      harga: bigint | null
       created_at: Date | null
       updated_at: Date | null
     }, ExtArgs["result"]["procimBarangFurniture"]>
@@ -29040,7 +29027,7 @@ export namespace Prisma {
     readonly procim_id: FieldRef<"ProcimBarangFurniture", 'String'>
     readonly nama_barang: FieldRef<"ProcimBarangFurniture", 'String'>
     readonly tipe: FieldRef<"ProcimBarangFurniture", 'String'>
-    readonly harga: FieldRef<"ProcimBarangFurniture", 'Int'>
+    readonly harga: FieldRef<"ProcimBarangFurniture", 'BigInt'>
     readonly created_at: FieldRef<"ProcimBarangFurniture", 'DateTime'>
     readonly updated_at: FieldRef<"ProcimBarangFurniture", 'DateTime'>
   }
@@ -32399,16 +32386,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'BigInt'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'BigInt[]'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -32423,6 +32410,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -32553,26 +32554,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"KSSM"> | string | null
     nama_barang?: StringNullableFilter<"KSSM"> | string | null
     no_bpkb?: StringNullableFilter<"KSSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSSM"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
@@ -32660,26 +32661,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"KSSM"> | string | null
     nama_barang?: StringNullableFilter<"KSSM"> | string | null
     no_bpkb?: StringNullableFilter<"KSSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSSM"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
@@ -32771,26 +32772,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableWithAggregatesFilter<"KSSM"> | string | null
     nama_barang?: StringNullableWithAggregatesFilter<"KSSM"> | string | null
     no_bpkb?: StringNullableWithAggregatesFilter<"KSSM"> | string | null
-    harga_barang?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    harga_barang?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KSSM"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KSSM"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KSSM"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KSSM"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KSSM"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KSSM"> | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KSSM"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSSM"> | Date | string | null
@@ -32826,23 +32827,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KSS"> | string | null
     alamat_shm?: StringNullableFilter<"KSS"> | string | null
     detail_jaminan?: StringNullableFilter<"KSS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tanggal_angsuran_dimulai?: DateTimeNullableFilter<"KSS"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KSS"> | string | null
-    asuransi_nominal?: IntNullableFilter<"KSS"> | number | null
-    materai_nominal?: IntNullableFilter<"KSS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSS"> | number | null
-    total_biaya?: IntNullableFilter<"KSS"> | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
@@ -32929,23 +32930,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KSS"> | string | null
     alamat_shm?: StringNullableFilter<"KSS"> | string | null
     detail_jaminan?: StringNullableFilter<"KSS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tanggal_angsuran_dimulai?: DateTimeNullableFilter<"KSS"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KSS"> | string | null
-    asuransi_nominal?: IntNullableFilter<"KSS"> | number | null
-    materai_nominal?: IntNullableFilter<"KSS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSS"> | number | null
-    total_biaya?: IntNullableFilter<"KSS"> | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
@@ -33036,23 +33037,23 @@ export namespace Prisma {
     nik_shm?: StringNullableWithAggregatesFilter<"KSS"> | string | null
     alamat_shm?: StringNullableWithAggregatesFilter<"KSS"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KSS"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KSS"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KSS"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     tanggal_angsuran_dimulai?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KSS"> | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KSS"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KSS"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     nama_asuransi?: StringNullableWithAggregatesFilter<"KSS"> | string | null
-    asuransi_nominal?: IntNullableWithAggregatesFilter<"KSS"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KSS"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KSS"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KSS"> | number | null
+    asuransi_nominal?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KSS"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSS"> | Date | string | null
@@ -33082,22 +33083,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"PINEK"> | string | null
     nama_barang?: StringNullableFilter<"PINEK"> | string | null
     detail_jaminan?: StringNullableFilter<"PINEK"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PINEK"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PINEK"> | number | null
-    jangka_waktu?: IntNullableFilter<"PINEK"> | number | null
-    nominal_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"PINEK"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"PINEK"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PINEK"> | string | null
     tujuan_penggunaan?: StringNullableFilter<"PINEK"> | string | null
     provisi_persen?: FloatNullableFilter<"PINEK"> | number | null
-    provisi_nominal?: IntNullableFilter<"PINEK"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"PINEK"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"PINEK"> | number | null
-    materai_nominal?: IntNullableFilter<"PINEK"> | number | null
-    total_biaya?: IntNullableFilter<"PINEK"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
@@ -33171,22 +33172,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"PINEK"> | string | null
     nama_barang?: StringNullableFilter<"PINEK"> | string | null
     detail_jaminan?: StringNullableFilter<"PINEK"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PINEK"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PINEK"> | number | null
-    jangka_waktu?: IntNullableFilter<"PINEK"> | number | null
-    nominal_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"PINEK"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"PINEK"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PINEK"> | string | null
     tujuan_penggunaan?: StringNullableFilter<"PINEK"> | string | null
     provisi_persen?: FloatNullableFilter<"PINEK"> | number | null
-    provisi_nominal?: IntNullableFilter<"PINEK"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"PINEK"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"PINEK"> | number | null
-    materai_nominal?: IntNullableFilter<"PINEK"> | number | null
-    total_biaya?: IntNullableFilter<"PINEK"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
@@ -33264,22 +33265,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
     nama_barang?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"PINEK"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
     rekening_pinjaman?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"PINEK"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
     nama_asuransi?: StringNullableWithAggregatesFilter<"PINEK"> | string | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"PINEK"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"PINEK"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"PINEK"> | Date | string | null
@@ -33306,12 +33307,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"FLEKSI"> | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"FLEKSI"> | number | null
-    jangka_waktu?: IntNullableFilter<"FLEKSI"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"FLEKSI"> | string | null
     rekening_pinjaman?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_angsuran?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"FLEKSI"> | string | null
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
@@ -33379,12 +33380,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"FLEKSI"> | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"FLEKSI"> | number | null
-    jangka_waktu?: IntNullableFilter<"FLEKSI"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"FLEKSI"> | string | null
     rekening_pinjaman?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_angsuran?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"FLEKSI"> | string | null
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
@@ -33453,12 +33454,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableWithAggregatesFilter<"FLEKSI"> | string | null
     alamat_rumah_penjamin?: StringNullableWithAggregatesFilter<"FLEKSI"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"FLEKSI"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"FLEKSI"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"FLEKSI"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"FLEKSI"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"FLEKSI"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"FLEKSI"> | string | null
     rekening_pinjaman?: StringNullableWithAggregatesFilter<"FLEKSI"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"FLEKSI"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"FLEKSI"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
     tenggat_angsuran?: StringNullableWithAggregatesFilter<"FLEKSI"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FLEKSI"> | Date | string | null
@@ -33485,11 +33486,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: StringNullableFilter<"PROCIM"> | string | null
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PROCIM"> | number | null
-    jangka_waktu?: IntNullableFilter<"PROCIM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"PROCIM"> | string | null
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
@@ -33552,11 +33553,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: StringNullableFilter<"PROCIM"> | string | null
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PROCIM"> | number | null
-    jangka_waktu?: IntNullableFilter<"PROCIM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"PROCIM"> | string | null
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
@@ -33620,11 +33621,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: StringNullableWithAggregatesFilter<"PROCIM"> | string | null
     tanggal_lahir_penjamin?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
     alamat_rumah_penjamin?: StringNullableWithAggregatesFilter<"PROCIM"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"PROCIM"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"PROCIM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"PROCIM"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"PROCIM"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"PROCIM"> | bigint | number | null
     rekening_pinjaman?: StringNullableWithAggregatesFilter<"PROCIM"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"PROCIM"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"PROCIM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
     tenggat_angsuran?: StringNullableWithAggregatesFilter<"PROCIM"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"PROCIM"> | Date | string | null
@@ -33659,27 +33660,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KSM"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KSM"> | string | null
     nama_barang?: StringNullableFilter<"KSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
@@ -33764,27 +33765,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KSM"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KSM"> | string | null
     nama_barang?: StringNullableFilter<"KSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
@@ -33873,27 +33874,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableWithAggregatesFilter<"KSM"> | string | null
     nama_barang?: StringNullableWithAggregatesFilter<"KSM"> | string | null
-    harga_barang?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    harga_barang?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     no_bpkb?: StringNullableWithAggregatesFilter<"KSM"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KSM"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KSM"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KSM"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KSM"> | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KSM"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    asuransi_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KSM"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KSM"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    asuransi_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KSM"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KSM"> | Date | string | null
@@ -33926,26 +33927,26 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMSM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMSM"> | string | null
     nama_barang?: StringNullableFilter<"KMSM"> | string | null
-    harga_barang?: IntNullableFilter<"KMSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMSM"> | number | null
-    total_biaya?: IntNullableFilter<"KMSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
@@ -34029,26 +34030,26 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMSM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMSM"> | string | null
     nama_barang?: StringNullableFilter<"KMSM"> | string | null
-    harga_barang?: IntNullableFilter<"KMSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMSM"> | number | null
-    total_biaya?: IntNullableFilter<"KMSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
@@ -34136,26 +34137,26 @@ export namespace Prisma {
     nik_penjamin?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
     hubungan_penjamin_debitur?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
     nama_barang?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
-    harga_barang?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    harga_barang?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     no_bpkb?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KMSM"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KMSM"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KMSM"> | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KMSM"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KMSM"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KMSM"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMSM"> | Date | string | null
@@ -34191,23 +34192,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KRS"> | string | null
     alamat_shm?: StringNullableFilter<"KRS"> | string | null
     detail_jaminan?: StringNullableFilter<"KRS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KRS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KRS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KRS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KRS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KRS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KRS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KRS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KRS"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KRS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KRS"> | Date | string | null
     provisi_persen?: FloatNullableFilter<"KRS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KRS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KRS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KRS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KRS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KRS"> | number | null
-    materai_nominal?: IntNullableFilter<"KRS"> | number | null
-    total_biaya?: IntNullableFilter<"KRS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KRS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
@@ -34294,23 +34295,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KRS"> | string | null
     alamat_shm?: StringNullableFilter<"KRS"> | string | null
     detail_jaminan?: StringNullableFilter<"KRS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KRS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KRS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KRS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KRS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KRS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KRS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KRS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KRS"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KRS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KRS"> | Date | string | null
     provisi_persen?: FloatNullableFilter<"KRS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KRS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KRS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KRS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KRS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KRS"> | number | null
-    materai_nominal?: IntNullableFilter<"KRS"> | number | null
-    total_biaya?: IntNullableFilter<"KRS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KRS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
@@ -34401,23 +34402,23 @@ export namespace Prisma {
     nik_shm?: StringNullableWithAggregatesFilter<"KRS"> | string | null
     alamat_shm?: StringNullableWithAggregatesFilter<"KRS"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KRS"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KRS"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KRS"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KRS"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KRS"> | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KRS"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KRS"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     nama_asuransi?: StringNullableWithAggregatesFilter<"KRS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"KRS"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KRS"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KRS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KRS"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KRS"> | Date | string | null
@@ -34450,28 +34451,28 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMM"> | string | null
     nama_barang?: StringNullableFilter<"KMM"> | string | null
-    harga_barang?: IntNullableFilter<"KMM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KMM"> | string | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMM"> | number | null
-    total_biaya?: IntNullableFilter<"KMM"> | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
@@ -34557,28 +34558,28 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMM"> | string | null
     nama_barang?: StringNullableFilter<"KMM"> | string | null
-    harga_barang?: IntNullableFilter<"KMM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KMM"> | string | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMM"> | number | null
-    total_biaya?: IntNullableFilter<"KMM"> | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
@@ -34668,28 +34669,28 @@ export namespace Prisma {
     nik_penjamin?: StringNullableWithAggregatesFilter<"KMM"> | string | null
     hubungan_penjamin_debitur?: StringNullableWithAggregatesFilter<"KMM"> | string | null
     nama_barang?: StringNullableWithAggregatesFilter<"KMM"> | string | null
-    harga_barang?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    harga_barang?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     no_bpkb?: StringNullableWithAggregatesFilter<"KMM"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KMM"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KMM"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KMM"> | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KMM"> | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KMM"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     nama_asuransi?: StringNullableWithAggregatesFilter<"KMM"> | string | null
-    asuransi_tlo_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KMM"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KMM"> | number | null
+    asuransi_tlo_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KMM"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMM"> | Date | string | null
@@ -34723,24 +34724,24 @@ export namespace Prisma {
     alamat_shm?: StringNullableFilter<"KMS"> | string | null
     nik_shm?: StringNullableFilter<"KMS"> | string | null
     detail_jaminan?: StringNullableFilter<"KMS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMS"> | string | null
-    jangka_waktu?: IntNullableFilter<"KMS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMS"> | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KMS"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KMS"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KMS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KMS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMS"> | number | null
-    materai_nominal?: IntNullableFilter<"KMS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMS"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     nama_asuransi_jiwa?: StringNullableFilter<"KMS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMS"> | number | null
-    total_biaya?: IntNullableFilter<"KMS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
@@ -34824,24 +34825,24 @@ export namespace Prisma {
     alamat_shm?: StringNullableFilter<"KMS"> | string | null
     nik_shm?: StringNullableFilter<"KMS"> | string | null
     detail_jaminan?: StringNullableFilter<"KMS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMS"> | string | null
-    jangka_waktu?: IntNullableFilter<"KMS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMS"> | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KMS"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KMS"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KMS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KMS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMS"> | number | null
-    materai_nominal?: IntNullableFilter<"KMS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMS"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     nama_asuransi_jiwa?: StringNullableFilter<"KMS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMS"> | number | null
-    total_biaya?: IntNullableFilter<"KMS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
@@ -34929,24 +34930,24 @@ export namespace Prisma {
     alamat_shm?: StringNullableWithAggregatesFilter<"KMS"> | string | null
     nik_shm?: StringNullableWithAggregatesFilter<"KMS"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KMS"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableWithAggregatesFilter<"KMS"> | string | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KMS"> | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KMS"> | number | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KMS"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KMS"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KMS"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KMS"> | number | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     nama_asuransi_jiwa?: StringNullableWithAggregatesFilter<"KMS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"KMS"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KMS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KMS"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KMS"> | Date | string | null
@@ -34978,28 +34979,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KEF"> | Date | string | null
     nik_penjamin?: StringNullableFilter<"KEF"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KEF"> | string | null
-    jumlah_barang?: IntNullableFilter<"KEF"> | number | null
+    jumlah_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     nama_barang?: StringNullableFilter<"KEF"> | string | null
     merek_barang?: StringNullableFilter<"KEF"> | string | null
     tipe_barang?: StringNullableFilter<"KEF"> | string | null
     ukuran_barang?: StringNullableFilter<"KEF"> | string | null
     warna_barang?: StringNullableFilter<"KEF"> | string | null
-    harga_barang?: IntNullableFilter<"KEF"> | number | null
+    harga_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KEF"> | string | null
     bunga_pinjaman?: FloatNullableFilter<"KEF"> | number | null
-    jangka_waktu?: IntNullableFilter<"KEF"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KEF"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KEF"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KEF"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KEF"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KEF"> | number | null
-    provisi_nominal?: IntNullableFilter<"KEF"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KEF"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KEF"> | number | null
-    materai_nominal?: IntNullableFilter<"KEF"> | number | null
-    fidusia_nominal?: IntNullableFilter<"KEF"> | number | null
-    total_biaya?: IntNullableFilter<"KEF"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    fidusia_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KEF"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
@@ -35083,28 +35084,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KEF"> | Date | string | null
     nik_penjamin?: StringNullableFilter<"KEF"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KEF"> | string | null
-    jumlah_barang?: IntNullableFilter<"KEF"> | number | null
+    jumlah_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     nama_barang?: StringNullableFilter<"KEF"> | string | null
     merek_barang?: StringNullableFilter<"KEF"> | string | null
     tipe_barang?: StringNullableFilter<"KEF"> | string | null
     ukuran_barang?: StringNullableFilter<"KEF"> | string | null
     warna_barang?: StringNullableFilter<"KEF"> | string | null
-    harga_barang?: IntNullableFilter<"KEF"> | number | null
+    harga_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KEF"> | string | null
     bunga_pinjaman?: FloatNullableFilter<"KEF"> | number | null
-    jangka_waktu?: IntNullableFilter<"KEF"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KEF"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KEF"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KEF"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KEF"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KEF"> | number | null
-    provisi_nominal?: IntNullableFilter<"KEF"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KEF"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KEF"> | number | null
-    materai_nominal?: IntNullableFilter<"KEF"> | number | null
-    fidusia_nominal?: IntNullableFilter<"KEF"> | number | null
-    total_biaya?: IntNullableFilter<"KEF"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    fidusia_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KEF"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
@@ -35192,28 +35193,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     nik_penjamin?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     hubungan_penjamin_debitur?: StringNullableWithAggregatesFilter<"KEF"> | string | null
-    jumlah_barang?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    jumlah_barang?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     nama_barang?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     merek_barang?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     tipe_barang?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     ukuran_barang?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     warna_barang?: StringNullableWithAggregatesFilter<"KEF"> | string | null
-    harga_barang?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    harga_barang?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KEF"> | string | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KEF"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KEF"> | number | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KEF"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     administrasi_persen?: FloatNullableWithAggregatesFilter<"KEF"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KEF"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KEF"> | number | null
-    fidusia_nominal?: IntNullableWithAggregatesFilter<"KEF"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KEF"> | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
+    fidusia_nominal?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KEF"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KEF"> | Date | string | null
@@ -35249,22 +35250,22 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"KAR"> | string | null
     no_bpkb?: StringNullableFilter<"KAR"> | string | null
     detail_jaminan?: StringNullableFilter<"KAR"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KAR"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KAR"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KAR"> | number | null
-    jangka_waktu?: IntNullableFilter<"KAR"> | number | null
-    nominal_angsuran?: IntNullableFilter<"KAR"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KAR"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KAR"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KAR"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KAR"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KAR"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KAR"> | number | null
-    provisi_nominal?: IntNullableFilter<"KAR"> | number | null
-    materai_nominal?: IntNullableFilter<"KAR"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KAR"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    provisi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KAR"> | string | null
-    notaris_nominal?: IntNullableFilter<"KAR"> | number | null
-    total_biaya?: IntNullableFilter<"KAR"> | number | null
+    notaris_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KAR"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
@@ -35350,22 +35351,22 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"KAR"> | string | null
     no_bpkb?: StringNullableFilter<"KAR"> | string | null
     detail_jaminan?: StringNullableFilter<"KAR"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KAR"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KAR"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KAR"> | number | null
-    jangka_waktu?: IntNullableFilter<"KAR"> | number | null
-    nominal_angsuran?: IntNullableFilter<"KAR"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KAR"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KAR"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KAR"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KAR"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KAR"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KAR"> | number | null
-    provisi_nominal?: IntNullableFilter<"KAR"> | number | null
-    materai_nominal?: IntNullableFilter<"KAR"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KAR"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    provisi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KAR"> | string | null
-    notaris_nominal?: IntNullableFilter<"KAR"> | number | null
-    total_biaya?: IntNullableFilter<"KAR"> | number | null
+    notaris_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KAR"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
@@ -35455,22 +35456,22 @@ export namespace Prisma {
     nama_barang?: StringNullableWithAggregatesFilter<"KAR"> | string | null
     no_bpkb?: StringNullableWithAggregatesFilter<"KAR"> | string | null
     detail_jaminan?: StringNullableWithAggregatesFilter<"KAR"> | string | null
-    nominal_pinjaman?: IntNullableWithAggregatesFilter<"KAR"> | number | null
+    nominal_pinjaman?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
     bunga_pinjaman?: FloatNullableWithAggregatesFilter<"KAR"> | number | null
-    jangka_waktu?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    nominal_angsuran?: IntNullableWithAggregatesFilter<"KAR"> | number | null
+    jangka_waktu?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
-    hutang_keseluruhan?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    tenggat_angsuran?: IntNullableWithAggregatesFilter<"KAR"> | number | null
+    hutang_keseluruhan?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
     provisi_persen?: FloatNullableWithAggregatesFilter<"KAR"> | number | null
-    administrasi_nominal?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    provisi_nominal?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    materai_nominal?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    asuransi_jiwa_nominal?: IntNullableWithAggregatesFilter<"KAR"> | number | null
+    administrasi_nominal?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    provisi_nominal?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    materai_nominal?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
     nama_asuransi?: StringNullableWithAggregatesFilter<"KAR"> | string | null
-    notaris_nominal?: IntNullableWithAggregatesFilter<"KAR"> | number | null
-    total_biaya?: IntNullableWithAggregatesFilter<"KAR"> | number | null
+    notaris_nominal?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
+    total_biaya?: BigIntNullableWithAggregatesFilter<"KAR"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableWithAggregatesFilter<"KAR"> | Date | string | null
@@ -35485,7 +35486,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
@@ -35510,7 +35511,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
@@ -35539,7 +35540,7 @@ export namespace Prisma {
     fleksi_id?: StringWithAggregatesFilter<"FleksiBarangElektronik"> | string
     nama_barang?: StringNullableWithAggregatesFilter<"FleksiBarangElektronik"> | string | null
     tipe?: StringNullableWithAggregatesFilter<"FleksiBarangElektronik"> | string | null
-    harga?: IntNullableWithAggregatesFilter<"FleksiBarangElektronik"> | number | null
+    harga?: BigIntNullableWithAggregatesFilter<"FleksiBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangElektronik"> | Date | string | null
   }
@@ -35552,7 +35553,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
@@ -35577,7 +35578,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     fleksi?: XOR<FLEKSIScalarRelationFilter, FLEKSIWhereInput>
@@ -35606,7 +35607,7 @@ export namespace Prisma {
     fleksi_id?: StringWithAggregatesFilter<"FleksiBarangFurniture"> | string
     nama_barang?: StringNullableWithAggregatesFilter<"FleksiBarangFurniture"> | string | null
     tipe?: StringNullableWithAggregatesFilter<"FleksiBarangFurniture"> | string | null
-    harga?: IntNullableWithAggregatesFilter<"FleksiBarangFurniture"> | number | null
+    harga?: BigIntNullableWithAggregatesFilter<"FleksiBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"FleksiBarangFurniture"> | Date | string | null
   }
@@ -35674,7 +35675,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
@@ -35699,7 +35700,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
@@ -35728,7 +35729,7 @@ export namespace Prisma {
     procim_id?: StringWithAggregatesFilter<"ProcimBarangElektronik"> | string
     nama_barang?: StringNullableWithAggregatesFilter<"ProcimBarangElektronik"> | string | null
     tipe?: StringNullableWithAggregatesFilter<"ProcimBarangElektronik"> | string | null
-    harga?: IntNullableWithAggregatesFilter<"ProcimBarangElektronik"> | number | null
+    harga?: BigIntNullableWithAggregatesFilter<"ProcimBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangElektronik"> | Date | string | null
   }
@@ -35741,7 +35742,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
@@ -35766,7 +35767,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     procim?: XOR<PROCIMScalarRelationFilter, PROCIMWhereInput>
@@ -35795,7 +35796,7 @@ export namespace Prisma {
     procim_id?: StringWithAggregatesFilter<"ProcimBarangFurniture"> | string
     nama_barang?: StringNullableWithAggregatesFilter<"ProcimBarangFurniture"> | string | null
     tipe?: StringNullableWithAggregatesFilter<"ProcimBarangFurniture"> | string | null
-    harga?: IntNullableWithAggregatesFilter<"ProcimBarangFurniture"> | number | null
+    harga?: BigIntNullableWithAggregatesFilter<"ProcimBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"ProcimBarangFurniture"> | Date | string | null
   }
@@ -36070,26 +36071,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36121,26 +36122,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36172,26 +36173,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36223,26 +36224,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36274,26 +36275,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36325,26 +36326,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36375,26 +36376,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36427,23 +36428,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36476,23 +36477,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36525,23 +36526,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36574,23 +36575,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36623,23 +36624,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36672,23 +36673,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36720,23 +36721,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36763,22 +36764,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36805,22 +36806,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36847,22 +36848,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36889,22 +36890,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36931,22 +36932,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -36973,22 +36974,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37014,22 +37015,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37053,12 +37054,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37087,12 +37088,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37121,12 +37122,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37155,12 +37156,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37189,12 +37190,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37220,12 +37221,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37250,12 +37251,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37279,11 +37280,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37310,11 +37311,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37341,11 +37342,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37372,11 +37373,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37403,11 +37404,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -37431,11 +37432,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37458,11 +37459,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37494,27 +37495,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -37544,27 +37545,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -37594,27 +37595,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37644,27 +37645,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37694,27 +37695,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -37744,27 +37745,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37793,27 +37794,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37843,26 +37844,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -37892,26 +37893,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -37941,26 +37942,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37990,26 +37991,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38039,26 +38040,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38088,26 +38089,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38136,26 +38137,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38188,23 +38189,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38237,23 +38238,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38286,23 +38287,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38335,23 +38336,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38384,23 +38385,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38433,23 +38434,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38481,23 +38482,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38527,28 +38528,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38578,28 +38579,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38629,28 +38630,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38680,28 +38681,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38731,28 +38732,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38782,28 +38783,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38832,28 +38833,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38884,24 +38885,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38932,24 +38933,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -38980,24 +38981,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39028,24 +39029,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39076,24 +39077,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39124,24 +39125,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39171,24 +39172,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39217,28 +39218,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39267,28 +39268,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39317,28 +39318,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39367,28 +39368,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39417,28 +39418,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39467,28 +39468,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39516,28 +39517,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39570,22 +39571,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39618,22 +39619,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39666,22 +39667,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39714,22 +39715,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39762,22 +39763,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -39810,22 +39811,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39857,22 +39858,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39883,7 +39884,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     fleksi: FLEKSICreateNestedOneWithoutBarang_elektronikInput
@@ -39894,7 +39895,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -39903,7 +39904,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fleksi?: FLEKSIUpdateOneRequiredWithoutBarang_elektronikNestedInput
@@ -39914,7 +39915,7 @@ export namespace Prisma {
     fleksi_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -39924,7 +39925,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -39933,7 +39934,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -39943,7 +39944,7 @@ export namespace Prisma {
     fleksi_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -39952,7 +39953,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     fleksi: FLEKSICreateNestedOneWithoutBarang_furnitureInput
@@ -39963,7 +39964,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -39972,7 +39973,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fleksi?: FLEKSIUpdateOneRequiredWithoutBarang_furnitureNestedInput
@@ -39983,7 +39984,7 @@ export namespace Prisma {
     fleksi_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -39993,7 +39994,7 @@ export namespace Prisma {
     fleksi_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -40002,7 +40003,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40012,7 +40013,7 @@ export namespace Prisma {
     fleksi_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40076,7 +40077,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     procim: PROCIMCreateNestedOneWithoutBarang_elektronikInput
@@ -40087,7 +40088,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -40096,7 +40097,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     procim?: PROCIMUpdateOneRequiredWithoutBarang_elektronikNestedInput
@@ -40107,7 +40108,7 @@ export namespace Prisma {
     procim_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40117,7 +40118,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -40126,7 +40127,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40136,7 +40137,7 @@ export namespace Prisma {
     procim_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40145,7 +40146,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     procim: PROCIMCreateNestedOneWithoutBarang_furnitureInput
@@ -40156,7 +40157,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -40165,7 +40166,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     procim?: PROCIMUpdateOneRequiredWithoutBarang_furnitureNestedInput
@@ -40176,7 +40177,7 @@ export namespace Prisma {
     procim_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40186,7 +40187,7 @@ export namespace Prisma {
     procim_id: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -40195,7 +40196,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40205,7 +40206,7 @@ export namespace Prisma {
     procim_id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -40589,15 +40590,15 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -40844,20 +40845,20 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -43572,12 +43573,12 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -44194,15 +44195,15 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -44233,6 +44234,17 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -44247,20 +44259,20 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -44304,26 +44316,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44354,26 +44366,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44415,23 +44427,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44463,23 +44475,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44515,22 +44527,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44556,22 +44568,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44604,12 +44616,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -44637,12 +44649,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -44678,11 +44690,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -44708,11 +44720,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -44756,27 +44768,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44805,27 +44817,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44864,26 +44876,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44912,26 +44924,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -44973,23 +44985,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45021,23 +45033,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45076,28 +45088,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45126,28 +45138,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45187,24 +45199,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45234,24 +45246,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45289,28 +45301,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45338,28 +45350,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45401,22 +45413,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45448,22 +45460,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -45555,26 +45567,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"KSSM"> | string | null
     nama_barang?: StringNullableFilter<"KSSM"> | string | null
     no_bpkb?: StringNullableFilter<"KSSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KSSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KSSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSSM"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSSM"> | Date | string | null
@@ -45626,23 +45638,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KSS"> | string | null
     alamat_shm?: StringNullableFilter<"KSS"> | string | null
     detail_jaminan?: StringNullableFilter<"KSS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSS"> | bigint | number | null
     tanggal_angsuran_dimulai?: DateTimeNullableFilter<"KSS"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KSS"> | string | null
-    asuransi_nominal?: IntNullableFilter<"KSS"> | number | null
-    materai_nominal?: IntNullableFilter<"KSS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSS"> | number | null
-    total_biaya?: IntNullableFilter<"KSS"> | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSS"> | Date | string | null
@@ -45688,22 +45700,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: StringNullableFilter<"PINEK"> | string | null
     nama_barang?: StringNullableFilter<"PINEK"> | string | null
     detail_jaminan?: StringNullableFilter<"PINEK"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PINEK"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PINEK"> | number | null
-    jangka_waktu?: IntNullableFilter<"PINEK"> | number | null
-    nominal_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"PINEK"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"PINEK"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"PINEK"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PINEK"> | string | null
     tujuan_penggunaan?: StringNullableFilter<"PINEK"> | string | null
     provisi_persen?: FloatNullableFilter<"PINEK"> | number | null
-    provisi_nominal?: IntNullableFilter<"PINEK"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"PINEK"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"PINEK"> | number | null
-    materai_nominal?: IntNullableFilter<"PINEK"> | number | null
-    total_biaya?: IntNullableFilter<"PINEK"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"PINEK"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"PINEK"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"PINEK"> | Date | string | null
@@ -45746,12 +45758,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"FLEKSI"> | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"FLEKSI"> | number | null
-    jangka_waktu?: IntNullableFilter<"FLEKSI"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"FLEKSI"> | string | null
     rekening_pinjaman?: StringNullableFilter<"FLEKSI"> | string | null
-    nominal_angsuran?: IntNullableFilter<"FLEKSI"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"FLEKSI"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"FLEKSI"> | string | null
     created_at?: DateTimeNullableFilter<"FLEKSI"> | Date | string | null
@@ -45794,11 +45806,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: StringNullableFilter<"PROCIM"> | string | null
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     alamat_rumah_penjamin?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"PROCIM"> | number | null
-    jangka_waktu?: IntNullableFilter<"PROCIM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     rekening_pinjaman?: StringNullableFilter<"PROCIM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"PROCIM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"PROCIM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
     tenggat_angsuran?: StringNullableFilter<"PROCIM"> | string | null
     created_at?: DateTimeNullableFilter<"PROCIM"> | Date | string | null
@@ -45849,27 +45861,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KSM"> | Date | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KSM"> | string | null
     nama_barang?: StringNullableFilter<"KSM"> | string | null
-    harga_barang?: IntNullableFilter<"KSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_nominal?: IntNullableFilter<"KSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KSM"> | number | null
-    total_biaya?: IntNullableFilter<"KSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KSM"> | Date | string | null
@@ -45918,26 +45930,26 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMSM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMSM"> | string | null
     nama_barang?: StringNullableFilter<"KMSM"> | string | null
-    harga_barang?: IntNullableFilter<"KMSM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMSM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMSM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMSM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMSM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMSM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMSM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMSM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMSM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMSM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMSM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMSM"> | number | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMSM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMSM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMSM"> | number | null
-    total_biaya?: IntNullableFilter<"KMSM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMSM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMSM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMSM"> | Date | string | null
@@ -45989,23 +46001,23 @@ export namespace Prisma {
     nik_shm?: StringNullableFilter<"KRS"> | string | null
     alamat_shm?: StringNullableFilter<"KRS"> | string | null
     detail_jaminan?: StringNullableFilter<"KRS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KRS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KRS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KRS"> | number | null
-    jangka_waktu?: IntNullableFilter<"KRS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KRS"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KRS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KRS"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KRS"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KRS"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KRS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KRS"> | Date | string | null
     provisi_persen?: FloatNullableFilter<"KRS"> | number | null
     administrasi_persen?: FloatNullableFilter<"KRS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KRS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KRS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KRS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KRS"> | number | null
-    materai_nominal?: IntNullableFilter<"KRS"> | number | null
-    total_biaya?: IntNullableFilter<"KRS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KRS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KRS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KRS"> | Date | string | null
@@ -46054,28 +46066,28 @@ export namespace Prisma {
     nik_penjamin?: StringNullableFilter<"KMM"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KMM"> | string | null
     nama_barang?: StringNullableFilter<"KMM"> | string | null
-    harga_barang?: IntNullableFilter<"KMM"> | number | null
+    harga_barang?: BigIntNullableFilter<"KMM"> | bigint | number | null
     no_bpkb?: StringNullableFilter<"KMM"> | string | null
     detail_jaminan?: StringNullableFilter<"KMM"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMM"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMM"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMM"> | number | null
-    jangka_waktu?: IntNullableFilter<"KMM"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMM"> | string | null
-    nominal_angsuran?: IntNullableFilter<"KMM"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMM"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMM"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KMM"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KMM"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMM"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMM"> | number | null
     administrasi_persen?: FloatNullableFilter<"KMM"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMM"> | number | null
-    materai_nominal?: IntNullableFilter<"KMM"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMM"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KMM"> | string | null
-    asuransi_tlo_nominal?: IntNullableFilter<"KMM"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMM"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMM"> | number | null
-    total_biaya?: IntNullableFilter<"KMM"> | number | null
+    asuransi_tlo_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMM"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMM"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMM"> | Date | string | null
@@ -46125,24 +46137,24 @@ export namespace Prisma {
     alamat_shm?: StringNullableFilter<"KMS"> | string | null
     nik_shm?: StringNullableFilter<"KMS"> | string | null
     detail_jaminan?: StringNullableFilter<"KMS"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KMS"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tujuan_penggunaan?: StringNullableFilter<"KMS"> | string | null
-    jangka_waktu?: IntNullableFilter<"KMS"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KMS"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KMS"> | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KMS"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KMS"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KMS"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KMS"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KMS"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KMS"> | number | null
-    provisi_nominal?: IntNullableFilter<"KMS"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KMS"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KMS"> | number | null
-    materai_nominal?: IntNullableFilter<"KMS"> | number | null
-    notaris_nominal?: IntNullableFilter<"KMS"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    notaris_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
     nama_asuransi_jiwa?: StringNullableFilter<"KMS"> | string | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KMS"> | number | null
-    total_biaya?: IntNullableFilter<"KMS"> | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KMS"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KMS"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KMS"> | Date | string | null
@@ -46190,28 +46202,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: DateTimeNullableFilter<"KEF"> | Date | string | null
     nik_penjamin?: StringNullableFilter<"KEF"> | string | null
     hubungan_penjamin_debitur?: StringNullableFilter<"KEF"> | string | null
-    jumlah_barang?: IntNullableFilter<"KEF"> | number | null
+    jumlah_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     nama_barang?: StringNullableFilter<"KEF"> | string | null
     merek_barang?: StringNullableFilter<"KEF"> | string | null
     tipe_barang?: StringNullableFilter<"KEF"> | string | null
     ukuran_barang?: StringNullableFilter<"KEF"> | string | null
     warna_barang?: StringNullableFilter<"KEF"> | string | null
-    harga_barang?: IntNullableFilter<"KEF"> | number | null
+    harga_barang?: BigIntNullableFilter<"KEF"> | bigint | number | null
     detail_jaminan?: StringNullableFilter<"KEF"> | string | null
     bunga_pinjaman?: FloatNullableFilter<"KEF"> | number | null
-    jangka_waktu?: IntNullableFilter<"KEF"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    tenggat_angsuran?: IntNullableFilter<"KEF"> | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KEF"> | Date | string | null
-    nominal_angsuran?: IntNullableFilter<"KEF"> | number | null
-    hutang_keseluruhan?: IntNullableFilter<"KEF"> | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KEF"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KEF"> | number | null
-    provisi_nominal?: IntNullableFilter<"KEF"> | number | null
+    provisi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
     administrasi_persen?: FloatNullableFilter<"KEF"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KEF"> | number | null
-    materai_nominal?: IntNullableFilter<"KEF"> | number | null
-    fidusia_nominal?: IntNullableFilter<"KEF"> | number | null
-    total_biaya?: IntNullableFilter<"KEF"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    fidusia_nominal?: BigIntNullableFilter<"KEF"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KEF"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KEF"> | Date | string | null
@@ -46263,22 +46275,22 @@ export namespace Prisma {
     nama_barang?: StringNullableFilter<"KAR"> | string | null
     no_bpkb?: StringNullableFilter<"KAR"> | string | null
     detail_jaminan?: StringNullableFilter<"KAR"> | string | null
-    nominal_pinjaman?: IntNullableFilter<"KAR"> | number | null
+    nominal_pinjaman?: BigIntNullableFilter<"KAR"> | bigint | number | null
     bunga_pinjaman?: FloatNullableFilter<"KAR"> | number | null
-    jangka_waktu?: IntNullableFilter<"KAR"> | number | null
-    nominal_angsuran?: IntNullableFilter<"KAR"> | number | null
+    jangka_waktu?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    nominal_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     tanggal_angsuran_pertama?: DateTimeNullableFilter<"KAR"> | Date | string | null
     tanggal_angsuran_terakhir?: DateTimeNullableFilter<"KAR"> | Date | string | null
-    hutang_keseluruhan?: IntNullableFilter<"KAR"> | number | null
-    tenggat_angsuran?: IntNullableFilter<"KAR"> | number | null
+    hutang_keseluruhan?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    tenggat_angsuran?: BigIntNullableFilter<"KAR"> | bigint | number | null
     provisi_persen?: FloatNullableFilter<"KAR"> | number | null
-    administrasi_nominal?: IntNullableFilter<"KAR"> | number | null
-    provisi_nominal?: IntNullableFilter<"KAR"> | number | null
-    materai_nominal?: IntNullableFilter<"KAR"> | number | null
-    asuransi_jiwa_nominal?: IntNullableFilter<"KAR"> | number | null
+    administrasi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    provisi_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    materai_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    asuransi_jiwa_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
     nama_asuransi?: StringNullableFilter<"KAR"> | string | null
-    notaris_nominal?: IntNullableFilter<"KAR"> | number | null
-    total_biaya?: IntNullableFilter<"KAR"> | number | null
+    notaris_nominal?: BigIntNullableFilter<"KAR"> | bigint | number | null
+    total_biaya?: BigIntNullableFilter<"KAR"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
     submitted_at?: DateTimeNullableFilter<"KAR"> | Date | string | null
@@ -46620,7 +46632,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46629,7 +46641,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46648,7 +46660,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46657,7 +46669,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46767,7 +46779,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangElektronik"> | Date | string | null
   }
@@ -46796,7 +46808,7 @@ export namespace Prisma {
     fleksi_id?: StringFilter<"FleksiBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"FleksiBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"FleksiBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"FleksiBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"FleksiBarangFurniture"> | Date | string | null
   }
@@ -46885,7 +46897,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46894,7 +46906,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46913,7 +46925,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -46922,7 +46934,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -47032,7 +47044,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangElektronik"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangElektronik"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangElektronik"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangElektronik"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangElektronik"> | Date | string | null
   }
@@ -47061,7 +47073,7 @@ export namespace Prisma {
     procim_id?: StringFilter<"ProcimBarangFurniture"> | string
     nama_barang?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
     tipe?: StringNullableFilter<"ProcimBarangFurniture"> | string | null
-    harga?: IntNullableFilter<"ProcimBarangFurniture"> | number | null
+    harga?: BigIntNullableFilter<"ProcimBarangFurniture"> | bigint | number | null
     created_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"ProcimBarangFurniture"> | Date | string | null
   }
@@ -47863,12 +47875,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -47896,12 +47908,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -47945,12 +47957,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47978,12 +47990,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48011,12 +48023,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48044,12 +48056,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48093,12 +48105,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48126,12 +48138,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48159,12 +48171,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48192,12 +48204,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48241,12 +48253,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48274,12 +48286,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48305,11 +48317,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48335,11 +48347,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48381,11 +48393,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48411,11 +48423,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48441,11 +48453,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48471,11 +48483,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48517,11 +48529,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48547,11 +48559,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48577,11 +48589,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48607,11 +48619,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48653,11 +48665,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48683,11 +48695,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48823,26 +48835,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     no_bpkb?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -48874,23 +48886,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_dimulai?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -48916,22 +48928,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: string | null
     nama_barang?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     rekening_pinjaman?: string | null
     tujuan_penggunaan?: string | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -48954,12 +48966,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -48982,11 +48994,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: string | null
     tanggal_lahir_penjamin?: Date | string | null
     alamat_rumah_penjamin?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     rekening_pinjaman?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tenggat_angsuran?: string | null
     created_at?: Date | string | null
@@ -49017,27 +49029,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49066,26 +49078,26 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49117,23 +49129,23 @@ export namespace Prisma {
     nik_shm?: string | null
     alamat_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    administrasi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_jiwa_nominal?: number | null
-    materai_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49162,28 +49174,28 @@ export namespace Prisma {
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
     nama_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tujuan_penggunaan?: string | null
-    nominal_angsuran?: number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
     administrasi_persen?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    asuransi_tlo_nominal?: number | null
-    administrasi_nominal?: number | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_tlo_nominal?: bigint | number | null
+    administrasi_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49213,24 +49225,24 @@ export namespace Prisma {
     alamat_shm?: string | null
     nik_shm?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     tujuan_penggunaan?: string | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     bunga_pinjaman?: number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    notaris_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    notaris_nominal?: bigint | number | null
     nama_asuransi_jiwa?: string | null
-    asuransi_jiwa_nominal?: number | null
-    total_biaya?: number | null
+    asuransi_jiwa_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49258,28 +49270,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: Date | string | null
     nik_penjamin?: string | null
     hubungan_penjamin_debitur?: string | null
-    jumlah_barang?: number | null
+    jumlah_barang?: bigint | number | null
     nama_barang?: string | null
     merek_barang?: string | null
     tipe_barang?: string | null
     ukuran_barang?: string | null
     warna_barang?: string | null
-    harga_barang?: number | null
+    harga_barang?: bigint | number | null
     detail_jaminan?: string | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
+    jangka_waktu?: bigint | number | null
     tanggal_angsuran_terakhir?: Date | string | null
-    tenggat_angsuran?: number | null
+    tenggat_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
-    nominal_angsuran?: number | null
-    hutang_keseluruhan?: number | null
+    nominal_angsuran?: bigint | number | null
+    hutang_keseluruhan?: bigint | number | null
     provisi_persen?: number | null
-    provisi_nominal?: number | null
+    provisi_nominal?: bigint | number | null
     administrasi_persen?: number | null
-    administrasi_nominal?: number | null
-    materai_nominal?: number | null
-    fidusia_nominal?: number | null
-    total_biaya?: number | null
+    administrasi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    fidusia_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49311,22 +49323,22 @@ export namespace Prisma {
     nama_barang?: string | null
     no_bpkb?: string | null
     detail_jaminan?: string | null
-    nominal_pinjaman?: number | null
+    nominal_pinjaman?: bigint | number | null
     bunga_pinjaman?: number | null
-    jangka_waktu?: number | null
-    nominal_angsuran?: number | null
+    jangka_waktu?: bigint | number | null
+    nominal_angsuran?: bigint | number | null
     tanggal_angsuran_pertama?: Date | string | null
     tanggal_angsuran_terakhir?: Date | string | null
-    hutang_keseluruhan?: number | null
-    tenggat_angsuran?: number | null
+    hutang_keseluruhan?: bigint | number | null
+    tenggat_angsuran?: bigint | number | null
     provisi_persen?: number | null
-    administrasi_nominal?: number | null
-    provisi_nominal?: number | null
-    materai_nominal?: number | null
-    asuransi_jiwa_nominal?: number | null
+    administrasi_nominal?: bigint | number | null
+    provisi_nominal?: bigint | number | null
+    materai_nominal?: bigint | number | null
+    asuransi_jiwa_nominal?: bigint | number | null
     nama_asuransi?: string | null
-    notaris_nominal?: number | null
-    total_biaya?: number | null
+    notaris_nominal?: bigint | number | null
+    total_biaya?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     submitted_at?: Date | string | null
@@ -49368,26 +49380,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49418,26 +49430,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49468,26 +49480,26 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49519,23 +49531,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49567,23 +49579,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49615,23 +49627,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_dimulai?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49657,22 +49669,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49698,22 +49710,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49739,22 +49751,22 @@ export namespace Prisma {
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49777,12 +49789,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49810,12 +49822,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49843,12 +49855,12 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49871,11 +49883,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49901,11 +49913,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49931,11 +49943,11 @@ export namespace Prisma {
     tempat_lahir_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     alamat_rumah_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rekening_pinjaman?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tenggat_angsuran?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49966,27 +49978,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50015,27 +50027,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50064,27 +50076,27 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50113,26 +50125,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50161,26 +50173,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50209,26 +50221,26 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50260,23 +50272,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50308,23 +50320,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50356,23 +50368,23 @@ export namespace Prisma {
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50401,28 +50413,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50451,28 +50463,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50501,28 +50513,28 @@ export namespace Prisma {
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_tlo_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_tlo_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50552,24 +50564,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50599,24 +50611,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50646,24 +50658,24 @@ export namespace Prisma {
     alamat_shm?: NullableStringFieldUpdateOperationsInput | string | null
     nik_shm?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tujuan_penggunaan?: NullableStringFieldUpdateOperationsInput | string | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi_jiwa?: NullableStringFieldUpdateOperationsInput | string | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50691,28 +50703,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50740,28 +50752,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50789,28 +50801,28 @@ export namespace Prisma {
     tanggal_lahir_penjamin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nik_penjamin?: NullableStringFieldUpdateOperationsInput | string | null
     hubungan_penjamin_debitur?: NullableStringFieldUpdateOperationsInput | string | null
-    jumlah_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    jumlah_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     merek_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe_barang?: NullableStringFieldUpdateOperationsInput | string | null
     ukuran_barang?: NullableStringFieldUpdateOperationsInput | string | null
     warna_barang?: NullableStringFieldUpdateOperationsInput | string | null
-    harga_barang?: NullableIntFieldUpdateOperationsInput | number | null
+    harga_barang?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     administrasi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    fidusia_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fidusia_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50842,22 +50854,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50889,22 +50901,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50936,22 +50948,22 @@ export namespace Prisma {
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     no_bpkb?: NullableStringFieldUpdateOperationsInput | string | null
     detail_jaminan?: NullableStringFieldUpdateOperationsInput | string | null
-    nominal_pinjaman?: NullableIntFieldUpdateOperationsInput | number | null
+    nominal_pinjaman?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     bunga_pinjaman?: NullableFloatFieldUpdateOperationsInput | number | null
-    jangka_waktu?: NullableIntFieldUpdateOperationsInput | number | null
-    nominal_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    jangka_waktu?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    nominal_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     tanggal_angsuran_pertama?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tanggal_angsuran_terakhir?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    hutang_keseluruhan?: NullableIntFieldUpdateOperationsInput | number | null
-    tenggat_angsuran?: NullableIntFieldUpdateOperationsInput | number | null
+    hutang_keseluruhan?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    tenggat_angsuran?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     provisi_persen?: NullableFloatFieldUpdateOperationsInput | number | null
-    administrasi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    provisi_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    materai_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    asuransi_jiwa_nominal?: NullableIntFieldUpdateOperationsInput | number | null
+    administrasi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    provisi_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    materai_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    asuransi_jiwa_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     nama_asuransi?: NullableStringFieldUpdateOperationsInput | string | null
-    notaris_nominal?: NullableIntFieldUpdateOperationsInput | number | null
-    total_biaya?: NullableIntFieldUpdateOperationsInput | number | null
+    notaris_nominal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    total_biaya?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submitted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50994,7 +51006,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -51003,7 +51015,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -51019,7 +51031,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51028,7 +51040,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51037,7 +51049,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51046,7 +51058,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51055,7 +51067,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51064,7 +51076,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51094,7 +51106,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -51103,7 +51115,7 @@ export namespace Prisma {
     id?: string
     nama_barang?: string | null
     tipe?: string | null
-    harga?: number | null
+    harga?: bigint | number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -51119,7 +51131,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51128,7 +51140,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51137,7 +51149,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51146,7 +51158,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51155,7 +51167,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -51164,7 +51176,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nama_barang?: NullableStringFieldUpdateOperationsInput | string | null
     tipe?: NullableStringFieldUpdateOperationsInput | string | null
-    harga?: NullableIntFieldUpdateOperationsInput | number | null
+    harga?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

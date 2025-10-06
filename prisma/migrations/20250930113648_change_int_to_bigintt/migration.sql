@@ -1,0 +1,154 @@
+-- AlterTable
+ALTER TABLE "public"."FLEKSI" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."FleksiBarangElektronik" ALTER COLUMN "harga" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."FleksiBarangFurniture" ALTER COLUMN "harga" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KAR" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KEF" ALTER COLUMN "harga_barang" SET DATA TYPE BIGINT,
+ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "fidusia_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "jumlah_barang" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KMM" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_tlo_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "harga_barang" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KMS" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KMSM" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_tlo_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "harga_barang" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KRS" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KSM" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_tlo_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "harga_barang" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KSS" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."KSSM" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "administrasi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_tlo_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "harga_barang" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "notaris_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."PINEK" ALTER COLUMN "total_biaya" SET DATA TYPE BIGINT,
+ALTER COLUMN "asuransi_jiwa_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "hutang_keseluruhan" SET DATA TYPE BIGINT,
+ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "materai_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT,
+ALTER COLUMN "provisi_nominal" SET DATA TYPE BIGINT,
+ALTER COLUMN "tenggat_angsuran" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."PROCIM" ALTER COLUMN "jangka_waktu" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_angsuran" SET DATA TYPE BIGINT,
+ALTER COLUMN "nominal_pinjaman" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."ProcimBarangElektronik" ALTER COLUMN "harga" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "public"."ProcimBarangFurniture" ALTER COLUMN "harga" SET DATA TYPE BIGINT;
