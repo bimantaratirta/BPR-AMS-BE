@@ -233,14 +233,12 @@ class AuthService {
 
     return this.prisma.$transaction(async (tx) => {
       // 1) Username unique check (only if username is updated)
-      if (data.username) {
-        const usernameExist = await tx.user.findFirst({
-          where: { username: data.username },
-        });
-        if (usernameExist && usernameExist.id !== id) {
-          fail("Username already taken.", "username");
-          throw new joi.ValidationError(validation, stack);
-        }
+      const usernameExist = await tx.user.findFirst({
+        where: { username: data.username },
+      });
+      if (usernameExist) {
+        fail("Username already taken.", "username");
+        throw new joi.ValidationError(validation, stack);
       }
 
       // Only update fields provided in the data object
