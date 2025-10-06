@@ -226,34 +226,47 @@ class AuthService {
   async updateProfile(id, data) {
     let validation = "";
     let stack = [];
+
     const fail = (message, path) => {
       validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
 
     return this.prisma.$transaction(async (tx) => {
-      // 1) Username unique check (only if username is updated)
-      const usernameExist = await tx.user.findFirst({
-        where: { username: data.username },
+      // 1) Get current user to compare with the new username
+      const currentUser = await tx.user.findUnique({
+        where: { id: id },
       });
-      if (usernameExist) {
-        fail("Username already taken.", "username");
-        throw new joi.ValidationError(validation, stack);
+
+      if (!currentUser) {
+        throw new Error("User not found");
       }
 
-      // Only update fields provided in the data object
+      // 2) Only check for username uniqueness if it's being updated
+      if (data.username && data.username !== currentUser.username) {
+        const usernameExist = await tx.user.findFirst({
+          where: { username: data.username },
+        });
+
+        if (usernameExist) {
+          fail("Username already taken.", "username");
+          throw new joi.ValidationError(validation, stack);
+        }
+      }
+
+      // 3) Only update fields provided in the data object
       const updatedData = {};
       if (data.name) updatedData.name = data.name;
-      if (data.username) updatedData.username = data.username;
+      if (data.username) updatedData.username = data.username; // update username only if provided
 
-      // Perform the update in the database
+      // 4) Perform the update in the database
       const updatedUser = await tx.user.update({
         where: { id: id },
         data: updatedData,
       });
 
       if (!updatedUser) {
-        throw Error("Failed to update profile");
+        throw new Error("Failed to update profile");
       }
 
       return { message: "User profile updated successfully" };
