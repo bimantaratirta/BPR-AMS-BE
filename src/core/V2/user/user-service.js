@@ -56,7 +56,7 @@ class UserService {
     console.log(options);
 
     const [data, count] = await Promise.all([
-      this.prisma.user.findMany(...options),
+      this.prisma.user.findMany(options),
       this.prisma.user.count({ where: options.where }),
     ]);
 
