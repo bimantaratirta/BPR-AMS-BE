@@ -1,9 +1,9 @@
 const reportQueryConfig = {
-  searchableFields: ["status", "process"], // Kolom yang bisa dicari
-  filterableFields: ["status", "process"], // Kolom yang bisa difilter
-  orderableFields: ["created_at", "updated_at"], // Kolom yang bisa diurutkan
+  searchableFields: ["lo.name"],
+  jsonSearchableFields: [{ field: "customer_snapshot", path: ["name"] }],
+  filterableFields: [""],
+  orderableFields: ["created_at", "updated_at"],
   relations: {
-    // Relasi yang akan di-include
     lo: true,
     slo: true,
     am: true,
@@ -17,19 +17,18 @@ const reportQueryConfig = {
     lo: {
       id: true,
       name: true,
-      username: true, // Pilih hanya kolom yang diinginkan
+      username: true,
     },
     slo: {
       id: true,
       name: true,
-      username: true, // Pilih hanya kolom yang diinginkan
+      username: true,
     },
     am: {
       id: true,
       name: true,
-      username: true, // Pilih hanya kolom yang diinginkan
+      username: true,
     },
-    // Anda dapat menambahkan pilihan select untuk relasi lain jika perlu
   },
 };
 

@@ -4,6 +4,7 @@
  *  - searchableFields: string[]           // e.g. ['name','ktp_number','user.email']
  *  - filterableFields: string[]           // simple equals filter
  *  - orderableFields: string[]            // whitelist order_by fields
+ *
  *  - relations: Record<string, any>       // include configs
  *  - dateFields: { created_at?: string, updated_at?: string } // map if field names differ
  * @param {Object} query
@@ -17,6 +18,7 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
     relations = {},
     select = {},
     dateFields = { created_at: "created_at", updated_at: "updated_at" },
+    jsonSearchableFields = [], // Menambahkan jsonSearchableFields untuk mendukung pencarian JSON
   } = modelConfig;
 
   const {
@@ -31,19 +33,40 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
   // WHERE dasar (mis. scoping by user)
   const where = { ...(fixedWhere || {}) };
 
-  // 🔍 Search (OR across searchableFields)
-  if (search != null && searchableFields.length > 0) {
+  // 🔍 Search (gabungkan pencarian string biasa dan JSON)
+  if (search != null) {
     const searchTerm = String(search);
-    where.OR = searchableFields.map((fieldPath) => {
+
+    // Pencarian di field string biasa (menggunakan contains)
+    const stringSearchConditions = searchableFields.map((fieldPath) => {
       const parts = fieldPath.split(".");
       const leaf = parts.pop();
-      // Nested builder: e.g. { user: { email: { contains: searchTerm, mode: 'insensitive' } } }
-      const condition = {
-        [leaf]: { contains: searchTerm, mode: "insensitive" },
-      };
+
+      const condition = isEnumField(modelConfig, fieldPath)
+        ? { [leaf]: { equals: searchTerm.toUpperCase() } }
+        : { [leaf]: { contains: searchTerm, mode: "insensitive" } };
+
       return parts.reduceRight((acc, curr) => ({ [curr]: acc }), condition);
     });
+
+    // Pencarian di field JSON (menggunakan path dan equals)
+    const jsonSearchConditions = jsonSearchableFields.map((jsonFieldConfig) => {
+      const { field, path } = jsonFieldConfig;
+
+      return {
+        [field]: {
+          path: path, // Gunakan path dinamis untuk mencari di dalam JSON
+          equals: searchTerm, // Nilai yang dicari di dalam JSON
+          mode: "insensitive",
+        },
+      };
+    });
+
+    // Gabungkan kondisi pencarian string biasa dan JSON
+    where.OR = [...stringSearchConditions, ...jsonSearchConditions];
   }
+
+  console.log("where : ", JSON.stringify(where, null, 2));
 
   // 🎯 Filtering by equals for simple fields
   if (filter && filterableFields.length > 0) {
@@ -145,6 +168,12 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
     ...(take !== undefined ? { take } : {}),
     ...(skip !== undefined ? { skip } : {}),
   };
+}
+
+function isEnumField(modelConfig, fieldPath) {
+  // Cek apakah fieldPath termasuk dalam enum
+  const enumFields = ["status", "process"];
+  return enumFields.some((enumField) => fieldPath.includes(enumField));
 }
 
 function handleNestedInclude(nestedRelations, selectColumns) {

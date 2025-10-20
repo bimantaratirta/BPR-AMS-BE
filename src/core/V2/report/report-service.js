@@ -1296,7 +1296,19 @@ class ReportService {
       : null;
 
     const options = buildQueryOptions(reportQueryConfig, query, baseWhere);
-    console.log("options: ", options);
+    // console.log("options: ", options);
+    const [hasil] = await this.prisma.$transaction([
+      this.prisma.report.findMany({
+        where: {},
+      }),
+    ]);
+
+    // Filter secara manual nama yang mengandung 'bagus' (case-insensitive)
+    const filteredResults = hasil.filter((report) =>
+      report.customer_snapshot?.name.toLowerCase().includes("asd")
+    );
+
+    console.log(filteredResults);
 
     const [data, count] = await Promise.all([
       this.prisma.report.findMany(options),
