@@ -22,6 +22,20 @@ class CustomerController {
     );
   }
 
+  async listCustomerByLo(req, res) {
+    const query = req.query;
+    const result = await CustomerService.listCustomerByLo(req.params.id, {
+      query,
+    });
+
+    return successResponse(
+      res,
+      result.data,
+      "customer retrieved successfully",
+      result.meta
+    );
+  }
+
   // GET /customers/:id
   async detail(req, res) {
     const result = await CustomerService.detail(req.params.id);

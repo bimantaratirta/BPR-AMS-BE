@@ -169,6 +169,35 @@ class CustomerService {
     };
   }
 
+  async listCustomerByLo(id, { query } = {}) {
+    // Scope ke pembuat data (created_by), bukan unit_id
+    const options = buildQueryOptions(customerQueryConfig, query, {
+      created_by: id,
+    });
+
+    const [data, count] = await Promise.all([
+      this.prisma.customer.findMany(options),
+      this.prisma.customer.count({ where: options.where }),
+    ]);
+
+    const page = query?.pagination?.page ?? 1;
+    const limit = query?.pagination?.limit ?? 10;
+    const hasPagination = !!(query?.pagination && !query?.get_all);
+    const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
+
+    return {
+      data,
+      meta: hasPagination
+        ? {
+            totalItems: count,
+            totalPages,
+            currentPage: Number(page),
+            itemsPerPage: Number(limit),
+          }
+        : null,
+    };
+  }
+
   async detail(id) {
     const customer = await this.prisma.customer.findUnique({
       where: { id },
