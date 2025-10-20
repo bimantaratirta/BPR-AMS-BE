@@ -25,6 +25,7 @@ import ReportV2 from "./core/V2/report/report-routes.js";
 import ReviewCustomerV2 from "./core/V2/review-customer/review-customer-routes.js";
 import EvaluationV2 from "./core/V2/evaluation/evaluation-routes.js";
 import ReviewEvaluatonV2 from "./core/V2/review-evaluation/review-evaluation-routes.js";
+import UserV2 from "./core/V2/user/user-routes.js";
 
 const router = express.Router();
 
@@ -119,6 +120,10 @@ const appsRoutesV2 = [
   {
     path: "/review-evaluation",
     route: ReviewEvaluatonV2,
+  },
+  {
+    path: "/user",
+    route: UserV2,
   },
 ];
 
