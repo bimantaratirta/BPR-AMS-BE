@@ -65,7 +65,7 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
     where.OR = [...stringSearchConditions, ...jsonSearchConditions];
   }
 
-  console.log("where : ", JSON.stringify(where, null, 2));
+  // console.log("where : ", JSON.stringify(where, null, 2));
 
   // 🎯 Filtering by equals for simple fields
   if (filter && filterableFields.length > 0) {

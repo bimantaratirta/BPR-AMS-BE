@@ -1308,7 +1308,7 @@ class ReportService {
       report.customer_snapshot?.name.toLowerCase().includes("asd")
     );
 
-    console.log(filteredResults);
+    // console.log(options);
 
     const [data, count] = await Promise.all([
       this.prisma.report.findMany(options),
@@ -1337,13 +1337,20 @@ class ReportService {
     const item = await this.prisma.report.findUnique({
       where: { id },
       include: {
+        lo: { select: { id: true, name: true } },
+        slo: { select: { id: true, name: true } },
+        am: { select: { id: true, name: true } },
         customer: true,
-        lo: true,
-        slo: true,
-        am: true,
+        report_photo: true,
+        review_customer: true,
+        evaluation: true,
       },
     });
+
     if (!item) throw BaseError.notFound("Report not found");
+
+    console.log(item);
+
     return item;
   }
 
