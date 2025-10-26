@@ -17,6 +17,10 @@ class DashboardRoutes extends BaseRoutes {
       authTokenMiddleware.authenticate,
       tryCatch(dashboardController.dashboardAm),
     ]);
+    this.router.get("/direksi", [
+      authTokenMiddleware.authenticate,
+      tryCatch(dashboardController.dashboardDireksi),
+    ]);
   }
 }
 

@@ -707,7 +707,7 @@ async function main() {
       },
     ],
   });
-  
+
   await prisma.user.createMany({
     data: [
       {
@@ -947,6 +947,15 @@ async function main() {
 
   // Step 4: Create Employees, Customers, and Reports
 
+  // Helper function untuk menghasilkan tanggal acak dalam bulan Oktober 2025
+  function getRandomDateInOctober() {
+    const randomDay = Math.floor(Math.random() * 31) + 1; // Acak antara 1 hingga 31
+    return new Date(
+      `2025-10-${randomDay.toString().padStart(2, "0")}T09:28:17.915Z`
+    );
+  }
+
+  // Membuat data untuk employee
   await prisma.employee.createMany({
     data: Array.from({ length: 96 }, (_, index) => ({
       id: `714566fc-a337-44a0-86a3-d7e53d1cec${(index + 1)
@@ -964,12 +973,14 @@ async function main() {
     })),
   });
 
+  // Mengambil data employees untuk referensi created_by
   const employees = await prisma.user.findMany({
     where: {
       role: "LO", // Fetching only Local Operator roles
     },
   });
 
+  // Membuat data untuk customers
   await prisma.customer.createMany({
     data: Array.from({ length: 96 }, (_, index) => ({
       id: `cd913355-0c30-4d20-98e3-542cd0c56a${(index + 1)
@@ -988,7 +999,7 @@ async function main() {
       non_employee_id: null,
       business_id: null,
       created_by: employees[Math.floor(index / 8)].id, // Every 8 customers share the same created_by (LO role)
-      created_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
+      created_at: getRandomDateInOctober(), // Menggunakan fungsi untuk tanggal acak dalam Oktober 2025
       updated_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
       deleted_at: null, // No deletion date
     })),
@@ -1092,7 +1103,7 @@ async function main() {
       },
       non_employee_snapshot: null,
       business_snapshot: null,
-      created_at: new Date("2025-10-23T09:28:17.915Z"),
+      created_at: getRandomDateInOctober(),
       updated_at: new Date("2025-10-23T09:28:17.915Z"),
       deleted_at: null,
     });
