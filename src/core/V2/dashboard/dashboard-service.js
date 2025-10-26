@@ -14,10 +14,10 @@ class DashboardService {
     this.prisma = new PrismaService();
   }
 
-  async dashboardLo(currentUser, { format }) {
+  async dashboardLo(id, { format }) {
     const result = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findFirst({
-        where: { id: currentUser.id, role: "LO" },
+        where: { id: id, role: "LO" },
       });
       if (!user) throw BaseError.forbidden("Only LO can access");
 
@@ -48,7 +48,7 @@ class DashboardService {
       const customersThisWeek = await tx.customer.groupBy({
         by: ["created_at"],
         where: {
-          created_by: currentUser.id,
+          created_by: id,
           created_at: {
             gte: startOfWeek,
             lte: endOfWeek,
@@ -63,7 +63,7 @@ class DashboardService {
       const customersPrevWeek = await tx.customer.groupBy({
         by: ["created_at"],
         where: {
-          created_by: currentUser.id,
+          created_by: id,
           created_at: {
             gte: startOfPrevWeek,
             lte: endOfPrevWeek,
@@ -78,7 +78,7 @@ class DashboardService {
       const customersThisMonth = await tx.customer.groupBy({
         by: ["created_at"],
         where: {
-          created_by: currentUser.id,
+          created_by: id,
           created_at: {
             gte: startOfMonthPeriod,
             lte: endOfMonthPeriod,
@@ -93,7 +93,7 @@ class DashboardService {
       const customersPrevMonth = await tx.customer.groupBy({
         by: ["created_at"],
         where: {
-          created_by: currentUser.id,
+          created_by: id,
           created_at: {
             gte: startOfPrevMonth,
             lte: endOfPrevMonth,
@@ -196,16 +196,16 @@ class DashboardService {
     return result;
   }
 
-  async dashboardSlo(currentUser, { format }) {
+  async dashboardSlo(id, { format }) {
     const result = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findFirst({
-        where: { id: currentUser.id, role: "SLO" },
+        where: { id: id, role: "SLO" },
       });
       if (!user) throw BaseError.forbidden("Only SLO can access");
 
       // Mendapatkan daftar LO yang berada di bawah SLO ini
       const los = await tx.user.findMany({
-        where: { supervisor_id: currentUser.id, role: "LO" },
+        where: { supervisor_id: id, role: "LO" },
         select: {
           id: true,
           name: true,
@@ -353,16 +353,16 @@ class DashboardService {
     return result;
   }
 
-  async dashboardAm(currentUser, { format }) {
+  async dashboardAm(id, { format }) {
     const result = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findFirst({
-        where: { id: currentUser.id, role: "AM" },
+        where: { id: id, role: "AM" },
       });
       if (!user) throw BaseError.forbidden("Only AM can access");
 
       // Mendapatkan daftar LO yang berada di bawah SLO ini
       const slos = await tx.user.findMany({
-        where: { supervisor_id: currentUser.id, role: "SLO" },
+        where: { supervisor_id: id, role: "SLO" },
         select: {
           id: true,
           name: true,

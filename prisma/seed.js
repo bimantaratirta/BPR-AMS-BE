@@ -663,11 +663,13 @@ async function main() {
         id: "4dfc5d80-9312-418a-9bff-10e9cfcdb21e",
         branch: "PUSAT",
         region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
+        address: "Jl. Raya Pusat No.1, Jakarta",
       },
       {
         id: "5a4f6e1c-2d3b-4f4a-9f1e-3c9e8f7b6c2a",
         branch: "CWN",
         region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
+        address: "Jl. Cendana No.15, Jakarta",
       },
 
       // Selatan
@@ -675,11 +677,13 @@ async function main() {
         id: "8e9f0a1b-3c4d-5e6f-0a1b-2c3d4e5f6a7b",
         branch: "SEDONG",
         region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
+        address: "Jl. Sedong No.3, Yogyakarta",
       },
       {
         id: "9f0a1b2c-4d5e-6f7a-1b2c-3d4e5f6a7b8c",
         branch: "BEBER",
         region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
+        address: "Jl. Beber Raya No.10, Yogyakarta",
       },
 
       // Timur
@@ -687,14 +691,17 @@ async function main() {
         id: "12345678-9abc-def0-1234-56789abcdef0",
         branch: "SINDANG",
         region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
+        address: "Jl. Sindang No.9, Surabaya",
       },
       {
         id: "3483c2d7-b6e8-4f9a-8c7d-6594e1f2a3b4",
         branch: "KARSEM",
         region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
+        address: "Jl. Karsem No.20, Surabaya",
       },
     ],
   });
+
 
   await prisma.user.createMany({
     data: [

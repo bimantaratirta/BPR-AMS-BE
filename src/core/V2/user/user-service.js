@@ -1,4 +1,3 @@
-import joi from "joi";
 import BaseError from "../../../base_classes/base-error.js";
 import { PrismaService } from "../../../common/service/prisma.service.js";
 import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
@@ -9,10 +8,55 @@ class UserService {
     this.prisma = new PrismaService();
   }
 
-  async List() {
-    const user = await this.prisma.user.findMany();
-    if (user.length === 0) throw BaseError.notFound("user not found");
-    return user;
+  async list({ query } = {}) {
+    const options = buildQueryOptions(userQueryConfig, query, null);
+    console.log("options: ", JSON.stringify(options, null, 2));
+
+    const [data, count] = await Promise.all([
+      this.prisma.user.findMany(options),
+      this.prisma.user.count({ where: options.where }),
+    ]);
+
+    const page = query?.pagination?.page ?? 1;
+    const limit = query?.pagination?.limit ?? 10;
+    const hasPagination = !!(query?.pagination && !query?.get_all);
+    const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
+
+    return {
+      data,
+      meta: hasPagination
+        ? {
+            totalItems: count,
+            totalPages,
+            currentPage: Number(page),
+            itemsPerPage: Number(limit),
+          }
+        : null,
+    };
+  }
+
+  async detail(id) {
+    const item = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        region_id: true,
+        branch_id: true,
+        supervisor_id: true,
+        role: true,
+        region: true, // Menyertakan relasi region
+        branch: true,
+        created_at: true,
+        updated_at: true,
+        deleted_at: true,
+      },
+    });
+
+    if (!item) throw BaseError.notFound("User not found");
+
+    return item;
   }
 
   async ListLoBySlo(id, { query } = {}) {

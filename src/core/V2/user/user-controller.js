@@ -3,8 +3,19 @@ import userService from "./user-service.js";
 
 class UserController {
   async List(req, res) {
-    const result = await userService.List();
-    return successResponse(res, result);
+    const query = req.query;
+    const result = await userService.list({ query });
+    return successResponse(
+      res,
+      result.data,
+      "User retrieved successfully",
+      result.meta
+    );
+  }
+
+  async detail(req, res) {
+    const result = await userService.detail(req.params.id);
+    return successResponse(res, result, "User detail retrieved");
   }
 
   async ListLoBySlo(req, res) {

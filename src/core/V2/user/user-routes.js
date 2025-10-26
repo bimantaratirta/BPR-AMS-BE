@@ -10,6 +10,11 @@ class BranchRoutes extends BaseRoutes {
       tryCatch(userController.List),
     ]);
 
+    this.router.get("/:id", [
+      AuthMiddleware.authenticate,
+      tryCatch(userController.detail),
+    ]);
+
     this.router.get("/lo-by-slo/:id", [
       AuthMiddleware.authenticate,
       tryCatch(userController.ListLoBySlo),

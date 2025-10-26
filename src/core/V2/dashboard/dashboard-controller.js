@@ -3,22 +3,14 @@ import dashboardService from "./dashboard-service.js";
 
 class DashboardController {
   async dashboardLo(req, res) {
-    const currentUser = req.user; // scope by creator
+    const id = req.params.id; // scope by creator
     const { format } = req.query; // Menangkap query parameter 'format' (minggu atau bulan)
 
     try {
       // Memanggil service dashboardLo dengan parameter format (minggu atau bulan)
-      const result = await dashboardService.dashboardLo(currentUser, {
+      const result = await dashboardService.dashboardLo(id, {
         format, // Format bisa 'minggu' atau 'bulan'
       });
-
-      // Menyesuaikan label untuk format "bulan"
-      //   if (format === "bulan") {
-      //     result.progresive = result.progresive.map((data, index) => ({
-      //       label: `Minggu ${index + 1}`, // Mengganti label dengan 'Minggu 1', 'Minggu 2', dst
-      //       value: data,
-      //     }));
-      //   }
 
       // Mengirimkan response dengan data yang diambil dari service
       return successResponse(
@@ -37,12 +29,12 @@ class DashboardController {
   }
 
   async dashboardSlo(req, res) {
-    const currentUser = req.user; // scope by creator
+    const id = req.params.id; // scope by creator
     const { format } = req.query; // Menangkap query parameter 'format' (minggu atau bulan)
 
     try {
       // Memanggil service dashboardSlo untuk mendapatkan laporan LO
-      const result = await dashboardService.dashboardSlo(currentUser, {
+      const result = await dashboardService.dashboardSlo(id, {
         format,
       });
 
@@ -63,12 +55,12 @@ class DashboardController {
   }
 
   async dashboardAm(req, res) {
-    const currentUser = req.user; // scope by creator
+    const id = req.params.id; // scope by creator
     const { format } = req.query; // Menangkap query parameter 'format' (minggu atau bulan)
 
     try {
       // Memanggil service dashboardSlo untuk mendapatkan laporan LO
-      const result = await dashboardService.dashboardAm(currentUser, {
+      const result = await dashboardService.dashboardAm(id, {
         format,
       });
 

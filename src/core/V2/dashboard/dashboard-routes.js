@@ -5,15 +5,15 @@ import dashboardController from "./dashboard-controller.js";
 
 class DashboardRoutes extends BaseRoutes {
   routes() {
-    this.router.get("/lo", [
+    this.router.get("/lo/:id", [
       authTokenMiddleware.authenticate,
       tryCatch(dashboardController.dashboardLo),
     ]);
-    this.router.get("/slo", [
+    this.router.get("/slo/:id", [
       authTokenMiddleware.authenticate,
       tryCatch(dashboardController.dashboardSlo),
     ]);
-    this.router.get("/am", [
+    this.router.get("/am/:id", [
       authTokenMiddleware.authenticate,
       tryCatch(dashboardController.dashboardAm),
     ]);
