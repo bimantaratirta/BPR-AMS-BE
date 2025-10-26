@@ -56,7 +56,8 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
       return {
         [field]: {
           path: path, // Gunakan path dinamis untuk mencari di dalam JSON
-          equals: searchTerm, // Nilai yang dicari di dalam JSON
+          string_contains: searchTerm, // Nilai yang dicari di dalam JSON
+          mode: "insensitive",
         },
       };
     });

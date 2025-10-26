@@ -823,6 +823,7 @@ model Customer {
 model Report {
   id                    String  @id @default(uuid())
   status                Status
+  
   process               Process
   customer_id           String?
   lo_id                 String?

@@ -4,10 +4,7 @@ import { PrismaService } from "../../../common/service/prisma.service.js";
 import S3Service from "../../../common/service/s3.service.js";
 import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
 import reportQueryConfig from "./report-query-config.js";
-import XLSX from "xlsx";
 import ExcelJS from "exceljs";
-import fs from "fs";
-import path from "path";
 
 const ALLOWED_MIME = new Set([
   "image/jpeg",
@@ -1296,7 +1293,7 @@ class ReportService {
       : null;
 
     const options = buildQueryOptions(reportQueryConfig, query, baseWhere);
-    // console.log("options: ", options);
+    console.log("options: ", JSON.stringify(options, null, 2));
     const [hasil] = await this.prisma.$transaction([
       this.prisma.report.findMany({
         where: {},
