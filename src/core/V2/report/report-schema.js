@@ -40,6 +40,15 @@ export const reportSchema = {
           "DECLINE_AM"
         )
         .optional(),
+      lo_id: Joi.string().uuid().optional().messages({
+        "string.guid": "lo_id must be a valid UUID",
+      }),
+      slo_id: Joi.string().uuid().optional().messages({
+        "string.guid": "slo_id must be a valid UUID",
+      }),
+      am_id: Joi.string().uuid().optional().messages({
+        "string.guid": "am_id must be a valid UUID",
+      }),
 
       created_at: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
       updated_at: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
