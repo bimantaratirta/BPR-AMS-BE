@@ -877,6 +877,20 @@ class ReportService {
       headerCell.font = { bold: true, size: 16 };
       headerCell.alignment = { horizontal: "center", vertical: "middle" };
 
+      headerCell.style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      // Add border to the header cell
+      headerCell.style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+
       // Header kolom
       worksheet.mergeCells("A2:A3");
       worksheet.getCell("A2").value = "KANTOR";
@@ -884,6 +898,19 @@ class ReportService {
       worksheet.getCell("A2").alignment = {
         horizontal: "center",
         vertical: "middle",
+      };
+
+      // Add border to "KANTOR" header cell
+      worksheet.getCell("A2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("A2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
       };
 
       worksheet.mergeCells("B2:B3");
@@ -894,12 +921,38 @@ class ReportService {
         vertical: "middle",
       };
 
+      // Add border to "WIL" header cell
+      worksheet.getCell("B2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("B2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
       worksheet.mergeCells("C2:C3");
       worksheet.getCell("C2").value = "SLO";
       worksheet.getCell("C2").font = { bold: true };
       worksheet.getCell("C2").alignment = {
         horizontal: "center",
         vertical: "middle",
+      };
+
+      // Add border to "SLO" header cell
+      worksheet.getCell("C2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("C2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
       };
 
       worksheet.mergeCells("D2:D3");
@@ -910,6 +963,19 @@ class ReportService {
         vertical: "middle",
       };
 
+      // Add border to "LO" header cell
+      worksheet.getCell("D2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("D2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
       worksheet.mergeCells("E2:E3");
       worksheet.getCell("E2").value = "TARGET";
       worksheet.getCell("E2").font = { bold: true };
@@ -918,70 +984,844 @@ class ReportService {
         vertical: "middle",
       };
 
-      // Data dengan setiap LO pada baris berbeda
+      // Add border to "TARGET" header cell
+      worksheet.getCell("E2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("E2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("F1:K1");
+      worksheet.getCell("F1").value = "MINGGU I (23-29 SEPTEMBER 2024)";
+      worksheet.getCell("F1").font = { bold: true };
+      worksheet.getCell("F1").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("F1").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("F1").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("F2:G2");
+      worksheet.getCell("F2").value = "LO";
+      worksheet.getCell("F2").font = { bold: true };
+      worksheet.getCell("F2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("F2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("F2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("H2:I2");
+      worksheet.getCell("H2").value = "SLO";
+      worksheet.getCell("H2").font = { bold: true };
+      worksheet.getCell("H2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("H2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("H2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("J2:K2");
+      worksheet.getCell("J2").value = "AM";
+      worksheet.getCell("J2").font = { bold: true };
+      worksheet.getCell("J2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("J2").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("J2").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.getCell("F3").value = "GOOD";
+      worksheet.getCell("F3").font = { bold: true };
+      worksheet.getCell("F3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("F3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("F3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.getCell("G3").value = "BAD";
+      worksheet.getCell("G3").font = { bold: true };
+      worksheet.getCell("G3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("G3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("G3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.getCell("H3").value = "GOOD";
+      worksheet.getCell("H3").font = { bold: true };
+      worksheet.getCell("H3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("H3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("H3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("I3");
+      worksheet.getCell("I3").value = "BAD";
+      worksheet.getCell("I3").font = { bold: true };
+      worksheet.getCell("I3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("I3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("I3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.getCell("J3").value = "GOOD";
+      worksheet.getCell("J3").font = { bold: true };
+      worksheet.getCell("J3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("J3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("J3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      worksheet.mergeCells("K3");
+      worksheet.getCell("K3").value = "BAD";
+      worksheet.getCell("K3").font = { bold: true };
+      worksheet.getCell("K3").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Add border to "TARGET" header cell
+      worksheet.getCell("K3").style.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+      };
+      worksheet.getCell("K3").style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" }, // Blue color
+      };
+
+      // Data with region and branch details
       const data = [
         {
-          kantor: "PUSAT",
-          wil: "BARAT",
-          slo: "VICKY",
-          lo: ["AKHMADI", "SITI SAPURO", "SRI N"],
-          target: ["50", "50", "50"],
+          region: "BARAT",
+          am: {
+            name: "Supriadi",
+            branch: [
+              {
+                branch: "KUNINGAN",
+                slo: "VICKY",
+                LO: [
+                  {
+                    name: "AKHMADI",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "SITI SAPURO",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "SRI N",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                branch: "CWN",
+                slo: "SUBRIANA",
+                LO: [
+                  {
+                    name: "ERNA K",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "SITI R",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                branch: "AWN",
+                slo: "FERI",
+                LO: [
+                  {
+                    name: "MAJID",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                branch: "GEGESIK",
+                slo: "SUHERMAN",
+                LO: [
+                  {
+                    name: "NURFITRIYAH",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
         {
-          kantor: "CWN",
-          wil: "BARAT",
-          slo: "SUBRIANA",
-          lo: ["ERNA K", "SITI R"],
-          target: ["50", "50"],
-        },
-        { kantor: "AWN", wil: "BARAT", slo: "FERI", lo: ["MAJID"], target: "" },
-        {
-          kantor: "GEGESIK",
-          wil: "BARAT",
-          slo: "SUHERMAN",
-          lo: ["NURFITRIYAH"],
-          target: ["50"],
-        },
-        {
-          kantor: "SUMBER",
-          wil: "BARAT",
-          slo: "TINO S",
-          lo: ["ADHIANSYAH", "DEDI A"],
-          target: ["50", "50"],
+          region: "SELATAN",
+          am: {
+            name: "UHAMAD",
+            branch: [
+              {
+                branch: "SUMBER",
+                slo: "TINO S",
+                LO: [
+                  {
+                    name: "ADHIANSYAH",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "DEDI A",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                branch: "SEDONG",
+                slo: "IMAM P",
+                LO: [
+                  {
+                    name: "ANDI G",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "BAYU S",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                  {
+                    name: "AHMAD H",
+                    target: 50,
+                    report: [
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU I",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU II",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU III",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                      {
+                        month: "SEPTEMBER",
+                        week: "MINGGU IV",
+                        lo: { good: 5, bad: 5 },
+                        slo: { good: 5, bad: 5 },
+                        am: { good: 5, bad: 5 },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
       ];
 
-      // Menambahkan data dan LO pada baris berbeda
-      data.forEach((row) => {
-        const kantorRow = [row.kantor, row.wil, row.slo, "", row.target];
-        worksheet.addRow(kantorRow); // Menambahkan data kantor
+      let totalWilayahBarat = 0;
+      let totalWilayahSelatan = 0;
 
-        // Menambahkan setiap LO pada baris terpisah
-        row.lo.forEach((lo, target) => {
-          worksheet.addRow(["", "", "", lo, ""]); // Menambahkan nama LO
+      // Iterating through data and generating rows
+      data.forEach((region) => {
+        let regionTotal = 0;
+
+        region.am.branch.forEach((branch) => {
+          // Add rows for each LO under this branch
+          branch.LO.forEach((lo) => {
+            const row = worksheet.addRow([
+              branch.branch,
+              region.region,
+              branch.slo,
+              lo.name,
+              lo.target,
+            ]);
+
+            row.eachCell((cell) => {
+              // Adding border to each cell in the row
+              cell.style.border = {
+                top: { style: "thin", color: { argb: "FF000000" } },
+                left: { style: "thin", color: { argb: "FF000000" } },
+                bottom: { style: "thin", color: { argb: "FF000000" } },
+                right: { style: "thin", color: { argb: "FF000000" } },
+              };
+            });
+
+            // Center alignment for the TARGET column
+            row.getCell(5).alignment = {
+              horizontal: "center",
+              vertical: "middle",
+            };
+          });
+
+          // Calculate and add total for each branch
+          const totalTarget = branch.LO.reduce((acc, lo) => acc + lo.target, 0);
+          const totalRow = ["TOTAL", "", "", "", totalTarget];
+          const rawTotal = worksheet.addRow(totalRow);
+
+          // Center alignment for the TARGET column in the total row
+          rawTotal.getCell(5).alignment = {
+            horizontal: "center",
+            vertical: "middle",
+          };
+
+          // Apply green background color for the total row
+          rawTotal.eachCell((cell) => {
+            cell.style.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFC5E0B3" }, // Green color
+            };
+
+            // Adding border to each cell in the row
+            cell.style.border = {
+              top: { style: "thin", color: { argb: "FF000000" } },
+              left: { style: "thin", color: { argb: "FF000000" } },
+              bottom: { style: "thin", color: { argb: "FF000000" } },
+              right: { style: "thin", color: { argb: "FF000000" } },
+            };
+          });
+
+          // Merge cells for the TOTAL row (A-D)
+          const lastRowIndex = worksheet.lastRow.number;
+          worksheet.mergeCells(`A${lastRowIndex}:D${lastRowIndex}`); // Merge A-D for the TOTAL row
+
+          // Accumulate region total
+          regionTotal += totalTarget;
         });
 
-        // Menambahkan baris TOTAL setelah setiap grup kantor
-        worksheet.addRow([
-          row.kantor === "SUMBER" ? "TOTAL" : "",
+        // Add region total row
+        const regionTotalRow = [
+          `WILAYAH ${region.region}`,
           "",
+          region.am.name,
           "",
-          "",
-          "",
-        ]);
+          regionTotal,
+        ];
+
+        const rawTotalRegion = worksheet.addRow(regionTotalRow);
+
+        // Center alignment for the TARGET column in the region total row
+        rawTotalRegion.getCell(5).alignment = {
+          horizontal: "center",
+          vertical: "middle",
+        };
+
+        // Apply blue background color for the region total row
+        rawTotalRegion.eachCell((cell) => {
+          cell.style.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF9CC2E5" }, // Blue color
+          };
+
+          // Adding border to each cell in the row
+          cell.style.border = {
+            top: { style: "thin", color: { argb: "FF000000" } },
+            left: { style: "thin", color: { argb: "FF000000" } },
+            bottom: { style: "thin", color: { argb: "FF000000" } },
+            right: { style: "thin", color: { argb: "FF000000" } },
+          };
+        });
+
+        // Merge cells for the region total row
+        const regionTotalRowIndex = worksheet.lastRow.number;
+        worksheet.mergeCells(`A${regionTotalRowIndex}:B${regionTotalRowIndex}`); // Merge A-B for region.region
+        worksheet.mergeCells(`C${regionTotalRowIndex}:D${regionTotalRowIndex}`); // Merge C-D for region.am.name
+
+        // Add region total to the correct variable
+        if (region.region === "BARAT") {
+          totalWilayahBarat += regionTotal;
+        } else if (region.region === "SELATAN") {
+          totalWilayahSelatan += regionTotal;
+        }
       });
 
-      // Mengatur lebar kolom
+      // Optional: Adding a final total row for the entire dataset
+      const finalTotalRow = [
+        "TOTAL WILAYAH",
+        "",
+        "",
+        "",
+        totalWilayahBarat + totalWilayahSelatan,
+      ];
+
+      worksheet.addRow(finalTotalRow);
+      worksheet.mergeCells(
+        `A${worksheet.lastRow.number}:B${worksheet.lastRow.number}`
+      );
+      worksheet.mergeCells(
+        `C${worksheet.lastRow.number}:D${worksheet.lastRow.number}`
+      );
+
+      // Set column widths
       worksheet.getColumn(1).width = 12; // Kantor
       worksheet.getColumn(2).width = 10; // Wil
       worksheet.getColumn(3).width = 15; // SLO
       worksheet.getColumn(4).width = 25; // LO
       worksheet.getColumn(5).width = 10; // Target
+
+      // Freeze header (columns and rows)
+      worksheet.views = [
+        {
+          state: "frozen",
+          xSplit: 5, // Freeze columns A-D
+          ySplit: 3, // Freeze rows 1-2
+        },
+      ];
     };
 
     addWorksheet("Data Kunjungan PMS");
 
-    // Menghasilkan file XLSX sebagai buffer
+    // Generate XLSX file as a buffer
     const xlsxBuffer = await workbook.xlsx.writeBuffer();
     return xlsxBuffer;
   }

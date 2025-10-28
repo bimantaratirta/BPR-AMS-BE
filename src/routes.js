@@ -27,6 +27,7 @@ import EvaluationV2 from "./core/V2/evaluation/evaluation-routes.js";
 import ReviewEvaluatonV2 from "./core/V2/review-evaluation/review-evaluation-routes.js";
 import UserV2 from "./core/V2/user/user-routes.js";
 import DashboardV2 from "./core/V2/dashboard/dashboard-routes.js";
+import TestV2 from "./core/V2/test/test-routes.js";
 
 const router = express.Router();
 
@@ -129,6 +130,10 @@ const appsRoutesV2 = [
   {
     path: "/dashboard",
     route: DashboardV2,
+  },
+  {
+    path: "/test",
+    route: TestV2,
   },
 ];
 

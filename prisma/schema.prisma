@@ -849,7 +849,8 @@ model Report {
   employee_snapshot     Json?
   non_employee_snapshot Json?
   business_snapshot     Json?
-
+  review_by_slo         DateTime?
+  review_by_am          DateTime?
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
