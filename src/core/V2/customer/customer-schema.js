@@ -63,7 +63,15 @@ export const customerSchema = {
       .optional(),
 
     include_relation: Joi.array()
-      .items(Joi.string().valid("user", "employee", "non_employee", "business"))
+      .items(
+        Joi.string().valid(
+          "user",
+          "employee",
+          "non_employee",
+          "business",
+          "update_logs"
+        )
+      )
       .optional(),
   }),
 
@@ -98,11 +106,11 @@ export const customerSchema = {
         }),
 
       work_type: Joi.string()
-        .valid("Pengusaha", "Karyawan Tetap", "Pekerja Lepas")
+        .valid("Wirausaha", "Karyawan", "Pekerja Lepas")
         .optional()
         .messages({
           "any.only":
-            "Work type must be one of: pengusaha, karyawan tetap, pekerja lepas",
+            "Work type must be one of: Wirausaha, Karyawan, Pekerja Lepas",
           "string.base": "Work type must be a string",
         }),
       employee_id: Joi.string().optional(),
@@ -176,11 +184,11 @@ export const customerSchema = {
         }),
 
       work_type: Joi.string()
-        .valid("Pengusaha", "Karyawan Tetap", "Pekerja Lepas")
+        .valid("Wirausaha", "Karyawan", "Pekerja Lepas")
         .optional()
         .messages({
           "any.only":
-            "Work type must be one of: pengusaha, karyawan tetap, pekerja lepas",
+            "Work type must be one of: Wirausaha, Karyawan, Pekerja Lepas",
           "string.base": "Work type must be a string",
         }),
       employee_id: Joi.string().optional(),

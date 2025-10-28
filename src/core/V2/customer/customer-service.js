@@ -33,7 +33,7 @@ class CustomerService {
     }
 
     // Aturan konsistensi work_type ↔ payload
-    const wt = customer.work_type; // 'Pengusaha' | 'Karyawan Tetap' | 'Pekerja Lepas' | undefined
+    const wt = customer.work_type; // 'Wirausaha' | 'Karyawan' | 'Pekerja Lepas' | undefined
 
     // Tidak boleh kirim lebih dari satu blok pekerjaan sekaligus
     const blocksProvided =
@@ -47,16 +47,16 @@ class CustomerService {
 
     // Jika work_type ada, harus cocok dengan blok yang dikirim
     if (wt) {
-      if (wt === "Karyawan Tetap") {
+      if (wt === "Karyawan") {
         if (!employee)
-          fail("Employee block is required for Karyawan Tetap", "employee");
+          fail("Employee block is required for Karyawan", "employee");
         if (non_employee)
           fail(
-            "non_employee block is not allowed for Karyawan Tetap",
+            "non_employee block is not allowed for Karyawan",
             "non_employee"
           );
         if (business)
-          fail("business block is not allowed for Karyawan Tetap", "business");
+          fail("business block is not allowed for Karyawan", "business");
       } else if (wt === "Pekerja Lepas") {
         if (!non_employee)
           fail(
@@ -67,14 +67,14 @@ class CustomerService {
           fail("employee block is not allowed for Pekerja Lepas", "employee");
         if (business)
           fail("business block is not allowed for Pekerja Lepas", "business");
-      } else if (wt === "Pengusaha") {
+      } else if (wt === "Wirausaha") {
         if (!business)
-          fail("Business block is required for Pengusaha", "business");
+          fail("Business block is required for Wirausaha", "business");
         if (employee)
-          fail("employee block is not allowed for Pengusaha", "employee");
+          fail("employee block is not allowed for Wirausaha", "employee");
         if (non_employee)
           fail(
-            "non_employee block is not allowed for Pengusaha",
+            "non_employee block is not allowed for Wirausaha",
             "non_employee"
           );
       }
@@ -99,13 +99,13 @@ class CustomerService {
       let businessData = null;
 
       // Buat blok pekerjaan/usaha bila ada
-      if (wt === "Karyawan Tetap" && employee) {
+      if (wt === "Karyawan" && employee) {
         employeeData = await tx.employee.create({ data: employee });
       }
       if (wt === "Pekerja Lepas" && non_employee) {
         nonEmployeeData = await tx.nonEmployee.create({ data: non_employee });
       }
-      if (wt === "Pengusaha" && business) {
+      if (wt === "Wirausaha" && business) {
         businessData = await tx.business.create({ data: business });
       }
 
@@ -287,15 +287,15 @@ class CustomerService {
     }
 
     // Validasi kesesuaian work_type ↔ blok/id yang dikirim
-    if (targetWorkType === "Karyawan Tetap") {
+    if (targetWorkType === "Karyawan") {
       if (non_employee || business)
         fail(
-          "Only employee block is allowed for work_type Karyawan Tetap",
+          "Only employee block is allowed for work_type Karyawan",
           "work_type"
         );
       if (customer.non_employee_id || customer.business_id) {
         fail(
-          "Only employee_id is allowed for work_type Karyawan Tetap",
+          "Only employee_id is allowed for work_type Karyawan",
           "work_type_fk"
         );
       }
@@ -311,15 +311,15 @@ class CustomerService {
           "work_type_fk"
         );
       }
-    } else if (targetWorkType === "Pengusaha") {
+    } else if (targetWorkType === "Wirausaha") {
       if (employee || non_employee)
         fail(
-          "Only business block is allowed for work_type Pengusaha",
+          "Only business block is allowed for work_type Wirausaha",
           "work_type"
         );
       if (customer.employee_id || customer.non_employee_id) {
         fail(
-          "Only business_id is allowed for work_type Pengusaha",
+          "Only business_id is allowed for work_type Wirausaha",
           "work_type_fk"
         );
       }
@@ -345,7 +345,7 @@ class CustomerService {
       };
 
       // APPLY per target work_type
-      if (targetWorkType === "Karyawan Tetap") {
+      if (targetWorkType === "Karyawan") {
         // a) jika ada block employee → create/update
         if (employee) {
           if (newEmployeeId) {
@@ -369,7 +369,7 @@ class CustomerService {
         // c) pastikan ada link employee (entah dari block atau id atau eksisting)
         if (!newEmployeeId) {
           fail(
-            "Employee is required for work_type Karyawan Tetap (provide employee block or employee_id)",
+            "Employee is required for work_type Karyawan (provide employee block or employee_id)",
             "employee"
           );
           throw new joi.ValidationError(validation, stack);
@@ -409,7 +409,7 @@ class CustomerService {
         newBusinessId = null;
       }
 
-      if (targetWorkType === "Pengusaha") {
+      if (targetWorkType === "Wirausaha") {
         if (business) {
           if (newBusinessId) {
             await tx.business.update({
@@ -430,7 +430,7 @@ class CustomerService {
         }
         if (!newBusinessId) {
           fail(
-            "Business is required for work_type Pengusaha (provide business block or business_id)",
+            "Business is required for work_type Wirausaha (provide business block or business_id)",
             "business"
           );
           throw new joi.ValidationError(validation, stack);
@@ -461,9 +461,9 @@ class CustomerService {
       });
 
       if (targetWorkType && prevWorkType && targetWorkType !== prevWorkType) {
-        if (prevWorkType === "Pengusaha" && current.business_id) {
+        if (prevWorkType === "Wirausaha" && current.business_id) {
           await tx.business.delete({ where: { id: current.business_id } });
-        } else if (prevWorkType === "Karyawan Tetap" && current.employee_id) {
+        } else if (prevWorkType === "Karyawan" && current.employee_id) {
           await tx.employee.delete({ where: { id: current.employee_id } });
         } else if (
           prevWorkType === "Pekerja Lepas" &&
@@ -473,6 +473,94 @@ class CustomerService {
             where: { id: current.non_employee_id },
           });
         }
+      }
+
+      const changes = [];
+
+      // Validasi dan catat perubahan untuk setiap field
+
+      if (customer.name && customer.name !== current.name) {
+        changes.push(`Name changed from ${current.name} to ${customer.name}`);
+      }
+
+      if (customer.ktp_number && customer.ktp_number !== current.ktp_number) {
+        changes.push(
+          `KTP number changed from ${current.ktp_number} to ${customer.ktp_number}`
+        );
+      }
+
+      if (
+        customer.date_of_birth &&
+        customer.date_of_birth !== current.date_of_birth
+      ) {
+        changes.push(
+          `Date of birth changed from ${current.date_of_birth} to ${customer.date_of_birth}`
+        );
+      }
+
+      if (customer.address && customer.address !== current.address) {
+        changes.push(
+          `Address changed from ${current.address} to ${customer.address}`
+        );
+      }
+
+      if (customer.rt_rw && customer.rt_rw !== current.rt_rw) {
+        changes.push(
+          `RT/RW changed from ${current.rt_rw} to ${customer.rt_rw}`
+        );
+      }
+
+      if (customer.village && customer.village !== current.village) {
+        changes.push(
+          `Village changed from ${current.village} to ${customer.village}`
+        );
+      }
+
+      if (
+        customer.phone_number &&
+        customer.phone_number !== current.phone_number
+      ) {
+        changes.push(
+          `Phone number changed from ${current.phone_number} to ${customer.phone_number}`
+        );
+      }
+
+      if (
+        customer.employee_id &&
+        customer.employee_id !== current.employee_id
+      ) {
+        changes.push(
+          `Employee ID changed from ${current.employee_id} to ${customer.employee_id}`
+        );
+      }
+
+      if (
+        customer.non_employee_id &&
+        customer.non_employee_id !== current.non_employee_id
+      ) {
+        changes.push(
+          `Non-employee ID changed from ${current.non_employee_id} to ${customer.non_employee_id}`
+        );
+      }
+
+      if (
+        customer.business_id &&
+        customer.business_id !== current.business_id
+      ) {
+        changes.push(
+          `Business ID changed from ${current.business_id} to ${customer.business_id}`
+        );
+      }
+
+      // Buat entri log pembaruan
+      if (changes.length > 0) {
+        await tx.customerUpdateLog.create({
+          data: {
+            customer_id: current.id,
+            updated_by: current.created_by, // Ganti dengan ID user yang melakukan update
+            changes: changes.join(", "), // Gabungkan perubahan yang dilakukan
+          },
+        });
       }
 
       return {
@@ -491,9 +579,9 @@ class CustomerService {
   }
 
   _inferWorkTypeFromCurrent(current) {
-    if (current.employee_id) return "Karyawan Tetap";
+    if (current.employee_id) return "Karyawan";
     if (current.non_employee_id) return "Pekerja Lepas";
-    if (current.business_id) return "Pengusaha";
+    if (current.business_id) return "Wirausaha";
     return null;
   }
 }

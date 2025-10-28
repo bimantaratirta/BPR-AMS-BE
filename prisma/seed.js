@@ -81,7 +81,7 @@ async function main() {
   //     hubungan_debitur_penjamin: "Istri",
   //     alamat_usaha_debitur: "JL. RAYA KUNINGAN KM 3 NO 10",
   //     alamat_rumah_debitur: "PERUM GRIYA CIREBON INDAH BLOK B2 NO 6",
-  //     pekerjaan_debitur: "PENGUSAHA",
+  //     pekerjaan_debitur: "Wirausaha",
   //     tempat_lahir_debitur: "CIREBON",
   //     tanggal_lahir_debitur: new Date("1980-02-02"),
   //     nama_penjamin: "RINA SUSANTI",
@@ -514,7 +514,7 @@ async function main() {
   //     alamat_usaha_debitur: "JL. MELATI NO. 88 CIREBON",
   //     alamat_rumah_debitur: "JL. MELATI NO. 88 CIREBON",
   //     nik_debitur: "3210030803820001",
-  //     pekerjaan_debitur: "PENGUSAHA",
+  //     pekerjaan_debitur: "Wirausaha",
   //     hubungan_debitur_penjamin: "Suami",
   //     alamat_rumah_penjamin: "JL. MELATI NO. 88 CIREBON",
   //     nama_penjamin: "DESI NURMALASARI",
@@ -701,7 +701,6 @@ async function main() {
       },
     ],
   });
-
 
   await prisma.user.createMany({
     data: [
@@ -1086,7 +1085,7 @@ async function main() {
         rt_rw: customer.rt_rw,
         address: customer.address,
         village: customer.village,
-        work_type: "Karyawan Tetap", // Dummy data for work_type
+        work_type: "Karyawan", // Dummy data for work_type
         created_at: customer.created_at,
         created_by: lo.id,
         ktp_number: customer.ktp_number,
@@ -1351,7 +1350,7 @@ async function main() {
   //         rt_rw: "01/03",
   //         address: "Jl. Merauke No. 10, Surabaya",
   //         village: "Gubeng",
-  //         work_type: "Karyawan Tetap",
+  //         work_type: "Karyawan",
   //         created_at: "2025-10-23T09:28:17.915Z",
   //         created_by: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
   //         ktp_number: "1234567890123456",

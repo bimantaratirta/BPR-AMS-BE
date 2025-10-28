@@ -1,7 +1,7 @@
 const reportQueryConfig = {
   searchableFields: ["lo.name"],
   jsonSearchableFields: [{ field: "customer_snapshot", path: ["name"] }],
-  filterableFields: ["process", "status"],
+  filterableFields: ["process", "status", "lo_id", "slo_id", "am_id"],
   orderableFields: ["created_at", "updated_at"],
   relations: {
     lo: true,

@@ -15,6 +15,10 @@ class ReportRoutes extends BaseRoutes {
       // AuthMiddleware.authenticate, // Middleware untuk validasi token
       tryCatch(ReportController.generateXlsx), // Menambahkan rute generate-xlsx
     ]);
+    this.router.get("/generate-xlsx-am", [
+      // AuthMiddleware.authenticate, // Middleware untuk validasi token
+      tryCatch(ReportController.generateXlsxAM), // Menambahkan rute generate-xlsx
+    ]);
 
     // Satu endpoint: create report + upload banyak foto
     // console.log('first '),

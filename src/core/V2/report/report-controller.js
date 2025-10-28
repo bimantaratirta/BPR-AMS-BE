@@ -4,6 +4,28 @@ import { successResponse } from "../../../utils/response.js";
 import ReportService from "./report-service.js";
 
 class ReportController {
+  async generateXlsxAM(req, res) {
+    try {
+      const currentUser = req.user; // scope by creator
+      const query = req.query; // filter query (misalnya berdasarkan status, customer_id, dll)
+
+      // Panggil fungsi generateXlsx dari ReportService
+      const xlsxBuffer = await ReportService.generateXlsxAM();
+
+      // Set header untuk response file XLSX
+      res.set({
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="Laporan_Nasabah_${Date.now()}.xlsx"`,
+      });
+
+      // Kirim buffer XLSX sebagai response untuk diunduh oleh pengguna
+      res.send(xlsxBuffer); // Mengirimkan file XLSX dalam bentuk buffer
+    } catch (err) {
+      console.log(err);
+      throw BaseError.badRequest("Error generating XLSX report", err);
+    }
+  }
   async generateXlsx(req, res) {
     try {
       const currentUser = req.user; // scope by creator

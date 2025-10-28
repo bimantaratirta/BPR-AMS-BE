@@ -13,8 +13,16 @@ const customerQueryConfig = {
     employee: true,
     non_employee: true,
     business: true,
+    update_logs: true,
   },
   dateFields: { created_at: "created_at", updated_at: "updated_at" },
+  select: {
+    user: {
+      id: true,
+      name: true,
+      role: true,
+    },
+  },
 };
 
 export default customerQueryConfig;

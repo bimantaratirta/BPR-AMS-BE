@@ -816,10 +816,25 @@ model Customer {
   non_employee NonEmployee? @relation("NonEmployeeCustomer", fields: [non_employee_id], references: [id])
   business     Business?    @relation("BusinessCustomer", fields: [business_id], references: [id])
 
+  update_logs  CustomerUpdateLog[] @relation("CustomerUpdateLog")
   report Report[] @relation("CustomerReport")
 
   @@map("customers")
 }
+
+model CustomerUpdateLog {
+  id          String   @id @default(uuid())
+  customer_id String
+  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
+  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
+  changes     String   // Deskripsi perubahan yang dilakukan
+  
+  customer Customer @relation("CustomerUpdateLog", fields: [customer_id], references: [id]) // Menambahkan nama relasi yang sama
+
+
+  @@map("customer_update_logs")
+}
+
 
 model Report {
   id                    String  @id @default(uuid())

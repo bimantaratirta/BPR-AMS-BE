@@ -864,6 +864,128 @@ class ReportService {
     return xlsxBuffer; // Mengembalikan buffer file XLSX
   }
 
+  async generateXlsxAM() {
+    const workbook = new ExcelJS.Workbook();
+
+    const addWorksheet = (sheetName) => {
+      const worksheet = workbook.addWorksheet(sheetName);
+
+      // Header utama
+      worksheet.mergeCells("A1:E1");
+      const headerCell = worksheet.getCell("A1");
+      headerCell.value = "DATA KUNJUNGAN PMS";
+      headerCell.font = { bold: true, size: 16 };
+      headerCell.alignment = { horizontal: "center", vertical: "middle" };
+
+      // Header kolom
+      worksheet.mergeCells("A2:A3");
+      worksheet.getCell("A2").value = "KANTOR";
+      worksheet.getCell("A2").font = { bold: true };
+      worksheet.getCell("A2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      worksheet.mergeCells("B2:B3");
+      worksheet.getCell("B2").value = "WIL";
+      worksheet.getCell("B2").font = { bold: true };
+      worksheet.getCell("B2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      worksheet.mergeCells("C2:C3");
+      worksheet.getCell("C2").value = "SLO";
+      worksheet.getCell("C2").font = { bold: true };
+      worksheet.getCell("C2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      worksheet.mergeCells("D2:D3");
+      worksheet.getCell("D2").value = "LO";
+      worksheet.getCell("D2").font = { bold: true };
+      worksheet.getCell("D2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      worksheet.mergeCells("E2:E3");
+      worksheet.getCell("E2").value = "TARGET";
+      worksheet.getCell("E2").font = { bold: true };
+      worksheet.getCell("E2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Data dengan setiap LO pada baris berbeda
+      const data = [
+        {
+          kantor: "PUSAT",
+          wil: "BARAT",
+          slo: "VICKY",
+          lo: ["AKHMADI", "SITI SAPURO", "SRI N"],
+          target: ["50", "50", "50"],
+        },
+        {
+          kantor: "CWN",
+          wil: "BARAT",
+          slo: "SUBRIANA",
+          lo: ["ERNA K", "SITI R"],
+          target: ["50", "50"],
+        },
+        { kantor: "AWN", wil: "BARAT", slo: "FERI", lo: ["MAJID"], target: "" },
+        {
+          kantor: "GEGESIK",
+          wil: "BARAT",
+          slo: "SUHERMAN",
+          lo: ["NURFITRIYAH"],
+          target: ["50"],
+        },
+        {
+          kantor: "SUMBER",
+          wil: "BARAT",
+          slo: "TINO S",
+          lo: ["ADHIANSYAH", "DEDI A"],
+          target: ["50", "50"],
+        },
+      ];
+
+      // Menambahkan data dan LO pada baris berbeda
+      data.forEach((row) => {
+        const kantorRow = [row.kantor, row.wil, row.slo, "", row.target];
+        worksheet.addRow(kantorRow); // Menambahkan data kantor
+
+        // Menambahkan setiap LO pada baris terpisah
+        row.lo.forEach((lo, target) => {
+          worksheet.addRow(["", "", "", lo, ""]); // Menambahkan nama LO
+        });
+
+        // Menambahkan baris TOTAL setelah setiap grup kantor
+        worksheet.addRow([
+          row.kantor === "SUMBER" ? "TOTAL" : "",
+          "",
+          "",
+          "",
+          "",
+        ]);
+      });
+
+      // Mengatur lebar kolom
+      worksheet.getColumn(1).width = 12; // Kantor
+      worksheet.getColumn(2).width = 10; // Wil
+      worksheet.getColumn(3).width = 15; // SLO
+      worksheet.getColumn(4).width = 25; // LO
+      worksheet.getColumn(5).width = 10; // Target
+    };
+
+    addWorksheet("Data Kunjungan PMS");
+
+    // Menghasilkan file XLSX sebagai buffer
+    const xlsxBuffer = await workbook.xlsx.writeBuffer();
+    return xlsxBuffer;
+  }
+
   async create(data, files = [], currentUser) {
     if (!Array.isArray(files))
       throw BaseError.badRequest("files must be an array");
@@ -1359,9 +1481,9 @@ class ReportService {
   }
 
   _inferWorkTypeFromCurrent(current) {
-    if (current.employee_id) return "Karyawan Tetap";
+    if (current.employee_id) return "Karyawan";
     if (current.non_employee_id) return "Pekerja Lepas";
-    if (current.business_id) return "Pengusaha";
+    if (current.business_id) return "Wirausaha";
     return null;
   }
 }
