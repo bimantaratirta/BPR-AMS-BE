@@ -12,6 +12,11 @@ class EvaluationRoutes extends BaseRoutes {
       validateCredentials(evaluationSchema.create),
       tryCatch(EvaluationController.create),
     ]);
+    this.router.put("/:id", [
+      AuthMiddleware.authenticate,
+      // validateCredentials(evaluationSchema.create),
+      tryCatch(EvaluationController.update),
+    ]);
     this.router.get("/", [
       AuthMiddleware.authenticate,
       tryCatch(EvaluationController.list),

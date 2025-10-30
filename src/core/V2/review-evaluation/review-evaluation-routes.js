@@ -9,6 +9,10 @@ class ReviewEvaluationRoutes extends BaseRoutes {
       AuthMiddleware.authenticate,
       tryCatch(ReviewEvaluationController.create),
     ]);
+    this.router.put("/:id", [
+      AuthMiddleware.authenticate,
+      tryCatch(ReviewEvaluationController.update),
+    ]);
 
     this.router.get("/", [
       AuthMiddleware.authenticate,

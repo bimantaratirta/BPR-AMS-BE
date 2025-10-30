@@ -9,8 +9,8 @@ const reportQueryConfig = {
     am: true,
     customer: true,
     report_photo: true,
-    review_customer: true,
-    evaluation: { review_evaluation: true },
+    review_customer: { update_logs: true },
+    evaluation: { review_evaluation: true, update_logs: true },
   },
   dateFields: { created_at: "created_at", updated_at: "updated_at" }, // Penyesuaian nama kolom tanggal
   select: {

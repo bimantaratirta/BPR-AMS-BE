@@ -881,54 +881,99 @@ model ReportPhoto {
 
 model ReviewCustomer {
   id              String    @id @default(uuid())
+  status_review   Status_Review
   report_id       String    @unique
-  review_identity Boolean
-  review_domicile Boolean
-  review_work     Boolean
+  review_identity Boolean?
+  review_domicile Boolean?
+  review_work     Boolean?
   created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
   deleted_at      DateTime?
 
   report Report @relation("ReportReviewCustomer", fields: [report_id], references: [id])
+  update_logs ReviewCustomerUpdateLog[] @relation("ReviewCustomerUpdateLog")
 
   @@map("review_customers")
 }
 
+model ReviewCustomerUpdateLog {
+  id          String   @id @default(uuid())
+  review_customer_id String
+  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
+  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
+  changes     String   // Deskripsi perubahan yang dilakukan
+  
+  review_customer ReviewCustomer @relation("ReviewCustomerUpdateLog", fields: [review_customer_id], references: [id]) // Menambahkan nama relasi yang sama
+
+
+  @@map("review_customer_update_logs")
+}
+
 model Evaluation {
   id               String    @id @default(uuid())
+  status_review    Status_Review
   report_id        String    @unique
-  character        String
-  status_character Status
-  capacity         String
-  status_capacity  Status
-  condition        String
-  status_condition Status
-  capital          String
-  status_capital   Status
+  character        String?
+  status_character Status?
+  capacity         String?
+  status_capacity  Status?
+  condition        String?
+  status_condition Status?
+  capital          String?
+  status_capital   Status?
   created_at       DateTime  @default(now())
   updated_at       DateTime  @updatedAt
   deleted_at       DateTime?
 
   report            Report             @relation("ReportEvaluation", fields: [report_id], references: [id])
   review_evaluation ReviewEvaluation? @relation("EvaluationReviewEvaluation")
+  update_logs       EvaluationUpdateLog[] @relation("EvaluationUpdateLog")
 
   @@map("evaluations")
 }
 
+model EvaluationUpdateLog {
+  id          String   @id @default(uuid())
+  evaluation_id String
+  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
+  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
+  changes     String   // Deskripsi perubahan yang dilakukan
+  
+  evaluation Evaluation @relation("EvaluationUpdateLog", fields: [evaluation_id], references: [id]) // Menambahkan nama relasi yang sama
+
+
+  @@map("evaluation_update_logs")
+}
+
 model ReviewEvaluation {
   id               String    @id @default(uuid())
+  status_review    Status_Review
   evaluation_id    String    @unique
-  review_character Boolean
-  review_capacity  Boolean
-  review_condition Boolean
-  review_capital   Boolean
+  review_character Boolean?
+  review_capacity  Boolean?
+  review_condition Boolean?
+  review_capital   Boolean?
   created_at       DateTime  @default(now())
   updated_at       DateTime  @updatedAt
   deleted_at       DateTime?
 
   evaluation Evaluation @relation("EvaluationReviewEvaluation", fields: [evaluation_id], references: [id])
+  update_logs ReviewEvaluationUpdateLog[] @relation("ReviewEvaluationUpdateLog")
 
   @@map("review_evaluations")
+}
+
+model ReviewEvaluationUpdateLog {
+  id          String   @id @default(uuid())
+  review_evaluation_id String
+  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
+  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
+  changes     String   // Deskripsi perubahan yang dilakukan
+  
+  evaluation ReviewEvaluation @relation("ReviewEvaluationUpdateLog", fields: [review_evaluation_id], references: [id]) // Menambahkan nama relasi yang sama
+
+
+  @@map("review_evaluation_update_logs")
 }
 
 enum Status {
@@ -945,4 +990,9 @@ enum Process {
   REVIEW_AM
   APPROVE_AM
   DECLINE_AM
+}
+
+enum Status_Review {
+  DRAFT
+  COMPLETED
 }

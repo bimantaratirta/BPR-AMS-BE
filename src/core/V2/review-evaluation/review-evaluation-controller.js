@@ -1,4 +1,8 @@
-import { createdResponse, successResponse } from "../../../utils/response.js";
+import {
+  createdResponse,
+  successResponse,
+  updatedResponse,
+} from "../../../utils/response.js";
 import reviewEvaluationService from "./review-evaluation-service.js";
 
 class ReviewEvaluationController {
@@ -9,6 +13,15 @@ class ReviewEvaluationController {
       result,
       "review evaluation created successfully"
     );
+  }
+
+  async update(req, res) {
+    const result = await reviewEvaluationService.update(
+      req.params.id,
+      req.body,
+      req.user
+    );
+    return updatedResponse(res, result);
   }
 
   async list(req, res) {

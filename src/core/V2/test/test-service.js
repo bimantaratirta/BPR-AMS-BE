@@ -7,833 +7,370 @@ class TestService {
     this.prisma = new PrismaService();
   }
 
-  async generateXlsxAM() {
+  // Fungsi untuk mendapatkan minggu ke-berapa dalam bulan
+  getWeekOfMonth(date) {
+    const d = new Date(date);
+    const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+    const dayOfMonth = d.getDate();
+    const firstDayOfWeek = firstDay.getDay();
+
+    return Math.ceil((dayOfMonth + firstDayOfWeek) / 7);
+  }
+
+  // Fungsi untuk mendapatkan jumlah minggu dalam bulan
+  getWeeksInMonth(year, month) {
+    const lastDay = new Date(year, month + 1, 0);
+    return this.getWeekOfMonth(lastDay);
+  }
+
+  // Fungsi untuk mendapatkan nama bulan dalam Bahasa Indonesia
+  getMonthName(month) {
+    const months = [
+      "JANUARI",
+      "FEBRUARI",
+      "MARET",
+      "APRIL",
+      "MEI",
+      "JUNI",
+      "JULI",
+      "AGUSTUS",
+      "SEPTEMBER",
+      "OKTOBER",
+      "NOVEMBER",
+      "DESEMBER",
+    ];
+    return months[month];
+  }
+
+  // Fungsi untuk mengelompokkan report berdasarkan minggu dan proses
+  groupReportsByWeek(reports, year, month) {
+    const weeksInMonth = this.getWeeksInMonth(year, month);
+    const grouped = {};
+
+    // Inisialisasi struktur untuk setiap minggu
+    for (let week = 1; week <= weeksInMonth; week++) {
+      grouped[`MINGGU ${week}`] = {
+        lo: { good: 0, bad: 0 },
+        slo: { good: 0, bad: 0 },
+        am: { good: 0, bad: 0 },
+      };
+    }
+
+    reports.forEach((report) => {
+      // Tentukan tanggal yang akan digunakan dan level
+      let dateToUse = null;
+      let level = null;
+
+      // Proses LO level (created_at - selalu ada)
+      if (report.process.includes("_LO") || report.process === "REVIEW_SLO") {
+        dateToUse = report.created_at;
+        level = "lo";
+      }
+      // Proses SLO level (review_by_slo - bisa null)
+      else if (
+        report.process.includes("_SLO") ||
+        report.process === "REVIEW_AM"
+      ) {
+        // Gunakan review_by_slo jika ada, fallback ke created_at
+        dateToUse = report.review_by_slo || report.created_at;
+        level = "slo";
+      }
+      // Proses AM level (review_by_am - bisa null)
+      else if (report.process.includes("_AM")) {
+        // Gunakan review_by_am jika ada, fallback ke created_at
+        dateToUse = report.review_by_am || report.created_at;
+        level = "am";
+      }
+
+      // Skip jika tidak ada tanggal atau level tidak terdeteksi
+      if (!dateToUse || !level) {
+        console.warn("Skipping report - no date or level:", {
+          process: report.process,
+          created_at: report.created_at,
+          review_by_slo: report.review_by_slo,
+          review_by_am: report.review_by_am,
+        });
+        return;
+      }
+
+      const reportDate = new Date(dateToUse);
+
+      // Validasi date object
+      if (isNaN(reportDate.getTime())) {
+        console.warn("Invalid date for report:", {
+          process: report.process,
+          dateToUse,
+          level,
+        });
+        return;
+      }
+
+      const reportMonth = reportDate.getMonth();
+      const reportYear = reportDate.getFullYear();
+
+      // Filter hanya report di bulan dan tahun yang diminta
+      if (reportYear === year && reportMonth === month) {
+        const weekNum = this.getWeekOfMonth(reportDate);
+        const weekKey = `MINGGU ${weekNum}`;
+
+        if (grouped[weekKey] && level) {
+          // Tentukan apakah GOOD atau BAD
+          const isGood =
+            report.process.includes("APPROVE") ||
+            report.process === "REVIEW_SLO" ||
+            report.process === "REVIEW_AM" ||
+            report.process === "EVALUATION_SLO";
+
+          if (isGood) {
+            grouped[weekKey][level].good++;
+          } else {
+            grouped[weekKey][level].bad++;
+          }
+        }
+      }
+    });
+
+    return grouped;
+  }
+
+  // Fungsi untuk memproses data API menjadi format untuk Excel
+  processApiDataForExcel(apiData, year, month) {
+    const processedData = [];
+    const monthName = this.getMonthName(month);
+    const weeksInMonth = this.getWeeksInMonth(year, month);
+
+    // Generate header row dengan minggu dinamis
+    const headerRow = [];
+    for (let week = 1; week <= weeksInMonth; week++) {
+      headerRow.push({
+        year: year,
+        month: monthName,
+        week: `MINGGU ${week}`,
+      });
+    }
+
+    // Process setiap region
+    apiData.data.forEach((region) => {
+      const regionData = {
+        region: region.region,
+        am: {
+          name: region.user[0]?.name || "",
+          branch: [],
+        },
+      };
+
+      // Process setiap branch
+      region.branches.forEach((branch) => {
+        const branchData = {
+          branch: branch.branch,
+          slo: branch.user[0]?.name || "",
+          LO: [],
+        };
+
+        // Process setiap LO (subordinates)
+        branch.user[0]?.subordinates?.forEach((lo) => {
+          const weeklyData = this.groupReportsByWeek(lo.report_lo, year, month);
+
+          // Convert grouped data ke format report
+          const reports = [];
+          for (let week = 1; week <= weeksInMonth; week++) {
+            const weekKey = `MINGGU ${week}`;
+            reports.push({
+              month: monthName,
+              week: weekKey,
+              lo: weeklyData[weekKey].lo,
+              slo: weeklyData[weekKey].slo,
+              am: weeklyData[weekKey].am,
+            });
+          }
+
+          branchData.LO.push({
+            name: lo.name,
+            target: 50, // Default target, bisa disesuaikan
+            report: reports,
+          });
+        });
+
+        regionData.am.branch.push(branchData);
+      });
+
+      processedData.push(regionData);
+    });
+
+    return { headerRow, data: processedData };
+  }
+
+  async generateXlsxAM(year, month) {
+    // Ambil data dari database
+    const apiData = await this.listAllReports(year, month);
+
+    // Proses data menjadi format Excel
+    const excelData = this.processApiDataForExcel(apiData, year, month);
+
     const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data Kunjungan PMS");
 
-    const addWorksheet = (sheetName) => {
-      const worksheet = workbook.addWorksheet(sheetName);
+    // Header utama
+    worksheet.mergeCells("A1:E1");
+    const headerCell = worksheet.getCell("A1");
+    headerCell.value = "DATA KUNJUNGAN PMS";
+    headerCell.font = { bold: true, size: 16 };
+    headerCell.alignment = { horizontal: "center", vertical: "middle" };
+    headerCell.style.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF9CC2E5" },
+    };
+    headerCell.style.border = {
+      top: { style: "thin", color: { argb: "FF000000" } },
+      left: { style: "thin", color: { argb: "FF000000" } },
+      bottom: { style: "thin", color: { argb: "FF000000" } },
+      right: { style: "thin", color: { argb: "FF000000" } },
+    };
 
-      // Header utama
-      worksheet.mergeCells("A1:E1");
-      const headerCell = worksheet.getCell("A1");
-      headerCell.value = "DATA KUNJUNGAN PMS";
-      headerCell.font = { bold: true, size: 16 };
-      headerCell.alignment = { horizontal: "center", vertical: "middle" };
-
-      headerCell.style.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
-      };
-
-      // Add border to the header cell
-      headerCell.style.border = {
+    // Header kolom dasar (KANTOR, WIL, SLO, LO, TARGET)
+    const baseHeaders = ["KANTOR", "WIL", "SLO", "LO", "TARGET"];
+    baseHeaders.forEach((header, index) => {
+      const col = String.fromCharCode(65 + index); // A, B, C, D, E
+      worksheet.mergeCells(`${col}2:${col}3`);
+      const cell = worksheet.getCell(`${col}2`);
+      cell.value = header;
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.style.border = {
         top: { style: "thin", color: { argb: "FF000000" } },
         left: { style: "thin", color: { argb: "FF000000" } },
         bottom: { style: "thin", color: { argb: "FF000000" } },
         right: { style: "thin", color: { argb: "FF000000" } },
       };
-
-      // Header kolom
-      worksheet.mergeCells("A2:A3");
-      worksheet.getCell("A2").value = "KANTOR";
-      worksheet.getCell("A2").font = { bold: true };
-      worksheet.getCell("A2").alignment = {
-        horizontal: "center",
-        vertical: "middle",
+      cell.style.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF9CC2E5" },
       };
+    });
 
-      // Add border to "KANTOR" header cell
-      worksheet.getCell("A2").style.border = {
+    // Header minggu dinamis
+    excelData.headerRow.forEach((item, index) => {
+      const col1 = getExcelColumn(5 + index * 6);
+      const col2 = getExcelColumn(10 + index * 6);
+
+      // Merge cells untuk header minggu
+      worksheet.mergeCells(`${col1}1:${col2}1`);
+      const cell = worksheet.getCell(`${col1}1`);
+      cell.value = `${item.week} (${item.month} ${item.year})`;
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.style.border = {
         top: { style: "thin", color: { argb: "FF000000" } },
         left: { style: "thin", color: { argb: "FF000000" } },
         bottom: { style: "thin", color: { argb: "FF000000" } },
         right: { style: "thin", color: { argb: "FF000000" } },
       };
-      worksheet.getCell("A2").style.fill = {
+      cell.style.fill = {
         type: "pattern",
         pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
+        fgColor: { argb: "FF9CC2E5" },
       };
 
-      worksheet.mergeCells("B2:B3");
-      worksheet.getCell("B2").value = "WIL";
-      worksheet.getCell("B2").font = { bold: true };
-      worksheet.getCell("B2").alignment = {
-        horizontal: "center",
-        vertical: "middle",
-      };
+      // Sub columns (LO, SLO, AM)
+      let subColumnStart = 5 + index * 6;
+      ["LO", "SLO", "AM"].forEach((label, subIndex) => {
+        const subCol1 = getExcelColumn(subColumnStart + subIndex * 2);
+        const subCol2 = getExcelColumn(subColumnStart + 1 + subIndex * 2);
 
-      // Add border to "WIL" header cell
-      worksheet.getCell("B2").style.border = {
-        top: { style: "thin", color: { argb: "FF000000" } },
-        left: { style: "thin", color: { argb: "FF000000" } },
-        bottom: { style: "thin", color: { argb: "FF000000" } },
-        right: { style: "thin", color: { argb: "FF000000" } },
-      };
-      worksheet.getCell("B2").style.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
-      };
-
-      worksheet.mergeCells("C2:C3");
-      worksheet.getCell("C2").value = "SLO";
-      worksheet.getCell("C2").font = { bold: true };
-      worksheet.getCell("C2").alignment = {
-        horizontal: "center",
-        vertical: "middle",
-      };
-
-      // Add border to "SLO" header cell
-      worksheet.getCell("C2").style.border = {
-        top: { style: "thin", color: { argb: "FF000000" } },
-        left: { style: "thin", color: { argb: "FF000000" } },
-        bottom: { style: "thin", color: { argb: "FF000000" } },
-        right: { style: "thin", color: { argb: "FF000000" } },
-      };
-      worksheet.getCell("C2").style.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
-      };
-
-      worksheet.mergeCells("D2:D3");
-      worksheet.getCell("D2").value = "LO";
-      worksheet.getCell("D2").font = { bold: true };
-      worksheet.getCell("D2").alignment = {
-        horizontal: "center",
-        vertical: "middle",
-      };
-
-      // Add border to "LO" header cell
-      worksheet.getCell("D2").style.border = {
-        top: { style: "thin", color: { argb: "FF000000" } },
-        left: { style: "thin", color: { argb: "FF000000" } },
-        bottom: { style: "thin", color: { argb: "FF000000" } },
-        right: { style: "thin", color: { argb: "FF000000" } },
-      };
-      worksheet.getCell("D2").style.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
-      };
-
-      worksheet.mergeCells("E2:E3");
-      worksheet.getCell("E2").value = "TARGET";
-      worksheet.getCell("E2").font = { bold: true };
-      worksheet.getCell("E2").alignment = {
-        horizontal: "center",
-        vertical: "middle",
-      };
-
-      // Add border to "TARGET" header cell
-      worksheet.getCell("E2").style.border = {
-        top: { style: "thin", color: { argb: "FF000000" } },
-        left: { style: "thin", color: { argb: "FF000000" } },
-        bottom: { style: "thin", color: { argb: "FF000000" } },
-        right: { style: "thin", color: { argb: "FF000000" } },
-      };
-      worksheet.getCell("E2").style.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF9CC2E5" }, // Blue color
-      };
-
-      // Data with region and branch details
-      const data = {
-        headerRow: [
-          { year: 2021, month: "SEPTEMBER", week: "MINGGU I" },
-          { year: 2021, month: "SEPTEMBER", week: "MINGGU II" },
-          { year: 2021, month: "SEPTEMBER", week: "MINGGU III" },
-          { year: 2021, month: "SEPTEMBER", week: "MINGGU IV" },
-        ],
-        data: [
-          {
-            region: "BARAT",
-            am: {
-              name: "Supriadi",
-              branch: [
-                {
-                  branch: "KUNINGAN",
-                  slo: "VICKY",
-                  LO: [
-                    {
-                      name: "AKHMADI",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "SITI SAPURO",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "SRI N",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  branch: "CWN",
-                  slo: "SUBRIANA",
-                  LO: [
-                    {
-                      name: "ERNA K",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "SITI R",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  branch: "AWN",
-                  slo: "FERI",
-                  LO: [
-                    {
-                      name: "MAJID",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  branch: "GEGESIK",
-                  slo: "SUHERMAN",
-                  LO: [
-                    {
-                      name: "NURFITRIYAH",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            region: "SELATAN",
-            am: {
-              name: "UHAMAD",
-              branch: [
-                {
-                  branch: "SUMBER",
-                  slo: "TINO S",
-                  LO: [
-                    {
-                      name: "ADHIANSYAH",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "DEDI A",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  branch: "SEDONG",
-                  slo: "IMAM P",
-                  LO: [
-                    {
-                      name: "ANDI G",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "BAYU S",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                    {
-                      name: "AHMAD H",
-                      target: 50,
-                      report: [
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU I",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU II",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU III",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                        {
-                          month: "SEPTEMBER",
-                          week: "MINGGU IV",
-                          lo: { good: 5, bad: 5 },
-                          slo: { good: 5, bad: 5 },
-                          am: { good: 5, bad: 5 },
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      };
-
-      data.headerRow.forEach((item, index) => {
-        // Calculate the first column (F, L, R, X, ...)
-        const col1 = getExcelColumn(5 + index * 6); // Start from column F (ASCII 'F' = 70)
-
-        // Calculate the second column (K, Q, W, AC, ...)
-        const col2 = getExcelColumn(10 + index * 6); // Start from column K (ASCII 'K' = 75)
-
-        // Merge cells for the week header
-        worksheet.mergeCells(`${col1}1:${col2}1`);
-        const cell = worksheet.getCell(`${col1}1`);
-
-        // Format: "MINGGU I (23-29 SEPTEMBER 2024)"
-        cell.value = `${item.week} (${item.month} ${item.year})`;
-        cell.font = { bold: true };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
-
-        // Apply border to each header cell
-        cell.style.border = {
+        worksheet.mergeCells(`${subCol1}2:${subCol2}2`);
+        const subCell = worksheet.getCell(`${subCol1}2`);
+        subCell.value = label;
+        subCell.font = { bold: true };
+        subCell.alignment = { horizontal: "center", vertical: "middle" };
+        subCell.style.border = {
           top: { style: "thin", color: { argb: "FF000000" } },
           left: { style: "thin", color: { argb: "FF000000" } },
           bottom: { style: "thin", color: { argb: "FF000000" } },
           right: { style: "thin", color: { argb: "FF000000" } },
         };
-
-        // Apply blue fill color to header cells
-        cell.style.fill = {
+        subCell.style.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "FF9CC2E5" }, // Blue color
+          fgColor: { argb: "FF9CC2E5" },
         };
 
-        // Calculate the column start for the sub columns (LO, SLO, AM)
-        let subColumnStart = 5 + index * 6; // Start from the next column after week columns
-
-        // Loop for sub columns LO, SLO, AM
-        ["LO", "SLO", "AM"].forEach((label, subIndex) => {
-          const subCol1 = getExcelColumn(subColumnStart + subIndex * 2); // Sub column first cell
-          const subCol2 = getExcelColumn(subColumnStart + 1 + subIndex * 2); // Sub column second cell
-          // Merge cells for sub columns
-          worksheet.mergeCells(`${subCol1}2:${subCol2}2`);
-          const subCell = worksheet.getCell(`${subCol1}2`);
-
-          subCell.value = label;
-          subCell.font = { bold: true };
-          subCell.alignment = { horizontal: "center", vertical: "middle" };
-
-          // Apply border to each sub column header cell
-          subCell.style.border = {
+        // GOOD and BAD headers
+        let startStatus = subColumnStart + subIndex * 2;
+        ["GOOD", "BAD"].forEach((status, statusIndex) => {
+          const statusCol = getExcelColumn(startStatus + statusIndex);
+          const statusCell = worksheet.getCell(`${statusCol}3`);
+          statusCell.value = status;
+          statusCell.font = { bold: true };
+          statusCell.alignment = { horizontal: "center", vertical: "middle" };
+          statusCell.style.border = {
             top: { style: "thin", color: { argb: "FF000000" } },
             left: { style: "thin", color: { argb: "FF000000" } },
             bottom: { style: "thin", color: { argb: "FF000000" } },
             right: { style: "thin", color: { argb: "FF000000" } },
           };
-
-          // Apply blue fill color to sub column header cells
-          subCell.style.fill = {
+          statusCell.style.fill = {
             type: "pattern",
             pattern: "solid",
-            fgColor: { argb: "FF9CC2E5" }, // Blue color
+            fgColor: { argb: "FF9CC2E5" },
           };
-
-          let startStatus = subColumnStart + subIndex * 2;
-          // Adding "GOOD" and "BAD" headers
-          ["GOOD", "BAD"].forEach((status, statusIndex) => {
-            const statusCol = getExcelColumn(startStatus + statusIndex);
-            const statusCell = worksheet.getCell(`${statusCol}3`);
-            statusCell.value = status;
-            statusCell.font = { bold: true };
-            statusCell.alignment = { horizontal: "center", vertical: "middle" };
-
-            // Apply border to each status header cell
-            statusCell.style.border = {
-              top: { style: "thin", color: { argb: "FF000000" } },
-              left: { style: "thin", color: { argb: "FF000000" } },
-              bottom: { style: "thin", color: { argb: "FF000000" } },
-              right: { style: "thin", color: { argb: "FF000000" } },
-            };
-
-            // Apply blue fill color to status header cells
-            statusCell.style.fill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "FF9CC2E5" }, // Blue color
-            };
-          });
         });
       });
+    });
 
-      let totalWilayahBarat = 0;
-      let totalWilayahSelatan = 0;
+    let totalWilayahAll = {};
 
-      // Iterating through data and generating rows
-      data.data.forEach((region) => {
-        let regionTotal = 0;
-        let regionWeekGoodLO = [0, 0, 0, 0]; // For each week (Minggu I, II, III, IV)
-        let regionWeekBadLO = [0, 0, 0, 0];
-        let regionWeekGoodSLO = [0, 0, 0, 0];
-        let regionWeekBadSLO = [0, 0, 0, 0];
-        let regionWeekGoodAM = [0, 0, 0, 0];
-        let regionWeekBadAM = [0, 0, 0, 0];
+    // Iterating through data dan generating rows
+    excelData.data.forEach((region) => {
+      let regionTotal = 0;
+      const weeksCount = excelData.headerRow.length;
+      let regionWeekGoodLO = Array(weeksCount).fill(0);
+      let regionWeekBadLO = Array(weeksCount).fill(0);
+      let regionWeekGoodSLO = Array(weeksCount).fill(0);
+      let regionWeekBadSLO = Array(weeksCount).fill(0);
+      let regionWeekGoodAM = Array(weeksCount).fill(0);
+      let regionWeekBadAM = Array(weeksCount).fill(0);
 
-        region.am.branch.forEach((branch) => {
-          let weekGoodLO = [0, 0, 0, 0]; // For each week (Minggu I, II, III, IV)
-          let weekBadLO = [0, 0, 0, 0];
-          let weekGoodSLO = [0, 0, 0, 0];
-          let weekBadSLO = [0, 0, 0, 0];
-          let weekGoodAM = [0, 0, 0, 0];
-          let weekBadAM = [0, 0, 0, 0];
+      region.am.branch.forEach((branch) => {
+        let weekGoodLO = Array(weeksCount).fill(0);
+        let weekBadLO = Array(weeksCount).fill(0);
+        let weekGoodSLO = Array(weeksCount).fill(0);
+        let weekBadSLO = Array(weeksCount).fill(0);
+        let weekGoodAM = Array(weeksCount).fill(0);
+        let weekBadAM = Array(weeksCount).fill(0);
 
-          // Add rows for each LO under this branch
-          branch.LO.forEach((lo) => {
-            const rowData = [
-              branch.branch,
-              region.region,
-              branch.slo,
-              lo.name,
-              lo.target,
-            ];
-
-            // Iterate over each report (week) for the LO and get Good and Bad values
-            lo.report.forEach((item) => {
-              rowData.push(
-                item.lo.good,
-                item.lo.bad,
-                item.slo.good,
-                item.slo.bad,
-                item.am.good,
-                item.am.bad
-              );
-            });
-
-            lo.report.forEach((item, index) => {
-              weekGoodLO[index] += item.lo.good; // Accumulate GOOD for LO
-              weekBadLO[index] += item.lo.bad; // Accumulate BAD for LO
-              weekGoodSLO[index] += item.slo.good; // Accumulate GOOD for SLO
-              weekBadSLO[index] += item.slo.bad; // Accumulate BAD for SLO
-              weekGoodAM[index] += item.am.good; // Accumulate GOOD for AM
-              weekBadAM[index] += item.am.bad; // Accumulate BAD for AM
-
-              // Add Good and Bad values to the row
-            });
-
-            // Add the row with the collected data
-            const row = worksheet.addRow(rowData);
-
-            row.eachCell((cell) => {
-              // Adding border to each cell in the row
-              cell.style.border = {
-                top: { style: "thin", color: { argb: "FF000000" } },
-                left: { style: "thin", color: { argb: "FF000000" } },
-                bottom: { style: "thin", color: { argb: "FF000000" } },
-                right: { style: "thin", color: { argb: "FF000000" } },
-              };
-            });
-
-            // Center alignment for the TARGET column
-            row.getCell(5).alignment = {
-              horizontal: "center",
-              vertical: "middle",
-            };
-          });
-
-          // Calculate and add total for each branch
-          const totalTarget = branch.LO.reduce((acc, lo) => acc + lo.target, 0);
-          const totalRow = [
-            "TOTAL", // Label for total row
-            "", // Placeholder for empty column
-            "", // Placeholder for empty column
-            "", // Placeholder for empty column
-            totalTarget, // Total target
+        // Add rows untuk setiap LO
+        branch.LO.forEach((lo) => {
+          const rowData = [
+            branch.branch,
+            region.region,
+            branch.slo,
+            lo.name,
+            lo.target,
           ];
-          [
-            weekGoodLO,
-            weekBadLO,
-            weekGoodSLO,
-            weekBadSLO,
-            weekGoodAM,
-            weekBadAM,
-          ].forEach((item) => {
-            item.forEach((value, index) => {
-              totalRow.push(value); // Menambahkan setiap nilai dari array ke totalRow
-            });
+
+          // Iterate over each report (week)
+          lo.report.forEach((item, index) => {
+            rowData.push(
+              item.lo.good,
+              item.lo.bad,
+              item.slo.good,
+              item.slo.bad,
+              item.am.good,
+              item.am.bad
+            );
+
+            weekGoodLO[index] += item.lo.good;
+            weekBadLO[index] += item.lo.bad;
+            weekGoodSLO[index] += item.slo.good;
+            weekBadSLO[index] += item.slo.bad;
+            weekGoodAM[index] += item.am.good;
+            weekBadAM[index] += item.am.bad;
           });
 
-          weekGoodLO.forEach((value, index) => {
-            regionWeekGoodLO[index] += value; // Accumulate GOOD for LO
-          });
-          weekBadLO.forEach((value, index) => {
-            regionWeekBadLO[index] += value; // Accumulate BAD for LO
-          });
-          weekGoodSLO.forEach((value, index) => {
-            regionWeekGoodSLO[index] += value; // Accumulate GOOD for SLO
-          });
-          weekBadSLO.forEach((value, index) => {
-            regionWeekBadSLO[index] += value; // Accumulate BAD for SLO
-          });
-          weekGoodAM.forEach((value, index) => {
-            regionWeekGoodAM[index] += value; // Accumulate GOOD for AM
-          });
-          weekBadAM.forEach((value, index) => {
-            regionWeekBadAM[index] += value; // Accumulate BAD for AM
-          });
-
-          // Prepare total row with accumulated values for GOOD and BAD
-
-          const rawTotal = worksheet.addRow(totalRow);
-
-          // Center alignment for the TARGET column in the total row
-          rawTotal.getCell(5).alignment = {
-            horizontal: "center",
-            vertical: "middle",
-          };
-
-          // Apply green background color for the total row
-          rawTotal.eachCell((cell) => {
-            cell.style.fill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "FFC5E0B3" }, // Green color
-            };
-
-            // Adding border to each cell in the row
+          const row = worksheet.addRow(rowData);
+          row.eachCell((cell) => {
             cell.style.border = {
               top: { style: "thin", color: { argb: "FF000000" } },
               left: { style: "thin", color: { argb: "FF000000" } },
@@ -841,54 +378,48 @@ class TestService {
               right: { style: "thin", color: { argb: "FF000000" } },
             };
           });
-
-          // Merge cells for the TOTAL row (A-D)
-          const lastRowIndex = worksheet.lastRow.number;
-          worksheet.mergeCells(`A${lastRowIndex}:D${lastRowIndex}`); // Merge A-D for the TOTAL row
-
-          // Accumulate region total
-          regionTotal += totalTarget;
+          row.getCell(5).alignment = {
+            horizontal: "center",
+            vertical: "middle",
+          };
         });
 
-        // Add region total row
-        const regionTotalRow = [
-          `WILAYAH ${region.region}`, // Nama wilayah
-          "", // Placeholder kosong untuk kolom
-          region.am.name, // Nama AM
-          "", // Placeholder kosong untuk kolom
-          regionTotal, // Total untuk wilayah
-        ];
+        // Total row untuk branch
+        const totalTarget = branch.LO.reduce((acc, lo) => acc + lo.target, 0);
+        const totalRow = ["TOTAL", "", "", "", totalTarget];
 
         [
-          regionWeekGoodLO,
-          regionWeekBadLO,
-          regionWeekGoodSLO,
-          regionWeekBadSLO,
-          regionWeekGoodAM,
-          regionWeekBadAM,
-        ].forEach((item) => {
-          item.forEach((value, index) => {
-            regionTotalRow.push(value); // Menambahkan setiap nilai dari array ke totalRow
-          });
+          weekGoodLO,
+          weekBadLO,
+          weekGoodSLO,
+          weekBadSLO,
+          weekGoodAM,
+          weekBadAM,
+        ].forEach((weekArray) => {
+          weekArray.forEach((value) => totalRow.push(value));
         });
 
-        const rawTotalRegion = worksheet.addRow(regionTotalRow);
+        // Accumulate to region totals
+        weekGoodLO.forEach((value, index) => {
+          regionWeekGoodLO[index] += value;
+          regionWeekBadLO[index] += weekBadLO[index];
+          regionWeekGoodSLO[index] += weekGoodSLO[index];
+          regionWeekBadSLO[index] += weekBadSLO[index];
+          regionWeekGoodAM[index] += weekGoodAM[index];
+          regionWeekBadAM[index] += weekBadAM[index];
+        });
 
-        // Center alignment for the TARGET column in the region total row
-        rawTotalRegion.getCell(5).alignment = {
+        const rawTotal = worksheet.addRow(totalRow);
+        rawTotal.getCell(5).alignment = {
           horizontal: "center",
           vertical: "middle",
         };
-
-        // Apply blue background color for the region total row
-        rawTotalRegion.eachCell((cell) => {
+        rawTotal.eachCell((cell) => {
           cell.style.fill = {
             type: "pattern",
             pattern: "solid",
-            fgColor: { argb: "FF9CC2E5" }, // Blue color
+            fgColor: { argb: "FFC5E0B3" },
           };
-
-          // Adding border to each cell in the row
           cell.style.border = {
             top: { style: "thin", color: { argb: "FF000000" } },
             left: { style: "thin", color: { argb: "FF000000" } },
@@ -897,65 +428,134 @@ class TestService {
           };
         });
 
-        // Merge cells for the region total row
-        const regionTotalRowIndex = worksheet.lastRow.number;
-        worksheet.mergeCells(`A${regionTotalRowIndex}:B${regionTotalRowIndex}`); // Merge A-B for region.region
-        worksheet.mergeCells(`C${regionTotalRowIndex}:D${regionTotalRowIndex}`); // Merge C-D for region.am.name
-
-        // Add region total to the correct variable
-        if (region.region === "BARAT") {
-          totalWilayahBarat += regionTotal;
-        } else if (region.region === "SELATAN") {
-          totalWilayahSelatan += regionTotal;
-        }
+        const lastRowIndex = worksheet.lastRow.number;
+        worksheet.mergeCells(`A${lastRowIndex}:D${lastRowIndex}`);
+        regionTotal += totalTarget;
       });
 
-      // Optional: Adding a final total row for the entire dataset
-      const finalTotalRow = [
-        "TOTAL WILAYAH",
+      // Region total row
+      const regionTotalRow = [
+        `WILAYAH ${region.region}`,
         "",
+        region.am.name,
         "",
-        "",
-        totalWilayahBarat + totalWilayahSelatan,
+        regionTotal,
       ];
 
-      worksheet.addRow(finalTotalRow);
-      worksheet.mergeCells(
-        `A${worksheet.lastRow.number}:B${worksheet.lastRow.number}`
-      );
-      worksheet.mergeCells(
-        `C${worksheet.lastRow.number}:D${worksheet.lastRow.number}`
-      );
+      [
+        regionWeekGoodLO,
+        regionWeekBadLO,
+        regionWeekGoodSLO,
+        regionWeekBadSLO,
+        regionWeekGoodAM,
+        regionWeekBadAM,
+      ].forEach((weekArray) => {
+        weekArray.forEach((value) => regionTotalRow.push(value));
+      });
 
-      // Set column widths
-      worksheet.getColumn(1).width = 12; // Kantor
-      worksheet.getColumn(2).width = 10; // Wil
-      worksheet.getColumn(3).width = 15; // SLO
-      worksheet.getColumn(4).width = 25; // LO
-      worksheet.getColumn(5).width = 10; // Target
+      const rawTotalRegion = worksheet.addRow(regionTotalRow);
+      rawTotalRegion.getCell(5).alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+      rawTotalRegion.eachCell((cell) => {
+        cell.style.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF9CC2E5" },
+        };
+        cell.style.border = {
+          top: { style: "thin", color: { argb: "FF000000" } },
+          left: { style: "thin", color: { argb: "FF000000" } },
+          bottom: { style: "thin", color: { argb: "FF000000" } },
+          right: { style: "thin", color: { argb: "FF000000" } },
+        };
+      });
 
-      // Freeze header (columns and rows)
-      worksheet.views = [
-        {
-          state: "frozen",
-          xSplit: 5, // Freeze columns A-D
-          ySplit: 3, // Freeze rows 1-2
-        },
-      ];
-    };
+      const regionTotalRowIndex = worksheet.lastRow.number;
+      worksheet.mergeCells(`A${regionTotalRowIndex}:B${regionTotalRowIndex}`);
+      worksheet.mergeCells(`C${regionTotalRowIndex}:D${regionTotalRowIndex}`);
 
-    addWorksheet("Data Kunjungan PMS");
+      totalWilayahAll[region.region] = regionTotal;
+    });
 
-    // Generate XLSX file as a buffer
+    // Final total row
+    const grandTotal = Object.values(totalWilayahAll).reduce(
+      (a, b) => a + b,
+      0
+    );
+    const finalTotalRow = ["TOTAL WILAYAH", "", "", "", grandTotal];
+
+    worksheet.addRow(finalTotalRow);
+    worksheet.mergeCells(
+      `A${worksheet.lastRow.number}:B${worksheet.lastRow.number}`
+    );
+    worksheet.mergeCells(
+      `C${worksheet.lastRow.number}:D${worksheet.lastRow.number}`
+    );
+
+    // Set column widths
+    worksheet.getColumn(1).width = 12;
+    worksheet.getColumn(2).width = 10;
+    worksheet.getColumn(3).width = 15;
+    worksheet.getColumn(4).width = 25;
+    worksheet.getColumn(5).width = 10;
+
+    // Freeze panes
+    worksheet.views = [
+      {
+        state: "frozen",
+        xSplit: 5,
+        ySplit: 3,
+      },
+    ];
+
     const xlsxBuffer = await workbook.xlsx.writeBuffer();
     return xlsxBuffer;
   }
 
   async listAllReports(year, month) {
+    // Validasi input parameters
+    if (typeof year !== "number" || typeof month !== "number") {
+      throw new Error(`Invalid parameters: year=${year}, month=${month}`);
+    }
+
+    if (month < 0 || month > 11) {
+      throw new Error(`Month must be between 0-11, got: ${month}`);
+    }
+
+    if (year < 2000 || year > 2100) {
+      throw new Error(`Year must be between 2000-2100, got: ${year}`);
+    }
+
+    // month sudah 0-indexed (0 = Januari, 9 = Oktober)
+    // Buat start date: first day of month at 00:00:00
+    const startDate = new Date(year, month, 1, 0, 0, 0, 0);
+
+    // Buat end date: last day of month at 23:59:59
+    // month + 1, 0 akan memberikan hari terakhir dari month
+    const endDate = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+    // Validasi Date objects
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error(`Invalid date created: year=${year}, month=${month}`);
+    }
+
+    console.log("Date Range:", {
+      year,
+      month: month + 1, // untuk display (1-12)
+      monthName: this.getMonthName(month),
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+
     const data = await this.prisma.region.findMany({
       select: {
         region: true,
-        user: { select: { name: true, role: true }, where: { role: "AM" } },
+        user: {
+          select: { name: true, role: true },
+          where: { role: "AM" },
+        },
         branches: {
           select: {
             branch: true,
@@ -976,23 +576,36 @@ class TestService {
                       },
                       where: {
                         OR: [
-                          {
-                            review_by_am: {
-                              gte: new Date(`${year}-${month}-01`), // Filter by the first day of the month
-                              lte: new Date(`${year}-${month}-31`), // Filter by the last day of the month
-                            },
-                          },
-                          {
-                            review_by_slo: {
-                              gte: new Date(`${year}-${month}-01`), // Filter by the first day of the month
-                              lte: new Date(`${year}-${month}-31`), // Filter by the last day of the month
-                            },
-                          },
+                          // Filter created_at (selalu ada)
                           {
                             created_at: {
-                              gte: new Date(`${year}-${month}-01`), // Filter by the first day of the month
-                              lte: new Date(`${year}-${month}-31`), // Filter by the last day of the month
+                              gte: startDate,
+                              lte: endDate,
                             },
+                          },
+                          // Filter review_by_am (bisa null, jadi perlu AND dengan not null)
+                          {
+                            AND: [
+                              { review_by_am: { not: null } },
+                              {
+                                review_by_am: {
+                                  gte: startDate,
+                                  lte: endDate,
+                                },
+                              },
+                            ],
+                          },
+                          // Filter review_by_slo (bisa null, jadi perlu AND dengan not null)
+                          {
+                            AND: [
+                              { review_by_slo: { not: null } },
+                              {
+                                review_by_slo: {
+                                  gte: startDate,
+                                  lte: endDate,
+                                },
+                              },
+                            ],
                           },
                         ],
                       },
@@ -1001,7 +614,7 @@ class TestService {
                 },
               },
               where: {
-                role: "SLO", // Only select users with role 'slo'
+                role: "SLO",
               },
             },
           },
@@ -1009,41 +622,7 @@ class TestService {
       },
     });
 
-    // // Mapping data berdasarkan proses
-    // const mappedData = data.map((region) => ({
-    //   region: region.region,
-    //   am: region.branches.map((branch) => ({
-    //     name: branch.slo.name,
-    //     branch: branch.branch,
-    //     slo: branch.slo.report_lo.map((report) => {
-    //       let processStatus = "";
-
-    //       if (report.status === "GOOD") {
-    //         processStatus = "REVIEW_SLO";
-    //       } else if (report.status === "BAD") {
-    //         processStatus = "DECLINE_LO";
-    //       }
-
-    //       return {
-    //         name: report.customer.name,
-    //         target: 50,
-    //         report: [
-    //           {
-    //             month: `${month}`,
-    //             week: "MINGGU I",
-    //             lo: { good: 5, bad: 5 },
-    //             slo: { good: 5, bad: 5 },
-    //             am: { good: 5, bad: 5 },
-    //           },
-    //           // Other weeks (Minggu II, III, IV)
-    //         ],
-    //         processStatus, // Status proses berdasarkan kondisi status
-    //       };
-    //     }),
-    //   })),
-    // }));
-
-    return data;
+    return { data };
   }
 }
 

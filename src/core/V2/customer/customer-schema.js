@@ -82,18 +82,19 @@ export const customerSchema = {
         "string.empty": "Name is required",
       }),
       ktp_number: Joi.string()
-        .length(16) // sama dengan min(16).max(16)
-        .required()
+        .length(16)
+        .optional() // sama dengan min(16).max(16)
         .messages({
           "string.base": "KTP must be a string",
           "string.empty": "KTP is required",
           "string.length": "KTP must be exactly 16 digits",
-          "any.required": "KTP is required",
         }),
       date_of_birth: Joi.date().optional().messages({
         "date.base": "Date of birth must be a valid date",
       }),
-      address: Joi.string().optional(),
+      address: Joi.string().required().messages({
+        "string.empty": "Address is required",
+      }),
       rt_rw: Joi.string().optional(),
       village: Joi.string().optional(),
       phone_number: Joi.string()

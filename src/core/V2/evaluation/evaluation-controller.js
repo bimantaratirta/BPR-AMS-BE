@@ -1,4 +1,8 @@
-import { createdResponse, successResponse } from "../../../utils/response.js";
+import {
+  createdResponse,
+  successResponse,
+  updatedResponse,
+} from "../../../utils/response.js";
 import EvaluationService from "./evaluation-service.js";
 
 class EvaluationController {
@@ -9,6 +13,16 @@ class EvaluationController {
     const result = await EvaluationService.create(data, req.user);
     return createdResponse(res, result, "Evaluation created successfully");
   }
+
+  async update(req, res) {
+    const result = await EvaluationService.update(
+      req.params.id,
+      req.body,
+      req.user
+    );
+    return updatedResponse(res, result);
+  }
+
   async list(req, res) {
     const result = await EvaluationService.list();
     return successResponse(

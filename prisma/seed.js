@@ -951,492 +951,492 @@ async function main() {
     ],
   });
 
-  // Step 4: Create Employees, Customers, and Reports
+  // // Step 4: Create Employees, Customers, and Reports
 
-  // Helper function untuk menghasilkan tanggal acak dalam bulan Oktober 2025
-  function getRandomDateInOctober() {
-    const randomDay = Math.floor(Math.random() * 31) + 1; // Acak antara 1 hingga 31
-    return new Date(
-      `2025-10-${randomDay.toString().padStart(2, "0")}T09:28:17.915Z`
-    );
-  }
+  // // Helper function untuk menghasilkan tanggal acak dalam bulan Oktober 2025
+  // function getRandomDateInOctober() {
+  //   const randomDay = Math.floor(Math.random() * 31) + 1; // Acak antara 1 hingga 31
+  //   return new Date(
+  //     `2025-10-${randomDay.toString().padStart(2, "0")}T09:28:17.915Z`
+  //   );
+  // }
 
-  // Membuat data untuk employee
-  await prisma.employee.createMany({
-    data: Array.from({ length: 96 }, (_, index) => ({
-      id: `714566fc-a337-44a0-86a3-d7e53d1cec${(index + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique ID
-      company_name: `Company  ${(index + 1).toString().padStart(2, "0")}`, // Same company name for all
-      company_address: `Address No.${index + 1}`, // Same address for all
-      company_phone: "123456789", // Same phone number for all
-      position: `Position ${index + 1}`, // Unique position (e.g., "Position 1", "Position 2", etc.)
-      work: `Work ${index + 1}`, // Same work for all
-      salary: 1000000, // Incremental salary for variety
-      created_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
-      updated_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
-      deleted_at: null, // No deletion date
-    })),
-  });
-
-  // Mengambil data employees untuk referensi created_by
-  const employees = await prisma.user.findMany({
-    where: {
-      role: "LO", // Fetching only Local Operator roles
-    },
-  });
-
-  // Membuat data untuk customers
-  await prisma.customer.createMany({
-    data: Array.from({ length: 96 }, (_, index) => ({
-      id: `cd913355-0c30-4d20-98e3-542cd0c56a${(index + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique ID
-      name: `Customer ${index + 1}`, // Unique customer name
-      ktp_number: `123456789`, // Incremental KTP number
-      date_of_birth: new Date("1985-06-15T00:00:00.000Z"), // Same date of birth for all
-      address: `Address No. ${index + 1}`, // Incremental address
-      rt_rw: `01/03`, // Same RT/RW for all
-      village: `Gubeng`, // Same village for all
-      phone_number: `123456789`, // Incremental phone number
-      employee_id: `714566fc-a337-44a0-86a3-d7e53d1cec${(index + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique employee ID
-      non_employee_id: null,
-      business_id: null,
-      created_by: employees[Math.floor(index / 8)].id, // Every 8 customers share the same created_by (LO role)
-      created_at: getRandomDateInOctober(), // Menggunakan fungsi untuk tanggal acak dalam Oktober 2025
-      updated_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
-      deleted_at: null, // No deletion date
-    })),
-  });
-
-  // Step 5: Create Reports for Customers with All 8 Process Logic
-  const reportsData = [];
-
-  const processes = [
-    "DECLINE_LO",
-    "REVIEW_SLO",
-    "DECLINE_REVIEW_SLO",
-    "EVALUATION_SLO",
-    "DECLINE_EVALUATION_SLO",
-    "REVIEW_AM",
-    "APPROVE_AM",
-    "DECLINE_AM",
-  ];
-
-  for (let i = 0; i < 96; i++) {
-    const lo = employees[Math.floor(i / 8)]; // Find LO for this group
-    const customer = await prisma.customer.findUnique({
-      where: {
-        id: `cd913355-0c30-4d20-98e3-542cd0c56a${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-      },
-    });
-
-    const slo = await prisma.user.findUnique({
-      where: {
-        id: lo.supervisor_id, // Find SLO linked to LO
-      },
-    });
-
-    const am = await prisma.user.findUnique({
-      where: {
-        id: slo.supervisor_id, // Find AM linked to SLO
-      },
-    });
-
-    // Fetch employee snapshot using employee_id from the customer data
-    const employeeSnapshot = await prisma.employee.findUnique({
-      where: {
-        id: customer.employee_id, // Get employee data using the employee_id from the customer
-      },
-    });
-
-    // Define process based on customer index
-    const process = processes[i % 8]; // This ensures each customer gets a unique process based on their position
-
-    // Determine the status based on the process
-    let status = "GOOD"; // Default status
-    if (
-      process === "DECLINE_LO" ||
-      process === "DECLINE_REVIEW_SLO" ||
-      process === "DECLINE_EVALUATION_SLO" ||
-      process === "DECLINE_AM"
-    ) {
-      status = "BAD"; // Set status to BAD if any of the DECLINE processes
-    }
-
-    // Add report data for each customer
-    reportsData.push({
-      id: `d220788b-a4bd-45dc-9eb5-5fcd46c56fb${(i + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique report ID
-      status: status, // Use the status based on the process
-      process: process,
-      customer_id: customer.id,
-      lo_id: lo.id,
-      slo_id: slo.id,
-      am_id: am.id,
-      customer_snapshot: {
-        id: customer.id,
-        name: customer.name,
-        rt_rw: customer.rt_rw,
-        address: customer.address,
-        village: customer.village,
-        work_type: "Karyawan", // Dummy data for work_type
-        created_at: customer.created_at,
-        created_by: lo.id,
-        ktp_number: customer.ktp_number,
-        updated_at: customer.updated_at,
-        business_id: customer.business_id,
-        employee_id: customer.employee_id,
-        phone_number: customer.phone_number,
-        date_of_birth: customer.date_of_birth,
-        non_employee_id: customer.non_employee_id,
-      },
-      employee_snapshot: {
-        id: employeeSnapshot.id,
-        salary: employeeSnapshot.salary,
-        position: employeeSnapshot.position,
-        created_at: employeeSnapshot.created_at,
-        occupation: employeeSnapshot.occupation,
-        updated_at: employeeSnapshot.updated_at,
-        company_name: employeeSnapshot.company_name,
-        company_phone: employeeSnapshot.company_phone,
-        company_address: employeeSnapshot.company_address,
-      },
-      non_employee_snapshot: null,
-      business_snapshot: null,
-      created_at: getRandomDateInOctober(),
-      updated_at: new Date("2025-10-23T09:28:17.915Z"),
-      deleted_at: null,
-    });
-  }
-
-  // Insert all reports at once
-  await prisma.report.createMany({
-    data: reportsData,
-  });
-
-  await prisma.reportPhoto.createMany({
-    data: Array.from({ length: 96 }, (_, index) => ({
-      id: `a1998d8e-af58-4c1b-b498-1788895aff${(index + 1)
-        .toString()
-        .padStart(2, "0")}`,
-      report_id: `d220788b-a4bd-45dc-9eb5-5fcd46c56fb${(index + 1)
-        .toString()
-        .padStart(2, "0")}`,
-      url: "/reports/b4700667-875d-4142-b47a-10eea34038c6.png",
-      created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-      updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-      deleted_at: null, // Jika tidak ada nilai, biarkan `null`
-    })),
-  });
-
-  // Step 6: Create ReviewCustomer for each Report, excluding DECLINE_LO and REVIEW_LO
-  const reviewData = [];
-
-  for (let i = 0; i < reportsData.length; i++) {
-    const report = reportsData[i];
-
-    // Skip creating reviewCustomer for DECLINE_LO and REVIEW_LO
-    if (report.process === "DECLINE_LO" || report.process === "REVIEW_SLO") {
-      continue; // Skip this iteration and don't add a review
-    }
-
-    // Determine the review data based on the process
-    let reviewIdentity = true;
-    let reviewDomicile = true;
-    let reviewWork = true;
-
-    // Adjust the review data based on the process
-    if (report.process === "DECLINE_REVIEW_SLO") {
-      reviewWork = false; // Only `review_work` is false for DECLINE_REVIEW_SLO
-    }
-
-    // Create review data for each report based on the process
-    reviewData.push({
-      id: `31407469-806f-4363-9dea-6642bef069f${(i + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique ID for review
-      report_id: report.id, // Link the review to the report
-      review_identity: reviewIdentity, // True by default
-      review_domicile: reviewDomicile, // True by default
-      review_work: reviewWork, // True or false based on the process
-    });
-  }
-
-  // Insert all reviewCustomer records at once
-  await prisma.reviewCustomer.createMany({
-    data: reviewData,
-  });
-
-  // Step 7: Create Evaluation for each Report based on Process
-  const evaluationData = [];
-
-  for (let i = 0; i < reportsData.length; i++) {
-    const report = reportsData[i];
-
-    // Skip creating evaluation for DECLINE_LO, REVIEW_SLO, DECLINE_REVIEW_SLO, and EVALUATION_SLO
-    if (
-      report.process === "DECLINE_LO" ||
-      report.process === "REVIEW_SLO" ||
-      report.process === "DECLINE_REVIEW_SLO" ||
-      report.process === "EVALUATION_SLO"
-    ) {
-      console.log(
-        `Skipping evaluation creation for report ${report.id} due to process: ${report.process}`
-      );
-      continue; // Skip this iteration and don't add an evaluation
-    }
-
-    // Create evaluation data based on the process
-    let statusCharacter = "GOOD";
-    let statusCapacity = "GOOD";
-    let statusCondition = "GOOD";
-    let statusCapital = "GOOD";
-
-    // If the process is DECLINE_EVALUATION_SLO, change status_capital to BAD
-    if (report.process === "DECLINE_EVALUATION_SLO") {
-      statusCapital = "BAD";
-    }
-
-    // Create evaluation data
-    evaluationData.push({
-      id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
-        .toString()
-        .padStart(2, "0")}`, // Unique ID for evaluation
-      report_id: report.id, // Link the evaluation to the report
-      character:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      status_character: statusCharacter, // Status for character
-      capacity:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      status_capacity: statusCapacity, // Status for capacity
-      condition:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      status_condition: statusCondition, // Status for condition
-      capital:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      status_capital: statusCapital, // Status for capital
-    });
-  }
-
-  // Insert all evaluation records at once
-  await prisma.evaluation.createMany({
-    data: evaluationData,
-  });
-
-  // Step 10: Create ReviewCustomer for each Report based on Process
-  const reviewCustomerData = [];
-  const evaluationCustomerData = [];
-  const reviewEvaluationData = [];
-
-  for (let i = 0; i < reportsData.length; i++) {
-    const report = reportsData[i];
-
-    // Skip creating ReviewEvaluation for DECLINE_LO, REVIEW_SLO, DECLINE_REVIEW_SLO, EVALUATION_SLO, DECLINE_EVALUATION_SLO, and REVIEW_AM
-    if (
-      report.process === "DECLINE_LO" ||
-      report.process === "REVIEW_SLO" ||
-      report.process === "DECLINE_REVIEW_SLO" ||
-      report.process === "EVALUATION_SLO" ||
-      report.process === "DECLINE_EVALUATION_SLO" ||
-      report.process === "REVIEW_AM"
-    ) {
-      console.log(
-        `Skipping creation for report ${report.id} due to process: ${report.process}`
-      );
-      continue; // Skip this iteration and don't add a reviewCustomer or reviewEvaluation
-    }
-
-    // Ensure that report_id exists
-    const existingReport = await prisma.report.findUnique({
-      where: {
-        id: report.id, // Ensure that the report exists before creating review/evaluation
-      },
-    });
-
-    if (!existingReport) {
-      console.log(
-        `Skipping report creation because report_id ${report.id} does not exist.`
-      );
-      continue;
-    }
-
-    // Step 1: Create ReviewCustomer for APPROVE_AM
-    if (report.process === "APPROVE_AM") {
-      reviewCustomerData.push({
-        id: `e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        evaluation_id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        review_character: true,
-        review_capacity: true,
-        review_condition: true,
-        review_capital: true, // All true for APPROVE_AM
-      });
-
-      // Create Evaluation for APPROVE_AM
-      evaluationCustomerData.push({
-        id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        report_id: report.id, // Link evaluation to the report
-        character:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        status_character: "GOOD",
-        capacity:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        status_capacity: "GOOD",
-        condition:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        status_condition: "GOOD",
-        capital:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        status_capital: "GOOD",
-      });
-    }
-
-    // Step 2: Create ReviewEvaluation for DECLINE_AM
-    if (report.process === "DECLINE_AM") {
-      reviewEvaluationData.push({
-        id: `e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        evaluation_id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
-          .toString()
-          .padStart(2, "0")}`,
-        review_character: true,
-        review_capacity: true,
-        review_condition: true,
-        review_capital: false, // Review capital is false for DECLINE_AM
-      });
-    }
-  }
-
-  // // Insert all reviewCustomer records at once
-  // await prisma.reviewCustomer.createMany({
-  //   data: reviewCustomerData,
+  // // Membuat data untuk employee
+  // await prisma.employee.createMany({
+  //   data: Array.from({ length: 96 }, (_, index) => ({
+  //     id: `714566fc-a337-44a0-86a3-d7e53d1cec${(index + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique ID
+  //     company_name: `Company  ${(index + 1).toString().padStart(2, "0")}`, // Same company name for all
+  //     company_address: `Address No.${index + 1}`, // Same address for all
+  //     company_phone: "123456789", // Same phone number for all
+  //     position: `Position ${index + 1}`, // Unique position (e.g., "Position 1", "Position 2", etc.)
+  //     work: `Work ${index + 1}`, // Same work for all
+  //     salary: 1000000, // Incremental salary for variety
+  //     created_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
+  //     updated_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
+  //     deleted_at: null, // No deletion date
+  //   })),
   // });
 
-  // // Insert all evaluationCustomer records at once
-  // await prisma.evaluation.createMany({
-  //   data: evaluationCustomerData,
+  // // Mengambil data employees untuk referensi created_by
+  // const employees = await prisma.user.findMany({
+  //   where: {
+  //     role: "LO", // Fetching only Local Operator roles
+  //   },
   // });
 
-  // Insert all reviewEvaluation records at once
-  await prisma.reviewEvaluation.createMany({
-    data: reviewEvaluationData,
-  });
+  // // Membuat data untuk customers
+  // await prisma.customer.createMany({
+  //   data: Array.from({ length: 96 }, (_, index) => ({
+  //     id: `cd913355-0c30-4d20-98e3-542cd0c56a${(index + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique ID
+  //     name: `Customer ${index + 1}`, // Unique customer name
+  //     ktp_number: `123456789`, // Incremental KTP number
+  //     date_of_birth: new Date("1985-06-15T00:00:00.000Z"), // Same date of birth for all
+  //     address: `Address No. ${index + 1}`, // Incremental address
+  //     rt_rw: `01/03`, // Same RT/RW for all
+  //     village: `Gubeng`, // Same village for all
+  //     phone_number: `123456789`, // Incremental phone number
+  //     employee_id: `714566fc-a337-44a0-86a3-d7e53d1cec${(index + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique employee ID
+  //     non_employee_id: null,
+  //     business_id: null,
+  //     created_by: employees[Math.floor(index / 8)].id, // Every 8 customers share the same created_by (LO role)
+  //     created_at: getRandomDateInOctober(), // Menggunakan fungsi untuk tanggal acak dalam Oktober 2025
+  //     updated_at: new Date("2025-10-23T09:28:17.915Z"), // Consistent timestamp
+  //     deleted_at: null, // No deletion date
+  //   })),
+  // });
 
-  // await prisma.report.createMany({
-  //   data: [
-  //     {
-  //       id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
-  //       status: "GOOD",
-  //       process: "APPROVE_AM",
-  //       customer_id: "cd913355-0c30-4d20-98e3-542cd0c56a83",
-  //       lo_id: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
-  //       slo_id: "d4e5f6a7-b8c9-0a1b-2c3d-4e5f6a7b8c9d",
-  //       am_id: "c1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
-  //       customer_snapshot: {
-  //         id: "cd913355-0c30-4d20-98e3-542cd0c56a83",
-  //         name: "Bagus Budiman",
-  //         rt_rw: "01/03",
-  //         address: "Jl. Merauke No. 10, Surabaya",
-  //         village: "Gubeng",
-  //         work_type: "Karyawan",
-  //         created_at: "2025-10-23T09:28:17.915Z",
-  //         created_by: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
-  //         ktp_number: "1234567890123456",
-  //         updated_at: "2025-10-23T09:28:17.915Z",
-  //         business_id: null,
-  //         employee_id: "714566fc-a337-44a0-86a3-d7e53d1cec6f",
-  //         phone_number: "625232243563",
-  //         date_of_birth: "1985-06-15T00:00:00.000Z",
-  //         non_employee_id: null,
-  //       },
-  //       employee_snapshot: {
-  //         id: "714566fc-a337-44a0-86a3-d7e53d1cec6f",
-  //         salary: 11000000,
-  //         position: "Junior Software Development",
-  //         created_at: "2025-10-23T09:28:17.915Z",
-  //         occupation: "Software Development",
-  //         updated_at: "2025-10-23T09:28:17.915Z",
-  //         company_name: "PT Maju Jaya",
-  //         company_phone: "625132152936",
-  //         company_address: "JL. Sri Kartini No.43",
-  //       },
-  //       non_employee_snapshot: null,
-  //       business_snapshot: null,
-  //       created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-  //       updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-  //       deleted_at: null, // Jika tidak ada nilai, biarkan `null`
+  // // Step 5: Create Reports for Customers with All 8 Process Logic
+  // const reportsData = [];
+
+  // const processes = [
+  //   "DECLINE_LO",
+  //   "REVIEW_SLO",
+  //   "DECLINE_REVIEW_SLO",
+  //   "EVALUATION_SLO",
+  //   "DECLINE_EVALUATION_SLO",
+  //   "REVIEW_AM",
+  //   "APPROVE_AM",
+  //   "DECLINE_AM",
+  // ];
+
+  // for (let i = 0; i < 96; i++) {
+  //   const lo = employees[Math.floor(i / 8)]; // Find LO for this group
+  //   const customer = await prisma.customer.findUnique({
+  //     where: {
+  //       id: `cd913355-0c30-4d20-98e3-542cd0c56a${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
   //     },
-  //   ],
+  //   });
+
+  //   const slo = await prisma.user.findUnique({
+  //     where: {
+  //       id: lo.supervisor_id, // Find SLO linked to LO
+  //     },
+  //   });
+
+  //   const am = await prisma.user.findUnique({
+  //     where: {
+  //       id: slo.supervisor_id, // Find AM linked to SLO
+  //     },
+  //   });
+
+  //   // Fetch employee snapshot using employee_id from the customer data
+  //   const employeeSnapshot = await prisma.employee.findUnique({
+  //     where: {
+  //       id: customer.employee_id, // Get employee data using the employee_id from the customer
+  //     },
+  //   });
+
+  //   // Define process based on customer index
+  //   const process = processes[i % 8]; // This ensures each customer gets a unique process based on their position
+
+  //   // Determine the status based on the process
+  //   let status = "GOOD"; // Default status
+  //   if (
+  //     process === "DECLINE_LO" ||
+  //     process === "DECLINE_REVIEW_SLO" ||
+  //     process === "DECLINE_EVALUATION_SLO" ||
+  //     process === "DECLINE_AM"
+  //   ) {
+  //     status = "BAD"; // Set status to BAD if any of the DECLINE processes
+  //   }
+
+  //   // Add report data for each customer
+  //   reportsData.push({
+  //     id: `d220788b-a4bd-45dc-9eb5-5fcd46c56fb${(i + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique report ID
+  //     status: status, // Use the status based on the process
+  //     process: process,
+  //     customer_id: customer.id,
+  //     lo_id: lo.id,
+  //     slo_id: slo.id,
+  //     am_id: am.id,
+  //     customer_snapshot: {
+  //       id: customer.id,
+  //       name: customer.name,
+  //       rt_rw: customer.rt_rw,
+  //       address: customer.address,
+  //       village: customer.village,
+  //       work_type: "Karyawan", // Dummy data for work_type
+  //       created_at: customer.created_at,
+  //       created_by: lo.id,
+  //       ktp_number: customer.ktp_number,
+  //       updated_at: customer.updated_at,
+  //       business_id: customer.business_id,
+  //       employee_id: customer.employee_id,
+  //       phone_number: customer.phone_number,
+  //       date_of_birth: customer.date_of_birth,
+  //       non_employee_id: customer.non_employee_id,
+  //     },
+  //     employee_snapshot: {
+  //       id: employeeSnapshot.id,
+  //       salary: employeeSnapshot.salary,
+  //       position: employeeSnapshot.position,
+  //       created_at: employeeSnapshot.created_at,
+  //       occupation: employeeSnapshot.occupation,
+  //       updated_at: employeeSnapshot.updated_at,
+  //       company_name: employeeSnapshot.company_name,
+  //       company_phone: employeeSnapshot.company_phone,
+  //       company_address: employeeSnapshot.company_address,
+  //     },
+  //     non_employee_snapshot: null,
+  //     business_snapshot: null,
+  //     created_at: getRandomDateInOctober(),
+  //     updated_at: new Date("2025-10-23T09:28:17.915Z"),
+  //     deleted_at: null,
+  //   });
+  // }
+
+  // // Insert all reports at once
+  // await prisma.report.createMany({
+  //   data: reportsData,
   // });
 
   // await prisma.reportPhoto.createMany({
-  //   data: [
-  //     {
-  //       id: "a1998d8e-af58-4c1b-b498-1788895aff9d",
-  //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
-  //       url: "/reports/b4700667-875d-4142-b47a-10eea34038c6.png",
-  //       created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-  //       updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
-  //       deleted_at: null, // Jika tidak ada nilai, biarkan `null`
-  //     },
-  //   ],
+  //   data: Array.from({ length: 96 }, (_, index) => ({
+  //     id: `a1998d8e-af58-4c1b-b498-1788895aff${(index + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`,
+  //     report_id: `d220788b-a4bd-45dc-9eb5-5fcd46c56fb${(index + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`,
+  //     url: "/reports/b4700667-875d-4142-b47a-10eea34038c6.png",
+  //     created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  //     updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  //     deleted_at: null, // Jika tidak ada nilai, biarkan `null`
+  //   })),
   // });
 
+  // // Step 6: Create ReviewCustomer for each Report, excluding DECLINE_LO and REVIEW_LO
+  // const reviewData = [];
+
+  // for (let i = 0; i < reportsData.length; i++) {
+  //   const report = reportsData[i];
+
+  //   // Skip creating reviewCustomer for DECLINE_LO and REVIEW_LO
+  //   if (report.process === "DECLINE_LO" || report.process === "REVIEW_SLO") {
+  //     continue; // Skip this iteration and don't add a review
+  //   }
+
+  //   // Determine the review data based on the process
+  //   let reviewIdentity = true;
+  //   let reviewDomicile = true;
+  //   let reviewWork = true;
+
+  //   // Adjust the review data based on the process
+  //   if (report.process === "DECLINE_REVIEW_SLO") {
+  //     reviewWork = false; // Only `review_work` is false for DECLINE_REVIEW_SLO
+  //   }
+
+  //   // Create review data for each report based on the process
+  //   reviewData.push({
+  //     id: `31407469-806f-4363-9dea-6642bef069f${(i + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique ID for review
+  //     report_id: report.id, // Link the review to the report
+  //     review_identity: reviewIdentity, // True by default
+  //     review_domicile: reviewDomicile, // True by default
+  //     review_work: reviewWork, // True or false based on the process
+  //   });
+  // }
+
+  // // Insert all reviewCustomer records at once
   // await prisma.reviewCustomer.createMany({
-  //   data: [
-  //     {
-  //       id: "31407469-806f-4363-9dea-6642bef069f3",
-  //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
-  //       review_identity: true,
-  //       review_domicile: true,
-  //       review_work: true,
-  //     },
-  //   ],
+  //   data: reviewData,
   // });
+
+  // // Step 7: Create Evaluation for each Report based on Process
+  // const evaluationData = [];
+
+  // for (let i = 0; i < reportsData.length; i++) {
+  //   const report = reportsData[i];
+
+  //   // Skip creating evaluation for DECLINE_LO, REVIEW_SLO, DECLINE_REVIEW_SLO, and EVALUATION_SLO
+  //   if (
+  //     report.process === "DECLINE_LO" ||
+  //     report.process === "REVIEW_SLO" ||
+  //     report.process === "DECLINE_REVIEW_SLO" ||
+  //     report.process === "EVALUATION_SLO"
+  //   ) {
+  //     console.log(
+  //       `Skipping evaluation creation for report ${report.id} due to process: ${report.process}`
+  //     );
+  //     continue; // Skip this iteration and don't add an evaluation
+  //   }
+
+  //   // Create evaluation data based on the process
+  //   let statusCharacter = "GOOD";
+  //   let statusCapacity = "GOOD";
+  //   let statusCondition = "GOOD";
+  //   let statusCapital = "GOOD";
+
+  //   // If the process is DECLINE_EVALUATION_SLO, change status_capital to BAD
+  //   if (report.process === "DECLINE_EVALUATION_SLO") {
+  //     statusCapital = "BAD";
+  //   }
+
+  //   // Create evaluation data
+  //   evaluationData.push({
+  //     id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
+  //       .toString()
+  //       .padStart(2, "0")}`, // Unique ID for evaluation
+  //     report_id: report.id, // Link the evaluation to the report
+  //     character:
+  //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     status_character: statusCharacter, // Status for character
+  //     capacity:
+  //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     status_capacity: statusCapacity, // Status for capacity
+  //     condition:
+  //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     status_condition: statusCondition, // Status for condition
+  //     capital:
+  //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     status_capital: statusCapital, // Status for capital
+  //   });
+  // }
+
+  // // Insert all evaluation records at once
   // await prisma.evaluation.createMany({
-  //   data: [
-  //     {
-  //       id: "b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
-  //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
-  //       character:
-  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //       status_character: "GOOD",
-  //       capacity:
-  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //       status_capacity: "GOOD",
-  //       condition:
-  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //       status_condition: "GOOD",
-  //       capital:
-  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //       status_capital: "GOOD",
-  //     },
-  //   ],
+  //   data: evaluationData,
   // });
-  // await prisma.reviewEvaluation.createMany({
-  //   data: [
-  //     {
-  //       id: "e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f",
-  //       evaluation_id: "b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+
+  // // Step 10: Create ReviewCustomer for each Report based on Process
+  // const reviewCustomerData = [];
+  // const evaluationCustomerData = [];
+  // const reviewEvaluationData = [];
+
+  // for (let i = 0; i < reportsData.length; i++) {
+  //   const report = reportsData[i];
+
+  //   // Skip creating ReviewEvaluation for DECLINE_LO, REVIEW_SLO, DECLINE_REVIEW_SLO, EVALUATION_SLO, DECLINE_EVALUATION_SLO, and REVIEW_AM
+  //   if (
+  //     report.process === "DECLINE_LO" ||
+  //     report.process === "REVIEW_SLO" ||
+  //     report.process === "DECLINE_REVIEW_SLO" ||
+  //     report.process === "EVALUATION_SLO" ||
+  //     report.process === "DECLINE_EVALUATION_SLO" ||
+  //     report.process === "REVIEW_AM"
+  //   ) {
+  //     console.log(
+  //       `Skipping creation for report ${report.id} due to process: ${report.process}`
+  //     );
+  //     continue; // Skip this iteration and don't add a reviewCustomer or reviewEvaluation
+  //   }
+
+  //   // Ensure that report_id exists
+  //   const existingReport = await prisma.report.findUnique({
+  //     where: {
+  //       id: report.id, // Ensure that the report exists before creating review/evaluation
+  //     },
+  //   });
+
+  //   if (!existingReport) {
+  //     console.log(
+  //       `Skipping report creation because report_id ${report.id} does not exist.`
+  //     );
+  //     continue;
+  //   }
+
+  //   // Step 1: Create ReviewCustomer for APPROVE_AM
+  //   if (report.process === "APPROVE_AM") {
+  //     reviewCustomerData.push({
+  //       id: `e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
+  //       evaluation_id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
   //       review_character: true,
   //       review_capacity: true,
   //       review_condition: true,
-  //       review_capital: true,
-  //     },
-  //   ],
+  //       review_capital: true, // All true for APPROVE_AM
+  //     });
+
+  //     // Create Evaluation for APPROVE_AM
+  //     evaluationCustomerData.push({
+  //       id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
+  //       report_id: report.id, // Link evaluation to the report
+  //       character:
+  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  //       status_character: "GOOD",
+  //       capacity:
+  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  //       status_capacity: "GOOD",
+  //       condition:
+  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  //       status_condition: "GOOD",
+  //       capital:
+  //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  //       status_capital: "GOOD",
+  //     });
+  //   }
+
+  //   // Step 2: Create ReviewEvaluation for DECLINE_AM
+  //   if (report.process === "DECLINE_AM") {
+  //     reviewEvaluationData.push({
+  //       id: `e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
+  //       evaluation_id: `b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f${(i + 1)
+  //         .toString()
+  //         .padStart(2, "0")}`,
+  //       review_character: true,
+  //       review_capacity: true,
+  //       review_condition: true,
+  //       review_capital: false, // Review capital is false for DECLINE_AM
+  //     });
+  //   }
+  // }
+
+  // // // Insert all reviewCustomer records at once
+  // // await prisma.reviewCustomer.createMany({
+  // //   data: reviewCustomerData,
+  // // });
+
+  // // // Insert all evaluationCustomer records at once
+  // // await prisma.evaluation.createMany({
+  // //   data: evaluationCustomerData,
+  // // });
+
+  // // Insert all reviewEvaluation records at once
+  // await prisma.reviewEvaluation.createMany({
+  //   data: reviewEvaluationData,
   // });
+
+  // // await prisma.report.createMany({
+  // //   data: [
+  // //     {
+  // //       id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
+  // //       status: "GOOD",
+  // //       process: "APPROVE_AM",
+  // //       customer_id: "cd913355-0c30-4d20-98e3-542cd0c56a83",
+  // //       lo_id: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
+  // //       slo_id: "d4e5f6a7-b8c9-0a1b-2c3d-4e5f6a7b8c9d",
+  // //       am_id: "c1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+  // //       customer_snapshot: {
+  // //         id: "cd913355-0c30-4d20-98e3-542cd0c56a83",
+  // //         name: "Bagus Budiman",
+  // //         rt_rw: "01/03",
+  // //         address: "Jl. Merauke No. 10, Surabaya",
+  // //         village: "Gubeng",
+  // //         work_type: "Karyawan",
+  // //         created_at: "2025-10-23T09:28:17.915Z",
+  // //         created_by: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
+  // //         ktp_number: "1234567890123456",
+  // //         updated_at: "2025-10-23T09:28:17.915Z",
+  // //         business_id: null,
+  // //         employee_id: "714566fc-a337-44a0-86a3-d7e53d1cec6f",
+  // //         phone_number: "625232243563",
+  // //         date_of_birth: "1985-06-15T00:00:00.000Z",
+  // //         non_employee_id: null,
+  // //       },
+  // //       employee_snapshot: {
+  // //         id: "714566fc-a337-44a0-86a3-d7e53d1cec6f",
+  // //         salary: 11000000,
+  // //         position: "Junior Software Development",
+  // //         created_at: "2025-10-23T09:28:17.915Z",
+  // //         occupation: "Software Development",
+  // //         updated_at: "2025-10-23T09:28:17.915Z",
+  // //         company_name: "PT Maju Jaya",
+  // //         company_phone: "625132152936",
+  // //         company_address: "JL. Sri Kartini No.43",
+  // //       },
+  // //       non_employee_snapshot: null,
+  // //       business_snapshot: null,
+  // //       created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  // //       updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  // //       deleted_at: null, // Jika tidak ada nilai, biarkan `null`
+  // //     },
+  // //   ],
+  // // });
+
+  // // await prisma.reportPhoto.createMany({
+  // //   data: [
+  // //     {
+  // //       id: "a1998d8e-af58-4c1b-b498-1788895aff9d",
+  // //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
+  // //       url: "/reports/b4700667-875d-4142-b47a-10eea34038c6.png",
+  // //       created_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  // //       updated_at: new Date("2025-10-23T09:28:17.915Z"), // Gunakan `new Date()` atau string ISO 8601
+  // //       deleted_at: null, // Jika tidak ada nilai, biarkan `null`
+  // //     },
+  // //   ],
+  // // });
+
+  // // await prisma.reviewCustomer.createMany({
+  // //   data: [
+  // //     {
+  // //       id: "31407469-806f-4363-9dea-6642bef069f3",
+  // //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
+  // //       review_identity: true,
+  // //       review_domicile: true,
+  // //       review_work: true,
+  // //     },
+  // //   ],
+  // // });
+  // // await prisma.evaluation.createMany({
+  // //   data: [
+  // //     {
+  // //       id: "b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+  // //       report_id: "d220788b-a4bd-45dc-9eb5-5fcd46c56fb6",
+  // //       character:
+  // //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  // //       status_character: "GOOD",
+  // //       capacity:
+  // //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  // //       status_capacity: "GOOD",
+  // //       condition:
+  // //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  // //       status_condition: "GOOD",
+  // //       capital:
+  // //         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  // //       status_capital: "GOOD",
+  // //     },
+  // //   ],
+  // // });
+  // // await prisma.reviewEvaluation.createMany({
+  // //   data: [
+  // //     {
+  // //       id: "e2f5d6c7-b8a9-0c1d-2e3f-4a5b6c7d8e9f",
+  // //       evaluation_id: "b1f4d5e6-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+  // //       review_character: true,
+  // //       review_capacity: true,
+  // //       review_condition: true,
+  // //       review_capital: true,
+  // //     },
+  // //   ],
+  // // });
 
   console.log("✅ Seed data berhasil dibuat.");
 }

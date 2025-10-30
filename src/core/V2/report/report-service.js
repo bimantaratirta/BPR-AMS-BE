@@ -1865,6 +1865,24 @@ class ReportService {
       });
       if (!customer) throw BaseError.badRequest("Customer not found");
 
+      const isCustomerDataComplete =
+        customer.name &&
+        customer.ktp_number &&
+        customer.date_of_birth &&
+        customer.address &&
+        customer.rt_rw &&
+        customer.village &&
+        customer.phone_number &&
+        (customer.employee_id ||
+          customer.non_employee_id ||
+          customer.business_id);
+
+      if (!isCustomerDataComplete) {
+        throw BaseError.badRequest(
+          "Customer data is incomplete. Cannot create report."
+        );
+      }
+
       // 3b) Pastikan hanya satu profil kerja yang ter-link
       const links = [
         customer.employee_id ? "employee" : null,
@@ -2250,24 +2268,11 @@ class ReportService {
     const baseWhere = key
       ? {
           [key]: currentUser.id,
-          process: { in: processMap[currentUser.role] || [] },
+          // process: { in: processMap[currentUser.role] || [] },
         }
       : null;
 
     const options = buildQueryOptions(reportQueryConfig, query, baseWhere);
-    console.log("options: ", JSON.stringify(options, null, 2));
-    const [hasil] = await this.prisma.$transaction([
-      this.prisma.report.findMany({
-        where: {},
-      }),
-    ]);
-
-    // Filter secara manual nama yang mengandung 'bagus' (case-insensitive)
-    const filteredResults = hasil.filter((report) =>
-      report.customer_snapshot?.name.toLowerCase().includes("asd")
-    );
-
-    // console.log(options);
 
     const [data, count] = await Promise.all([
       this.prisma.report.findMany(options),
