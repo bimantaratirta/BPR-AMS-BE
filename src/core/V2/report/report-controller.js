@@ -53,7 +53,6 @@ class ReportController {
   }
 
   async create(req, res) {
-    console.log("Kontol");
     const data = req.body;
     const files = req.files || [];
     // Validasi tambahan jika perlu

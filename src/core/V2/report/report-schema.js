@@ -50,12 +50,12 @@ export const reportSchema = {
         "string.guid": "am_id must be a valid UUID",
       }),
 
-      created_at: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
-      updated_at: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
+      created_at: Joi.date().format("YYYY-MM-DD").optional(),
+      updated_at: Joi.date().format("YYYY-MM-DD").optional(),
 
       created_range: Joi.object({
-        start: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
-        end: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
+        start: Joi.date().format("YYYY-MM-DD").optional(),
+        end: Joi.date().format("YYYY-MM-DD").optional(),
       }).when("created_at", {
         is: Joi.exist(),
         then: Joi.forbidden(),
@@ -63,8 +63,8 @@ export const reportSchema = {
       }),
 
       updated_range: Joi.object({
-        start: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
-        end: Joi.date().format("YYYY-MM-DD HH:mm:ss").optional(),
+        start: Joi.date().format("YYYY-MM-DD").optional(),
+        end: Joi.date().format("YYYY-MM-DD").optional(),
       }).when("updated_at", {
         is: Joi.exist(),
         then: Joi.forbidden(),

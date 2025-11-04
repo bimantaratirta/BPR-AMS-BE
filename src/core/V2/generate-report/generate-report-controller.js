@@ -1,9 +1,9 @@
 // modules/report/report-controller.js
 import BaseError from "../../../base_classes/base-error.js";
 import { successResponse } from "../../../utils/response.js";
-import testService from "./test-service.js";
+import GenerateReportService from "./generate-report-service.js";
 
-class TestController {
+class GenerateReportController {
   async generateXlsxAM(req, res) {
     try {
       // Ambil parameter dari query
@@ -36,7 +36,10 @@ class TestController {
       });
 
       // Panggil fungsi generateXlsxAM dengan parameter
-      const xlsxBuffer = await testService.generateXlsxAM(yearNum, monthIndex);
+      const xlsxBuffer = await GenerateReportService.generateXlsxAM(
+        yearNum,
+        monthIndex
+      );
 
       // Get month name untuk filename
       const monthNames = [
@@ -103,7 +106,10 @@ class TestController {
       });
 
       // Call the service method to get the reports
-      const data = await testService.listAllReports(yearNum, monthIndex);
+      const data = await GenerateReportService.listAllReports(
+        yearNum,
+        monthIndex
+      );
 
       // Log jumlah data yang ditemukan
       const totalRegions = data.data?.length || 0;
@@ -131,6 +137,32 @@ class TestController {
       throw BaseError.badRequest("Error retrieving reports", err.message);
     }
   }
+
+  async generateXlsx(req, res) {
+    try {
+      const currentUser = req.user; // scope by creator
+      const query = req.query; // filter query (misalnya berdasarkan status, customer_id, dll)
+
+      // Panggil fungsi generateXlsx dari ReportService
+      const xlsxBuffer = await GenerateReportService.generateXlsxByRole({
+        currentUser,
+        query,
+      });
+
+      // Set header untuk response file XLSX
+      res.set({
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="Laporan_Nasabah_${Date.now()}.xlsx"`,
+      });
+
+      // Kirim buffer XLSX sebagai response untuk diunduh oleh pengguna
+      res.send(xlsxBuffer); // Mengirimkan file XLSX dalam bentuk buffer
+    } catch (err) {
+      console.log(err);
+      throw BaseError.badRequest("Error generating XLSX report", err);
+    }
+  }
 }
 
-export default new TestController();
+export default new GenerateReportController();
