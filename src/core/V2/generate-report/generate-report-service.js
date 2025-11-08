@@ -1,8 +1,7 @@
 import { PrismaService } from "../../../common/service/prisma.service.js";
 import ExcelJS from "exceljs";
 import { getExcelColumn } from "../../../utils/getExcelColumn.js";
-import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
-import generateReportQueryConfig from "./generate-report-query-config.js";
+import BaseError from "../../../base_classes/base-error.js";
 
 class GenerateReportService {
   constructor() {
@@ -205,10 +204,10 @@ class GenerateReportService {
       // Validasi date object
       const reportDate = new Date(dateToUse);
       if (isNaN(reportDate.getTime())) {
-        console.warn("Invalid date for report:", {
-          process: report.process,
-          dateToUse,
-        });
+        // console.warn("Invalid date for report:", {
+        //   process: report.process,
+        //   dateToUse,
+        // });
         return;
       }
 
@@ -249,6 +248,22 @@ class GenerateReportService {
     });
 
     return grouped;
+  }
+
+  groupDataByWeekByRole(data, year, month) {
+    // Inisialisasi array untuk menyimpan data yang dikelompokkan berdasarkan minggu
+    const weeks = Array.from(
+      { length: this.getWeeksInMonth(year, month) },
+      () => []
+    );
+
+    // Iterasi data dan kelompokkan berdasarkan minggu
+    data.forEach((report) => {
+      const weekNumber = this.getWeekOfMonth(report.created_at);
+      weeks[weekNumber - 1].push(report); // Menambahkan data ke dalam minggu yang sesuai
+    });
+
+    return weeks;
   }
 
   // Fungsi untuk memproses data API menjadi format untuk Excel
@@ -318,9 +333,12 @@ class GenerateReportService {
     return { headerRow, data: processedData };
   }
 
-  async generateXlsxAM(year, month) {
+  async generateXlsxDireksi(currentUser, year, month) {
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden("Only Direksi can access");
+    }
     // Ambil data dari database
-    const apiData = await this.listAllReports(year, month);
+    const apiData = await this.listAllReports(currentUser, year, month);
 
     // Proses data menjadi format Excel
     const excelData = this.processApiDataForExcel(apiData, year, month);
@@ -482,7 +500,7 @@ class GenerateReportService {
 
       const colArchive = getExcelColumn(14 + index + index * 9); // Menambahkan gap 3 kolom
 
-      console.log(colArchive, "<<< TOTAL COLS");
+      // console.log(colArchive, "<<< TOTAL COLS");
       worksheet.getColumn(colArchive).width = 20; // Mengatur lebar kolom
 
       worksheet.mergeCells(`${colArchive}1:${colArchive}3`);
@@ -505,7 +523,7 @@ class GenerateReportService {
       if (index === excelData.headerRow.length - 1) {
         const colTotalAll = getExcelColumn(14 + index + index * 9 + 1); // Menambahkan gap 3 kolom
 
-        console.log(colTotalAll, "<<< TOTAL COLS");
+        // console.log(colTotalAll, "<<< TOTAL COLS");
         worksheet.getColumn(colTotalAll).width = 15; // Mengatur lebar kolom
 
         worksheet.mergeCells(`${colTotalAll}1:${colTotalAll}3`);
@@ -527,7 +545,7 @@ class GenerateReportService {
 
         const colTargetArchive = getExcelColumn(14 + index + index * 9 + 2); // Menambahkan gap 3 kolom
 
-        console.log(colTargetArchive, "<<< TOTAL COLS");
+        // console.log(colTargetArchive, "<<< TOTAL COLS");
         worksheet.getColumn(colTargetArchive).width = 20; // Mengatur lebar kolom
 
         worksheet.mergeCells(`${colTargetArchive}1:${colTargetArchive}3`);
@@ -782,7 +800,7 @@ class GenerateReportService {
       0
     );
     const finalTotalRow = [
-      "TOTAL KESELURUHAN (ALI ZAENI)",
+      `TOTAL KESELURUHAN (${currentUser.name})`,
       "",
       "",
       "",
@@ -858,7 +876,11 @@ class GenerateReportService {
     return xlsxBuffer;
   }
 
-  async listAllReports(year, month) {
+  async listAllReports(currentUser, year, month) {
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden("Only Direksi can access");
+    }
+
     // Validasi input parameters
     if (typeof year !== "number" || typeof month !== "number") {
       throw new Error(`Invalid parameters: year=${year}, month=${month}`);
@@ -971,46 +993,45 @@ class GenerateReportService {
     return { data };
   }
 
-  async generateXlsxByRole({ currentUser, query }) {
-    const roleKeyMap = {
-      LO: "lo_id",
-      SLO: "slo_id",
-      AM: "am_id",
-    };
+  async generateXlsxByRole(currentUser, year, month) {
+    console.log(currentUser);
+    if (
+      currentUser.role !== "AM" &&
+      currentUser.role !== "SLO" &&
+      currentUser.role !== "LO"
+    ) {
+      throw BaseError.forbidden("Only AM, SLO, and LO can access");
+    }
 
-    // const key = roleKeyMap[currentUser.role] || null;
+    // Validasi parameter
+    if (!year || !month) {
+      throw BaseError.badRequest("Year and month are required");
+    }
 
-    const baseWhere =
-      // key
-      // ?
-      {
-        // [key]: currentUser.id,
-        lo_id: "e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b",
-      };
-    // : null;
+    const yearNum = parseInt(year);
+    const monthNum = parseInt(month); // 1-12 dari user
 
-    const options = buildQueryOptions(
-      generateReportQueryConfig,
-      query,
-      baseWhere
-    );
+    // Validasi range
+    if (monthNum < 1 || monthNum > 12) {
+      throw BaseError.badRequest("Month must be between 1-12");
+    }
 
-    const [data, count] = await Promise.all([
-      this.prisma.report.findMany(options),
-      this.prisma.report.count({ where: options.where }),
-    ]);
+    if (yearNum < 2000 || yearNum > 2100) {
+      throw BaseError.badRequest("Year must be between 2000-2100");
+    }
 
-    console.log(JSON.stringify(data, null, 2));
-
+    // Ambil data dari database
+    const apiData = await this.listAllReportByRole(currentUser, year, month);
+    console.log(apiData);
     // Membuat workbook baru
     const workbook = new ExcelJS.Workbook();
 
     // Fungsi untuk menambahkan worksheet
-    const addWorksheet = (sheetName) => {
+    const addWorksheet = (sheetName, data) => {
       const worksheet = workbook.addWorksheet(sheetName);
 
       // Menambahkan Header: "DATA KUNJUNGAN PMS"
-      worksheet.mergeCells("A1:M1");
+      worksheet.mergeCells("A1:P1");
       const headerCell = worksheet.getCell("A1");
       headerCell.value = "DATA KUNJUNGAN PMS";
       headerCell.font = { bold: true, size: 16 };
@@ -1041,7 +1062,6 @@ class GenerateReportService {
         vertical: "middle",
       };
 
-      // Menambahkan header "DOMISILI" di baris ke-3 dan merge
       worksheet.mergeCells("D2:F2");
       worksheet.getCell("D2").value = "DOMISILI";
       worksheet.getCell("D2").font = { bold: true, size: 11 };
@@ -1050,7 +1070,6 @@ class GenerateReportService {
         vertical: "middle",
       };
 
-      // Menambahkan sub-header untuk DOMISILI
       worksheet.getCell("D3").value = "ALAMAT";
       worksheet.getCell("D3").font = { bold: true, size: 11 };
       worksheet.getCell("E3").value = "RT/RW";
@@ -1059,14 +1078,15 @@ class GenerateReportService {
       worksheet.getCell("F3").font = { bold: true, size: 11 };
 
       worksheet.mergeCells("G2:G3");
-      worksheet.getCell("G2").value = "KARYAWAN";
+      worksheet.getCell("G2").value = "PEKERJAAN";
       worksheet.getCell("G2").font = { bold: true, size: 11 };
       worksheet.getCell("G2").alignment = {
         horizontal: "center",
         vertical: "middle",
       };
+
       worksheet.mergeCells("H2:H3");
-      worksheet.getCell("H2").value = "KARYAWAN";
+      worksheet.getCell("H2").value = "USAHA";
       worksheet.getCell("H2").font = { bold: true, size: 11 };
       worksheet.getCell("H2").alignment = {
         horizontal: "center",
@@ -1074,7 +1094,7 @@ class GenerateReportService {
       };
 
       worksheet.mergeCells("I2:I3");
-      worksheet.getCell("I2").value = "USAHA";
+      worksheet.getCell("I2").value = "PENDAPATAN";
       worksheet.getCell("I2").font = { bold: true, size: 11 };
       worksheet.getCell("I2").alignment = {
         horizontal: "center",
@@ -1082,7 +1102,7 @@ class GenerateReportService {
       };
 
       worksheet.mergeCells("J2:J3");
-      worksheet.getCell("J2").value = "PENDAPATAN";
+      worksheet.getCell("J2").value = "LO";
       worksheet.getCell("J2").font = { bold: true, size: 11 };
       worksheet.getCell("J2").alignment = {
         horizontal: "center",
@@ -1090,7 +1110,7 @@ class GenerateReportService {
       };
 
       worksheet.mergeCells("K2:K3");
-      worksheet.getCell("K2").value = "LO";
+      worksheet.getCell("K2").value = "SLO";
       worksheet.getCell("K2").font = { bold: true, size: 11 };
       worksheet.getCell("K2").alignment = {
         horizontal: "center",
@@ -1098,7 +1118,7 @@ class GenerateReportService {
       };
 
       worksheet.mergeCells("L2:L3");
-      worksheet.getCell("L2").value = "SLO";
+      worksheet.getCell("L2").value = "Cross Cek SLO";
       worksheet.getCell("L2").font = { bold: true, size: 11 };
       worksheet.getCell("L2").alignment = {
         horizontal: "center",
@@ -1114,32 +1134,28 @@ class GenerateReportService {
       };
 
       worksheet.mergeCells("N2:N3");
-      worksheet.getCell("N2").value = "STATUS";
+      worksheet.getCell("N2").value = "Cross Cek AM";
       worksheet.getCell("N2").font = { bold: true, size: 11 };
       worksheet.getCell("N2").alignment = {
         horizontal: "center",
         vertical: "middle",
       };
+      worksheet.mergeCells("O2:O3");
+      worksheet.getCell("O2").value = "STATUS";
+      worksheet.getCell("O2").font = { bold: true, size: 11 };
+      worksheet.getCell("O2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+      worksheet.mergeCells("P2:P3");
+      worksheet.getCell("P2").value = "PROGRESS";
+      worksheet.getCell("P2").font = { bold: true, size: 11 };
+      worksheet.getCell("P2").alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
 
       // Menambahkan data nasabah
-      // nasabahData.forEach((nasabah, index) => {
-      //   worksheet.addRow([
-      //     index + 1,
-      //     nasabah.created_at,
-      //     nasabah.customer_name,
-      //     nasabah.address,
-      //     nasabah.rt_rw,
-      //     nasabah.village,
-      //     nasabah.employment ?? " - ",
-      //     nasabah.business ?? " - ",
-      //     nasabah.salary_frequency,
-      //     nasabah.lo,
-      //     nasabah.slo,
-      //     nasabah.am,
-      //     nasabah.status,
-      //   ]);
-      // });
-
       data.forEach((nasabah, index) => {
         worksheet.addRow([
           index + 1,
@@ -1150,8 +1166,7 @@ class GenerateReportService {
           nasabah.customer_snapshot.village,
           nasabah.non_employee_snapshot
             ? nasabah.non_employee_snapshot.work
-            : " - ",
-          nasabah.employee_snapshot
+            : nasabah.employee_snapshot
             ? nasabah.employee_snapshot.position
             : " - ",
           nasabah.business_snapshot
@@ -1166,8 +1181,20 @@ class GenerateReportService {
             : " - ",
           nasabah.lo.name,
           nasabah.slo.name,
+          nasabah.review_by_slo
+            ? nasabah.process === "DECLINE_REVIEW_SLO" ||
+              nasabah.process === "  DECLINE_EVALUATION_SLO"
+              ? "BAD"
+              : "GOOD"
+            : " - ",
           nasabah.am.name,
+          nasabah.review_by_am
+            ? nasabah.process === "DECLINE_AM"
+              ? "BAD"
+              : "GOOD"
+            : " - ",
           nasabah.status,
+          nasabah.process,
         ]);
       });
 
@@ -1183,67 +1210,147 @@ class GenerateReportService {
       worksheet.getColumn(9).width = 15; // Pendapatan
       worksheet.getColumn(10).width = 15; // LO
       worksheet.getColumn(11).width = 15; // SLO
-      worksheet.getColumn(12).width = 15; // AM
-      worksheet.getColumn(13).width = 10; // Status
+      worksheet.getColumn(12).width = 20; // Cross Cek SLO
+      worksheet.getColumn(13).width = 15; // AM
+      worksheet.getColumn(14).width = 20; // Cross Cek AM
+      worksheet.getColumn(15).width = 10; // Status
+      worksheet.getColumn(16).width = 20; // Progress
     };
 
-    // Tambahkan sheet berdasarkan bulan dan minggu
-    // addWorksheet(selectedMonth); // Bulan yang dipilih untuk sheet pertama
+    // Menambahkan sheet berdasarkan bulan yang dipilih
+    // addWorksheet(`${month} ${year}`, apiData);
 
-    // // Menambahkan sheet untuk minggu-minggu berikutnya
+    // Menambahkan sheet untuk minggu-minggu berikutnya
     // for (let i = 1; i <= 4; i++) {
-    //   addWorksheet(`${selectedMonth} Minggu ${i}`);
+    //   const weekData = apiData.filter((item) => item.week === i); // Pastikan data untuk setiap minggu ada
+    //   addWorksheet(`${month} Minggu ${i}`, weekData);
     // }
-    addWorksheet(`test`);
+    apiData.forEach((item, index) => {
+      addWorksheet(`${item.week}`, item.reports);
+    });
 
-    // Menghasilkan file XLSX sebagai buffer (tanpa menyimpan ke disk)
+    // Menghasilkan buffer XLSX
     const xlsxBuffer = await workbook.xlsx.writeBuffer();
 
     return xlsxBuffer; // Mengembalikan buffer file XLSX
   }
 
-  async list({ currentUser, query } = {}) {
-    const roleKeyMap = {
-      LO: "lo_id",
-      SLO: "slo_id",
-      AM: "am_id",
-    };
+  async listAllReportByRole(currentUser, year, month) {
+    if (
+      currentUser.role !== "AM" &&
+      currentUser.role !== "SLO" &&
+      currentUser.role !== "LO"
+    ) {
+      throw BaseError.forbidden("Only AM, SLO, and LO can access");
+    }
 
-    const key = roleKeyMap[currentUser.role] || null;
+    // Validasi parameter
+    if (!year || !month) {
+      throw BaseError.badRequest("Year and month are required");
+    }
 
-    const baseWhere = key
-      ? {
-          [key]: currentUser.id,
-        }
-      : null;
+    const yearNum = parseInt(year);
+    const monthNum = parseInt(month); // 1-12 dari user
 
-    const options = buildQueryOptions(
-      generateReportQueryConfig,
-      query,
-      baseWhere
-    );
+    // Validasi range
+    if (monthNum < 1 || monthNum > 12) {
+      throw BaseError.badRequest("Month must be between 1-12");
+    }
 
-    const [data, count] = await Promise.all([
-      this.prisma.report.findMany(options),
-      this.prisma.report.count({ where: options.where }),
-    ]);
+    if (yearNum < 2000 || yearNum > 2100) {
+      throw BaseError.badRequest("Year must be between 2000-2100");
+    }
 
-    const page = query?.pagination?.page ?? 1;
-    const limit = query?.pagination?.limit ?? 10;
-    const hasPagination = !!(query?.pagination && !query?.get_all);
-    const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
+    // Validasi input parameters
+    if (typeof year !== "number" || typeof month !== "number") {
+      throw new Error(`Invalid parameters: year=${year}, month=${month}`);
+    }
 
-    return {
-      data,
-      meta: hasPagination
-        ? {
-            totalItems: count,
-            totalPages,
-            currentPage: Number(page),
-            itemsPerPage: Number(limit),
-          }
-        : null,
-    };
+    if (month < 0 || month > 11) {
+      throw new Error(`Month must be between 0-11, got: ${month}`);
+    }
+
+    if (year < 2000 || year > 2100) {
+      throw new Error(`Year must be between 2000-2100, got: ${year}`);
+    }
+
+    // month sudah 0-indexed (0 = Januari, 9 = Oktober)
+    // Buat start date: first day of month at 00:00:00
+    const startDate = new Date(year, month, 1, 0, 0, 0, 0);
+
+    // Buat end date: last day of month at 23:59:59
+    // month + 1, 0 akan memberikan hari terakhir dari month
+    const endDate = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+    // Validasi Date objects
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error(`Invalid date created: year=${year}, month=${month}`);
+    }
+
+    const data = await this.prisma.report.findMany({
+      select: {
+        id: true,
+        status: true,
+        process: true,
+        customer_id: true,
+        lo_id: true,
+        slo_id: true,
+        am_id: true,
+        customer_snapshot: true,
+        employee_snapshot: true,
+        non_employee_snapshot: true,
+        business_snapshot: true,
+        review_by_slo: true,
+        review_by_am: true,
+        created_at: true,
+        updated_at: true,
+        deleted_at: true,
+        lo: true,
+        slo: true,
+        am: true,
+        customer: true,
+        report_photo: true,
+        review_customer: true,
+        evaluation: true,
+      },
+      where: {
+        AND: [
+          // Filter created_at (selalu ada)
+          {
+            created_at: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+          // Filter review_by_am (bisa null, jadi perlu AND dengan not null)
+          {
+            OR: [
+              { lo_id: currentUser.id },
+              { slo_id: currentUser.id },
+              { am_id: currentUser.id },
+            ],
+          },
+          // Filter review_by_slo (bisa null, jadi perlu AND dengan not null)
+        ],
+      },
+      orderBy: { created_at: "asc" },
+    });
+
+    const weeksInMonth = this.getWeeksInMonth(year, month);
+    const dataGroup = this.groupDataByWeekByRole(data, year, month);
+    const grouped = [];
+
+    // Inisialisasi struktur untuk setiap minggu
+    for (let week = 1; week <= weeksInMonth; week++) {
+      grouped.push({
+        week: `${this.getMonthName(month)} ${year} Minggu ${week}`,
+        reports: dataGroup[week - 1],
+      });
+    }
+
+    // const excelData = this.processApiDataForExcel({ data }, year, month);
+
+    return grouped;
   }
 }
 

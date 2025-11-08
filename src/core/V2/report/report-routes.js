@@ -11,15 +11,6 @@ import validateQueryCredentials from "../../../middlewares/validate-query-creden
 
 class ReportRoutes extends BaseRoutes {
   routes() {
-    this.router.get("/generate-xlsx", [
-      // AuthMiddleware.authenticate, // Middleware untuk validasi token
-      tryCatch(ReportController.generateXlsx), // Menambahkan rute generate-xlsx
-    ]);
-    this.router.get("/generate-xlsx-am", [
-      // AuthMiddleware.authenticate, // Middleware untuk validasi token
-      tryCatch(ReportController.generateXlsxAM), // Menambahkan rute generate-xlsx
-    ]);
-
     // Satu endpoint: create report + upload banyak foto
     // console.log('first '),
     this.router.post("/", [

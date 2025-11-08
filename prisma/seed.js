@@ -1121,7 +1121,8 @@ async function main() {
       },
       non_employee_snapshot: null,
       business_snapshot: null,
-      created_at: new Date("2025-10-23T09:28:17.915Z"),
+      created_at: getRandomDateInOctober(), // Menggunakan fungsi untuk tanggal acak dalam Oktober 2025
+      // created_at: new Date("2025-10-23T09:28:17.915Z"),
       updated_at: new Date("2025-10-23T09:28:17.915Z"),
       deleted_at: null,
     });
@@ -1457,3 +1458,12 @@ async function main() {
 
   console.log("✅ Seed data berhasil dibuat.");
 }
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
