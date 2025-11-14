@@ -9,13 +9,18 @@ class RegionService {
     this.prisma = new PrismaService();
   }
 
-  async create(data) {
+  async create(currentUser, data) {
     let validation = "";
     let stack = [];
     const fail = (message, path) => {
       validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden(
+        "You do not have permission to create a branch"
+      );
+    }
 
     return this.prisma.$transaction(async (tx) => {
       // Cegah duplikasi nama region (yang aktif)
@@ -37,7 +42,7 @@ class RegionService {
 
       if (!created) throw Error("Failed to create region");
 
-      return { message: "Region created successfully", data: created };
+      return created;
     });
   }
 
@@ -93,13 +98,18 @@ class RegionService {
     return region;
   }
 
-  async update(id, data) {
+  async update(currentUser, id, data) {
     let validation = "";
     let stack = [];
     const fail = (message, path) => {
       validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden(
+        "You do not have permission to create a branch"
+      );
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const current = await tx.region.findUnique({ where: { id } });

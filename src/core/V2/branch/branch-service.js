@@ -1,22 +1,26 @@
-import joi from 'joi';
-import BaseError from '../../../base_classes/base-error.js';
-import { PrismaService } from '../../../common/service/prisma.service.js';
-import branchQueryConfig from './branch-query-config.js';
-import { buildQueryOptions } from '../../../utils/buildQueryOptions.js';
+import joi from "joi";
+import BaseError from "../../../base_classes/base-error.js";
+import { PrismaService } from "../../../common/service/prisma.service.js";
+import branchQueryConfig from "./branch-query-config.js";
+import { buildQueryOptions } from "../../../utils/buildQueryOptions.js";
 
 class BranchService {
   constructor() {
     this.prisma = new PrismaService();
   }
 
-  async create(data) {
-    let validation = '';
+  async create(currentUser, data) {
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
-
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden(
+        "You do not have permission to create a branch"
+      );
+    }
     return this.prisma.$transaction(async (tx) => {
       // Cegah duplikasi nama branch (yang aktif)
       const exists = await tx.branch.findFirst({
@@ -27,7 +31,7 @@ class BranchService {
         },
       });
       if (exists) {
-        fail('Branch name already exists', 'branch');
+        fail("Branch name already exists", "branch");
         throw new joi.ValidationError(validation, stack);
       }
 
@@ -38,8 +42,8 @@ class BranchService {
           // deleted_at: null,
         },
       });
-      if (regionExists) {
-        fail('Region does not exist', 'region_id');
+      if (!regionExists) {
+        fail("Region does not exist", "region_id");
         throw new joi.ValidationError(validation, stack);
       }
 
@@ -47,9 +51,9 @@ class BranchService {
         data: data,
       });
 
-      if (!created) throw Error('Failed to create branch');
+      if (!created) throw Error("Failed to create branch");
 
-      return { message: 'Branch created successfully', data: created };
+      return created;
     });
   }
 
@@ -81,21 +85,26 @@ class BranchService {
 
   async detail(id) {
     const branch = await this.prisma.branch.findUnique({ where: { id } });
-    if (!branch) throw BaseError.notFound('Branch not found');
+    if (!branch) throw BaseError.notFound("Branch not found");
     return { data: branch };
   }
 
-  async update(id, data) {
-    let validation = '';
+  async update(currentUser, id, data) {
+    let validation = "";
     let stack = [];
     const fail = (message, path) => {
-      validation += (validation ? ' ' : '') + message;
+      validation += (validation ? " " : "") + message;
       stack.push({ message, path: [path] });
     };
+    if (currentUser.role !== "Direksi") {
+      throw BaseError.forbidden(
+        "You do not have permission to create a branch"
+      );
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const current = await tx.branch.findUnique({ where: { id } });
-      if (!current) throw BaseError.notFound('Branch not found');
+      if (!current) throw BaseError.notFound("Branch not found");
 
       // Cegah duplikasi nama (kecuali dirinya sendiri)
       if (data.branch && data.branch !== current.branch) {
@@ -107,7 +116,7 @@ class BranchService {
           },
         });
         if (dup) {
-          fail('Branch name already exists', 'branch');
+          fail("Branch name already exists", "branch");
           throw new joi.ValidationError(validation, stack);
         }
       }
@@ -119,8 +128,8 @@ class BranchService {
           // deleted_at: null,
         },
       });
-      if (regionExists) {
-        fail('Region does not exist', 'region_id');
+      if (!regionExists) {
+        fail("Region does not exist", "region_id");
         throw new joi.ValidationError(validation, stack);
       }
 
@@ -129,7 +138,7 @@ class BranchService {
         data: data,
       });
 
-      return { message: 'Branch updated successfully', data: updated };
+      return { message: "Branch updated successfully", data: updated };
     });
   }
 
@@ -139,7 +148,7 @@ class BranchService {
     // Jika tanpa middleware, ganti ke update:
     // const deleted = await this.prisma.branch.update({ where: { id }, data: { deleted_at: new Date() } });
 
-    return { message: 'Branch deleted successfully', data: deleted };
+    return { message: "Branch deleted successfully", data: deleted };
   }
 }
 

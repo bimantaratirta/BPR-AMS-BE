@@ -1,9 +1,9 @@
-import { successResponse } from '../../../utils/response.js';
-import BranchService from './branch-service.js';
+import { successResponse } from "../../../utils/response.js";
+import BranchService from "./branch-service.js";
 
 class BranchController {
   async create(req, res) {
-    const result = await BranchService.create(req.body);
+    const result = await BranchService.create(req.user, req.body);
     return successResponse(res, result);
   }
 
@@ -14,7 +14,7 @@ class BranchController {
     return successResponse(
       res,
       result.data,
-      'branch retrieved successfully',
+      "branch retrieved successfully",
       result.meta
     );
   }
@@ -25,7 +25,11 @@ class BranchController {
   }
 
   async update(req, res) {
-    const result = await BranchService.update(req.params.id, req.body);
+    const result = await BranchService.update(
+      req.user,
+      req.params.id,
+      req.body
+    );
     return successResponse(res, result);
   }
 

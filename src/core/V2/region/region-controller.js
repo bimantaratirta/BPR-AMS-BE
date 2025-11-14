@@ -1,9 +1,9 @@
-import { successResponse } from '../../../utils/response.js';
-import RegionService from './region-service.js';
+import { successResponse } from "../../../utils/response.js";
+import RegionService from "./region-service.js";
 
 class RegionController {
   async create(req, res) {
-    const result = await RegionService.create(req.body);
+    const result = await RegionService.create(req.user, req.body);
     return successResponse(res, result);
   }
 
@@ -14,7 +14,7 @@ class RegionController {
     return successResponse(
       res,
       result.data,
-      'region retrieved successfully',
+      "region retrieved successfully",
       result.meta
     );
   }
@@ -25,7 +25,11 @@ class RegionController {
   }
 
   async update(req, res) {
-    const result = await RegionService.update(req.params.id, req.body);
+    const result = await RegionService.update(
+      req.user,
+      req.params.id,
+      req.body
+    );
     return successResponse(res, result);
   }
 
