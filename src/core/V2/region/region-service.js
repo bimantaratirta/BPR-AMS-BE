@@ -135,7 +135,7 @@ class RegionService {
         data: { region: data.region },
       });
 
-      return { message: "Region updated successfully", data: updated };
+      return updated;
     });
   }
 

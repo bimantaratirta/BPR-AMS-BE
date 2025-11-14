@@ -138,7 +138,7 @@ class BranchService {
         data: data,
       });
 
-      return { message: "Branch updated successfully", data: updated };
+      return updated;
     });
   }
 
