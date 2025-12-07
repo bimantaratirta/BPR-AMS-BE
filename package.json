@@ -17,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nevmock/BO-Apps-BE.git"
+    "url": "git+https://github.com/nevmock/BPR-BE.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nevmock/BO-Apps-BE/issues"
+    "url": "https://github.com/nevmock/BPR-BE/issues"
   },
-  "homepage": "https://github.com/nevmock/BO-Apps-BE#readme",
+  "homepage": "https://github.com/nevmock/BPR-BE#readme",
   "description": "",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.876.0",
