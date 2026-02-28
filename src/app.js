@@ -16,6 +16,7 @@ import morgan from "morgan";
 import BaseError from "./base_classes/base-error.js";
 import router from "./routes.js";
 import corsMiddleware from "./middlewares/cors-middleware.js";
+import attendanceJob from "./domains/attendance/attendance.job.js";
 
 class ExpressApplication {
   app;
@@ -74,8 +75,10 @@ class ExpressApplication {
           name: "image",
           maxCount: 1,
         },
-      ])
+      ]),
     );
+
+    attendanceJob.start();
   }
 
   setupMiddlewares(middlewaresArr) {

@@ -1,23 +1,23 @@
-import statusCodes from '../errors/status-codes.js';
-import BaseError from '../base_classes/base-error.js';
-import jwt from 'jsonwebtoken';
-import { PrismaService } from '../common/service/prisma.service.js';
-import logger from '../utils/logger.js';
+import statusCodes from "../errors/status-codes.js";
+import BaseError from "../base_classes/base-error.js";
+import jwt from "jsonwebtoken";
+import { PrismaService } from "../common/service/prisma.service.js";
+import logger from "../utils/logger.js";
 
 class AuthMiddleware {
   constructor() {
-    this.JWT_SECRET = process.env.JWT_SECRET || '';
+    this.JWT_SECRET = process.env.JWT_SECRET || "";
     this.prisma = new PrismaService();
   }
 
   authenticate = async (req, res, next) => {
-    const authHeader = req.get('Authorization');
-    const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.get("Authorization");
+    const token = authHeader && authHeader.split(" ")[1];
 
     console.info();
 
     if (!token) {
-      return next(BaseError.unauthorized('No Token Provided'));
+      return next(BaseError.unauthorized("No Token Provided"));
     }
 
     try {
@@ -27,39 +27,62 @@ class AuthMiddleware {
         !decoded ||
         !decoded.id ||
         !decoded.type ||
-        decoded.type !== 'access'
+        decoded.type !== "access" ||
+        !decoded.userType
       ) {
-        logger.debug('Decoded Token: ' + decoded);
-        return next(BaseError.unauthorized('Invalid Token'));
+        logger.debug("Decoded Token: " + decoded);
+        return next(BaseError.unauthorized("Invalid Token"));
       }
 
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: decoded.id,
-        },
-      });
+      let user = null;
 
+      if (decoded.userType === "EMPLOYEE") {
+        user = await this.prisma.employee.findUnique({
+          where: { id: decoded.id },
+        });
+      }
+
+      if (
+        decoded.userType === "SUPER_ADMIN" ||
+        decoded.userType === "ADMIN" ||
+        decoded.userType === "VIEWER"
+      ) {
+        user = await this.prisma.admin.findUnique({
+          where: { id: decoded.id },
+        });
+      }
       delete user.password;
 
       if (!user) {
         return next(
           new BaseError.unauthorized(
-            'Token Valid, But User Not Found in Database'
-          )
+            "Token Valid, But User Not Found in Database",
+          ),
         );
       }
 
-      req.user = user;
+      req.user = { ...user, userType: decoded.userType };
 
       next();
     } catch (err) {
-      let message = 'Token Is Invalid Or No Longer Valid';
-      if (err.message === 'invalid signature') message = 'Invalid Signature';
-      if (err.message === 'invalid token') message = 'Invalid Token';
-      if (err.message === 'jwt expired') message = 'Token Expired';
+      console.log(err);
+      let message = "Token Is Invalid Or No Longer Valid";
+      if (err.message === "invalid signature") message = "Invalid Signature";
+      if (err.message === "invalid token") message = "Invalid Token";
+      if (err.message === "jwt expired") message = "Token Expired";
 
       return next(BaseError.unauthorized(message));
     }
+  };
+
+  authorize = (roles = []) => {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.userType)) {
+        return next(BaseError.forbidden("Access denied"));
+      }
+
+      next();
+    };
   };
 }
 

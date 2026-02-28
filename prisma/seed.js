@@ -661,43 +661,111 @@ async function main() {
       // Barat
       {
         id: "4dfc5d80-9312-418a-9bff-10e9cfcdb21e",
-        branch: "PUSAT",
+        branch: "Kantor Kas Gegesik",
         region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
-        address: "Jl. Raya Pusat No.1, Jakarta",
+        address:
+          "Dusun 1 RT/RW 001/02 no. 04, Desa Gegesik Lor Kec. Gegesik, Kabupaten Cirebon",
       },
       {
         id: "5a4f6e1c-2d3b-4f4a-9f1e-3c9e8f7b6c2a",
-        branch: "CWN",
+        branch: "Kantor Pusat",
         region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
-        address: "Jl. Cendana No.15, Jakarta",
+        address:
+          "JL. Raya Klangenan No. 121 Klangenan Cirebon - 45156 Telp. (0231) 341-066",
+      },
+      {
+        id: "8e9f0a1b-3c4d-5e6f-0a1b-2c3d4e5f6a7b",
+        branch: "Kantor Kas Arjawinangun",
+        region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
+        address:
+          "JL. Pahlawan Desa Arjawinangun Kec. Arjawinangun Kab. Cirebon",
+      },
+      {
+        id: "9f0a1b2c-4d5e-6f7a-1b2c-3d4e5f6a7b8c",
+        branch: "Kantor Kas Ciwaringin",
+        region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
+        address:
+          "Blok Cikaranti RT 001 RW 003 Ds Ciwaringin Kec Ciwaringin Kab Cirebon",
+      },
+      {
+        id: "0a1b2c3d-5e6f-7a8b-2c3d-4e5f6a7b8c9d",
+        branch: "Kantor Kas Sumber",
+        region_id: "b82f9447-7a60-4daf-b888-d053390c836e",
+        address:
+          "Jl. Fatahillah Desa Perbutulan Kec. Sumber Kab. Cirebon (Samping BPJS Kesehatan)",
       },
 
       // Selatan
       {
-        id: "8e9f0a1b-3c4d-5e6f-0a1b-2c3d4e5f6a7b",
-        branch: "SEDONG",
+        id: "bcdef012-3456-789a-bcde-f0123456789a",
+        branch: "Kantor Kas Cangkoak",
         region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
-        address: "Jl. Sedong No.3, Yogyakarta",
+        address:
+          "JL. Nyi Ageng Serang (depan balai desa Cangkoak) Ds. Cangkoak Kec. Dukupuntang Kab. Cirebon",
       },
       {
-        id: "9f0a1b2c-4d5e-6f7a-1b2c-3d4e5f6a7b8c",
-        branch: "BEBER",
+        id: "ef012345-6789-abcd-ef01-23456789abcd",
+        branch: "Kantor Kas Beber",
         region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
-        address: "Jl. Beber Raya No.10, Yogyakarta",
+        address:
+          "JL. Raya Cirebon Cilimus Desa Beber Kec. Cilimus Kab. Cirebon",
+      },
+      {
+        id: "456789ab-cdef-0123-4567-89abcdef0123",
+        branch: "Kantor Kas Bobos",
+        region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
+        address:
+          "JL. Raya Imam Bonjol Desa Bobos Kec. Dukupuntang Kab. Cirebon",
+      },
+      {
+        id: "789abcdef012-3456-789a-bcde-f0123456789a",
+        branch: "Kantor Kas Talun",
+        region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
+        address:
+          "Jl. Cendana Raya, Cirebon Girang, Kec. Talun, Kabupaten Cirebon, Jawa Barat 45171",
+      },
+      {
+        id: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+        branch: "Kantor Kas Sedong",
+        region_id: "a9b69d5d-6f10-456a-9e0a-80e94a0e9cb7",
+        address:
+          "Jl. Kapten Mustopa RT/RW 003/003 Desa Sedonglor Kecamatan Sedong, Kab. Cirebon",
       },
 
       // Timur
       {
-        id: "12345678-9abc-def0-1234-56789abcdef0",
-        branch: "SINDANG",
+        id: "12345678-90ab-cdef-1234-567890abcdef",
+        branch: "Kantor Kas Ciledug",
         region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
-        address: "Jl. Sindang No.9, Surabaya",
+        address:
+          "JL. RAYA KAPTEN PIERRE TENDEAN BLOK KARANG ANYAR NOMOR 234 RT 004 RW 003 DESA CILEDUG LOR KECAMATAN CILEDUG KAB. CIREBON",
       },
       {
-        id: "3483c2d7-b6e8-4f9a-8c7d-6594e1f2a3b4",
-        branch: "KARSEM",
+        id: "def01234-5678-90ab-cdef-0123456789ab",
+        branch: "Kantor Kas Sindang Laut",
         region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
-        address: "Jl. Karsem No.20, Surabaya",
+        address:
+          "Blok Kp Pasuruan rt019 rw007 Desa Mertapada Kulon Kec Astanajapura Kab Cirebon",
+      },
+      {
+        id: "4567890a-bcde-f012-3456-7890abcdef12",
+        branch: "Kantor Kas Karang Sembung",
+        region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
+        address:
+          "JL. Raya Karangsuwung Desa Karangsembung Kec Karangsembung Kab Cirebon",
+      },
+      {
+        id: "567890ab-cdef-1234-5678-90abcdef1234",
+        branch: "Kantor Kas Waled",
+        region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
+        address:
+          "JL. Dewi sartika no 19 desa waled kec. Waled kabupaten Cirebon",
+      },
+      {
+        id: "67890abc-def1-2345-6789-0abcdef12345",
+        branch: "Kantor Kas Pabedilan",
+        region_id: "2372b1f6-a5f7-4160-beea-5463bad5145f",
+        address: "JL. Mayjen sutoyo no. 159 Ds pabedilan kulon, kab. cirebon",
       },
     ],
   });

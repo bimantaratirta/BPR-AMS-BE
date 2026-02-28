@@ -1,998 +1,304 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// ============================================================================
+// BPR Sahabat Sejati - Sistem Kehadiran Karyawan
+// Prisma Schema v3.0
+// ============================================================================
 
 generator client {
-  provider = "prisma-client-js"
-  // output   = "../generated/prisma"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String   @id @default(uuid())
-  name          String?
-  username      String   @unique
-  password      String
-  region_id     String?
-  branch_id     String?
-  supervisor_id String?
-  KSSM          KSSM[]
-  KSS           KSS[]
-  PINEK         PINEK[]
-  FLEKSI        FLEKSI[]
-  PROCIM        PROCIM[]
-  KSM           KSM[]
-  KMSM          KMSM[]
-  KRS           KRS[]
-  KMM           KMM[]
-  KMS           KMS[]
-  KEF           KEF[]
-  KAR           KAR[]
-  role          String   @default("PIC")
+// ============================================================================
+// ENUMS
+// ============================================================================
 
-  region       Region?    @relation("UserRegions", fields: [region_id], references: [id])
-  branch       Branch?    @relation("UserBranches", fields: [branch_id], references: [id])
-  supervisor   User?      @relation("UserSupervisor", fields: [supervisor_id], references: [id])
-  subordinates User[]     @relation("UserSupervisor")
-  customer     Customer[] @relation("UserCustomer")
-  report_lo    Report[]   @relation("UserReportLO")
-  report_slo   Report[]   @relation("UserReportSLO")
-  report_am    Report[]   @relation("UserReportAM")
-
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
-
-  system_logs SystemLog[]
-
-  @@map("users")
+/// Peran admin dashboard
+enum AdminRole {
+    SUPER_ADMIN // Akses penuh ke semua fitur
+    ADMIN // Akses kelola karyawan & absensi
+    VIEWER // Hanya lihat data (read-only)
 }
 
-model KSSM {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  pekerjaan_debitur                String?
-  jenis_kelamin_debitur            String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  hubungan_penjamin_debitur        String?
-  alamat_rumah_penjamin            String?
-  // nama_SHM                         String?
-  nama_barang                      String?
-  no_bpkb                          String?
-  harga_barang                     Int?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  provisi_persen                   Float?
-  provisi_nominal                  Int?
-  administrasi_persen              Float?
-  administrasi_nominal             Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
-  asuransi_tlo_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+/// Status akun admin
+enum AdminStatus {
+    ACTIVE
+    INACTIVE
 }
 
-model KSS {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  alamat_rumah_penjamin            String?
-  tempat_lahir_penjamin            String?
-  hubungan_penjamin_debitur        String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  nama_shm                         String?
-  nik_shm                          String?
-  alamat_shm                       String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_dimulai         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  provisi_persen                   Float?
-  administrasi_persen              Float?
-  provisi_nominal                  Int?
-  administrasi_nominal             Int?
-  nama_asuransi                    String?
-  asuransi_nominal                 Int?
-  materai_nominal                  Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+/// Status kehadiran karyawan
+enum AttendanceStatus {
+    HADIR // Check-in ≤ 08:00
+    TERLAMBAT // Check-in > 08:00
+    IZIN_CUTI // Cuti tahunan / pribadi
+    IZIN_SAKIT // Sakit dengan surat keterangan
+    IZIN_SETENGAH_HARI // Izin setengah hari kerja
+    ALPHA // Tanpa keterangan
 }
 
-model PINEK {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  hubungan_penjamin_debitur        String?
-  alamat_rumah_penjamin            String?
-  // nama_shm                         String?
-  nama_barang                      String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  rekening_pinjaman                String?
-  tujuan_penggunaan                String?
-  provisi_persen                   Float?
-  provisi_nominal                  Int?
-  nama_asuransi                    String?
-  asuransi_jiwa_nominal            Int?
-  materai_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+/// Tipe izin / cuti
+enum LeaveType {
+    IZIN_CUTI
+    IZIN_SAKIT
+    IZIN_SETENGAH_HARI
 }
 
-model FLEKSI {
-  id                               String                       @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_persetujuan_kredit DateTime?                    @db.Date
-  nama_debitur                     String?
-  status_debitur                   String?
-  jenis_kelamin_debitur            String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime?                    @db.Date
-  alamat_rumah_debitur             String?
-  nik_debitur                      String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime?                    @db.Date
-  hubungan_penjamin_debitur        String?
-  alamat_rumah_penjamin            String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  rekening_pinjaman                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime?                    @db.Date
-  tenggat_angsuran                 String?
-  barang_elektronik                FleksiBarangElektronik[]
-  barang_furniture                 FleksiBarangFurniture[]
-  barang_jaminan_lainnya           FleksiBarangJaminanLainnya[]
-  created_at                       DateTime?                    @default(now())
-  updated_at                       DateTime?                    @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+/// Status permohonan izin
+enum LeaveStatus {
+    PENDING // Menunggu persetujuan
+    APPROVED // Disetujui
+    REJECTED // Ditolak
 }
 
-model PROCIM {
-  id                               String                       @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_persetujuan_kredit DateTime?                    @db.Date
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime?                    @db.Date
-  alamat_rumah_debitur             String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime?                    @db.Date
-  alamat_rumah_penjamin            String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  rekening_pinjaman                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime?                    @db.Date
-  tenggat_angsuran                 String?
-  barang_elektronik                ProcimBarangElektronik[]
-  barang_furniture                 ProcimBarangFurniture[]
-  barang_jaminan_lainnya           ProcimBarangJaminanLainnya[]
-  created_at                       DateTime?                    @default(now())
-  updated_at                       DateTime?                    @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User                         @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+/// Tipe notifikasi
+enum NotificationType {
+    LEAVE_REQUEST // Permohonan izin baru
+    LEAVE_APPROVED // Izin disetujui
+    LEAVE_REJECTED // Izin ditolak
+    DEVICE_RESET // Device ID direset
+    ANNOUNCEMENT // Pengumuman umum
+    POINT_MILESTONE // Pencapaian poin
 }
 
-model KSM {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  jenis_kelamin_debitur            String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  hubungan_penjamin_debitur        String?
-  nama_barang                      String?
-  harga_barang                     Int?
-  no_bpkb                          String?
-  // nama_shm                         String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  provisi_persen                   Float?
-  administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_nominal                 Int?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
+// ============================================================================
+// MODELS
+// ============================================================================
 
-model KMSM {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  jenis_kelamin_debitur            String?
-  nik_debitur                      String?
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  tempat_lahir_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  nik_penjamin                     String?
-  hubungan_penjamin_debitur        String?
-  nama_barang                      String?
-  harga_barang                     Int?
-  no_bpkb                          String?
-  // nama_shm                         String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  provisi_persen                   Float?
-  administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model KRS {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  jenis_kelamin_debitur            String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  hubungan_penjamin_debitur        String?
-  nama_shm                         String?
-  nik_shm                          String?
-  alamat_shm                       String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  provisi_persen                   Float?
-  administrasi_persen              Float?
-  provisi_nominal                  Int?
-  administrasi_nominal             Int?
-  nama_asuransi                    String?
-  asuransi_jiwa_nominal            Int?
-  materai_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model KMM {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  jenis_kelamin_debitur            String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  tempat_lahir_debitur             String?
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  nik_penjamin                     String?
-  hubungan_penjamin_debitur        String?
-  nama_barang                      String?
-  harga_barang                     Int?
-  no_bpkb                          String?
-  // nama_shm                         String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  tujuan_penggunaan                String?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  provisi_persen                   Float?
-  administrasi_persen              Float?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
-  nama_asuransi                    String?
-  asuransi_tlo_nominal             Int?
-  administrasi_nominal             Int?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model KMS {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String? // nomor_surat String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date // tanggal_surat_permohonan_kredit DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date // tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String? // nama String?
-  jabatan                          String? // jabatan String?
-  nama_debitur                     String? // nama_debitur String?
-  status_debitur                   String? // status_debitur String?
-  alamat_usaha_debitur             String? // alamat_usaha_debitur String?
-  alamat_rumah_debitur             String? // alamat_rumah_debitur String?
-  nik_debitur                      String? // no_ktp_debitur String? 
-  pekerjaan_debitur                String? // pekerjaan_debitur String?
-  hubungan_debitur_penjamin        String? // bertempat_sama_dengan String?
-  alamat_rumah_penjamin            String? // alamat_penjamin String?
-  nama_penjamin                    String? // nama_penjamin String?
-  tempat_lahir_penjamin            String? // tempat_lahir_penjamin String?
-  tanggal_lahir_penjamin           DateTime? @db.Date // tanggal_lahir_penjamin DateTime?
-  nik_penjamin                     String? // no_ktp_penjamin String?
-  hubungan_penjamin_debitur        String? // telah_persetujuan_dari String?
-  nama_shm                         String? // nama_SHM String?
-  alamat_shm                       String? // nama_SHM String?
-  nik_shm                          String? // no_ktp_SHM String?
-  detail_jaminan                   String? // detail_jaminan String?
-  nominal_pinjaman                 Int? // plafond Int?
-  tujuan_penggunaan                String? // tujuan String?
-  jangka_waktu                     Int? // jangka_waktu Int?
-  bunga_pinjaman                   Float? // bunga_pinjaman Float?
-  tanggal_angsuran_terakhir        DateTime? @db.Date // tanggal_angsuran_terakhir DateTime?
-  tenggat_angsuran                 Int? // tanggal_angsuran_tiap_bulan Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date // tanggal_angsuran_pertama DateTime?
-  nominal_angsuran                 Int? // nominal_angsuran Int?
-  hutang_keseluruhan               Int? // melunasi_hutang_sebesar Int?
-  provisi_persen                   Float? // provisi_persen Float?
-  provisi_nominal                  Int? // biaya_provisi_sebesar Int?
-  administrasi_persen              Float? // administrasi_persen Float?
-  administrasi_nominal             Int? // biaya_administrasi_sebesar Int?
-  materai_nominal                  Int? // biaya_materai_sebesar Int?
-  notaris_nominal                  Int? // biaya_notaris_sebesar Int?
-  nama_asuransi_jiwa               String? // nama_asuransi_jiwa String?
-  asuransi_jiwa_nominal            Int? // biaya_asuransi_jiwa_sebesar Int?
-  total_biaya                      Int? // biaya_jumlah Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model KEF {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String? // nomor_surat String?
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date // tanggal_surat_persetujuan_kredit DateTime?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date // tanggal_surat_permohonan_kredit DateTime?
-  nama_debitur                     String? // nama_debitur String?
-  status_debitur                   String? // status_debitur String?
-  nik_debitur                      String? // no_ktp_debitur String?
-  no_hp_debitur                    String? // no_hp_debitur String?
-  jenis_kelamin_debitur            String? // jenis_kelamin_debitur String?
-  hubungan_debitur_penjamin        String? // bertempat_tinggal_dengan String?
-  tempat_lahir_debitur             String? // tempat_lahir_debitur String?
-  tanggal_lahir_debitur            DateTime? @db.Date // tanggal_lahir_debitur DateTime?
-  nama_usaha_debitur               String? // nama_toko String?
-  alamat_usaha_debitur             String? // alamat_toko String?
-  alamat_rumah_debitur             String? // alamat_rumah_debitur String?
-  pekerjaan_debitur                String? // pekerjaan_debitur String?
-  nama_penjamin                    String? // nama_penjamin String?
-  tempat_lahir_penjamin            String? // tempat_lahir_penjamin String?
-  tanggal_lahir_penjamin           DateTime? @db.Date // tanggal_lahir_penjamin DateTime?
-  nik_penjamin                     String? // no_ktp_penjamin String?
-  hubungan_penjamin_debitur        String? // telah_mendapat_persetujuan String?
-  jumlah_barang                    Int?
-  nama_barang                      String? // nama_barang String?
-  merek_barang                     String? // merek_barang String?
-  tipe_barang                      String? // tipe_barang String?
-  ukuran_barang                    String? // ukuran_barang String?
-  warna_barang                     String? // warna_barang String?
-  harga_barang                     Int? // harga_barang Int?
-  detail_jaminan                   String? // detail_jaminan String?
-  bunga_pinjaman                   Float? // bunga_pinjaman Float?
-  jangka_waktu                     Int? // jangka_waktu Int?
-  tanggal_angsuran_terakhir        DateTime? @db.Date // tanggal_angsuran_berakhir DateTime?
-  tenggat_angsuran                 Int? // tenggat_angsuran_pada Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date // nominal_angsuran Int?
-  nominal_angsuran                 Int? // tanggal_angsuran_pertama DateTime?
-  hutang_keseluruhan               Int? // total_pinjaman Int?
-  provisi_persen                   Float? // provisi_persen Float?
-  provisi_nominal                  Int? // biaya_provisi_sebesar Int?
-  administrasi_persen              Float? // administrasi_persen Float?
-  administrasi_nominal             Int? // biaya_administrasi_sebesar Int?
-  materai_nominal                  Int? // biaya_materai_sebesar Int?
-  fidusia_nominal                  Int? // biaya_fidusia_sebesar Int?
-  total_biaya                      Int? // total_biaya Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model KAR {
-  id                               String    @id @default(uuid())
-  nomor_surat                      String?
-  tanggal_surat_permohonan_kredit  DateTime? @db.Date
-  tanggal_surat_persetujuan_kredit DateTime? @db.Date
-  nama                             String?
-  jabatan                          String?
-  nama_debitur                     String?
-  nik_debitur                      String?
-  status_debitur                   String?
-  hubungan_debitur_penjamin        String?
-  jenis_kelamin_debitur            String?
-  tempat_lahir_debitur             String?
-  tanggal_lahir_debitur            DateTime? @db.Date
-  alamat_usaha_debitur             String?
-  alamat_rumah_debitur             String?
-  pekerjaan_debitur                String?
-  nama_penjamin                    String?
-  nik_penjamin                     String?
-  tempat_lahir_penjamin            String?
-  tanggal_lahir_penjamin           DateTime? @db.Date
-  hubungan_penjamin_debitur        String?
-  alamat_rumah_penjamin            String?
-  nama_barang                      String?
-  no_bpkb                          String?
-  // nama_shm                         String?
-  detail_jaminan                   String?
-  nominal_pinjaman                 Int?
-  bunga_pinjaman                   Float?
-  jangka_waktu                     Int?
-  nominal_angsuran                 Int?
-  tanggal_angsuran_pertama         DateTime? @db.Date
-  tanggal_angsuran_terakhir        DateTime? @db.Date
-  hutang_keseluruhan               Int?
-  tenggat_angsuran                 Int?
-  provisi_persen                   Float?
-  administrasi_nominal             Int?
-  provisi_nominal                  Int?
-  materai_nominal                  Int?
-  asuransi_jiwa_nominal            Int?
-  nama_asuransi                    String?
-  notaris_nominal                  Int?
-  total_biaya                      Int?
-  created_at                       DateTime? @default(now())
-  updated_at                       DateTime? @updatedAt
-  submitted_at                     DateTime?
-  deleted_at                       DateTime?
-  userID                           String
-  User                             User      @relation(fields: [userID], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model FleksiBarangElektronik {
-  id          String    @id @default(uuid())
-  fleksi_id   String
-  nama_barang String?
-  tipe        String?
-  harga       Int?
-  fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model FleksiBarangFurniture {
-  id          String    @id @default(uuid())
-  fleksi_id   String
-  nama_barang String?
-  tipe        String?
-  harga       Int?
-  fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model FleksiBarangJaminanLainnya {
-  id          String    @id @default(uuid())
-  fleksi_id   String
-  nama_barang String?
-  fleksi      FLEKSI    @relation(fields: [fleksi_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model ProcimBarangElektronik {
-  id          String    @id @default(uuid())
-  procim_id   String
-  nama_barang String?
-  tipe        String?
-  harga       Int?
-  procim      PROCIM    @relation(fields: [procim_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model ProcimBarangFurniture {
-  id          String    @id @default(uuid())
-  procim_id   String
-  nama_barang String?
-  tipe        String?
-  harga       Int?
-  procim      PROCIM    @relation(fields: [procim_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model ProcimBarangJaminanLainnya {
-  id          String    @id @default(uuid())
-  procim_id   String
-  nama_barang String?
-  procim      PROCIM    @relation(fields: [procim_id], references: [id])
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-}
-
-model SystemLog {
-  id          String    @id @default(uuid())
-  user_id     String
-  ip_address  String?
-  device      String?
-  action      String?
-  method      String?
-  description String?
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @updatedAt
-  deleted_at  DateTime?
-
-  user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
-}
-
-// V2 
-
-model Region {
-  id         String    @id @default(uuid())
-  region     String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
-
-  branches Branch[] @relation("RegionBranches")
-  user     User[]   @relation("UserRegions")
-
-  @@map("regions")
-}
-
+/// Kantor cabang / kantor pusat
 model Branch {
-  id         String    @id @default(uuid())
-  branch     String
-  region_id  String
-  address    String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+    id        String  @id @default(cuid())
+    name      String  @unique // "Kantor Pusat", "Cabang Sudirman", dll.
+    address   String // Alamat lengkap
+    latitude  Float // Koordinat GPS latitude
+    longitude Float // Koordinat GPS longitude
+    radius    Int     @default(50) // Radius geofencing dalam meter
+    isActive  Boolean @default(true)
 
-  region Region @relation("RegionBranches", fields: [region_id], references: [id])
-  user   User[] @relation("UserBranches")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@map("branches")
+    // Relations
+    employees   Employee[]
+    attendances Attendance[]
+
+    @@map("branches")
 }
 
+/// Data karyawan
 model Employee {
-  id              String    @id @default(uuid())
-  company_name    String?
-  company_address String?
-  company_phone   String?
-  position        String?
-  work            String? // shown in report
-  salary          Int?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  deleted_at      DateTime?
+    id       String  @id @default(cuid())
+    nik      String  @unique // Nomor Induk Karyawan (e.g. "2023007")
+    name     String // Nama lengkap
+    email    String  @unique // Email korporat (e.g. "ahmad.fauzi@bpr.co.id")
+    password String // Hashed password
+    phone    String? // Nomor telepon
+    role     String // Jabatan (e.g. "Teller", "IT Support", "HR Manager")
+    avatar   String? // URL foto profil (S3)
 
-  customer Customer[] @relation("EmployeeCustomer")
+    // Device Binding
+    deviceId    String? @unique // Unique device identifier untuk binding
+    deviceModel String? // Model perangkat (e.g. "Samsung Galaxy A54")
+    deviceOs    String? // OS perangkat (e.g. "Android 14")
 
-  @@map("employees")
+    branchId String // Cabang penempatan
+    isActive Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    branch        Branch         @relation(fields: [branchId], references: [id])
+    attendances   Attendance[]
+    leaveRequests LeaveRequest[]
+    pointRecords  PointRecord[]
+    notifications Notification[]
+
+    @@index([branchId])
+    @@index([nik])
+    @@map("employees")
 }
 
-model NonEmployee {
-  id               String    @id @default(uuid())
-  salary_frequency String?
-  work             String? // shown in report
-  salary           Int?
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
-  deleted_at       DateTime?
+/// Admin dashboard
+model Admin {
+    id       String      @id @default(cuid())
+    name     String
+    email    String      @unique
+    password String // Hashed password
+    role     AdminRole   @default(ADMIN)
+    status   AdminStatus @default(ACTIVE)
 
-  customer Customer[] @relation("NonEmployeeCustomer")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@map("non_employees")
+    // Relations
+    leaveActions LeaveRequest[] @relation("ApprovedBy")
+
+    @@map("admins")
 }
 
-model Business {
-  id             String    @id @default(uuid())
-  business_type  String? // shown in report
-  employee_count Int?
-  revenue        Int?
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-  deleted_at     DateTime?
+/// Rekaman absensi harian
+model Attendance {
+    id   String   @id @default(cuid())
+    date DateTime @db.Date // Tanggal absensi (YYYY-MM-DD)
 
-  customer Customer[] @relation("BusinessCustomer")
+    // Check-in details
+    checkInTime         DateTime? // Waktu check-in lengkap
+    checkInLat          Float? // Latitude saat check-in
+    checkInLng          Float? // Longitude saat check-in
+    checkInPhoto        String? // URL selfie check-in (S3)
+    checkInInsideRadius Boolean   @default(false) // Apakah dalam radius geofence
 
-  @@map("businesses")
+    // Check-out details
+    checkOutTime DateTime? // Waktu check-out lengkap
+    checkOutLat  Float? // Latitude saat check-out
+    checkOutLng  Float? // Longitude saat check-out
+
+    // Computed / derived fields
+    status          AttendanceStatus // Status kehadiran
+    durationMinutes Int? // Total durasi kerja dalam menit
+
+    // Poin kehadiran
+    // Rules:
+    //   - Check-in ≤ 08:00     → 1 poin (Hadir)
+    //   - Check-in 08:01-08:30 → 0.5 poin (Terlambat)
+    //   - Check-in > 08:30     → 0 poin (Terlambat)
+    //   - Izin / Cuti          → 0 poin
+    points Float @default(0)
+
+    // Auto-generation flag (untuk record Alpha dari cron job)
+    isAutoGenerated Boolean @default(false)
+
+    employeeId String
+    branchId   String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+    branch   Branch   @relation(fields: [branchId], references: [id])
+
+    @@unique([employeeId, date]) // 1 record per karyawan per hari
+    @@index([employeeId])
+    @@index([branchId])
+    @@index([date])
+    @@index([status])
+    @@map("attendances")
 }
 
-model Customer {
-  id              String    @id @default(uuid())
-  name            String?
-  ktp_number      String?
-  date_of_birth   DateTime?
-  address         String?
-  rt_rw           String?
-  village         String?
-  phone_number    String?
-  employee_id     String?
-  non_employee_id String?
-  business_id     String?
-  created_by      String?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  deleted_at      DateTime?
+/// Permohonan izin / cuti
+model LeaveRequest {
+    id         String      @id @default(cuid())
+    type       LeaveType // Tipe izin
+    startDate  DateTime    @db.Date // Tanggal mulai izin
+    endDate    DateTime    @db.Date // Tanggal selesai izin
+    reason     String // Alasan izin
+    attachment String? // URL lampiran dokumen (S3)
+    status     LeaveStatus @default(PENDING)
 
-  user         User?        @relation("UserCustomer", fields: [created_by], references: [id])
-  employee     Employee?    @relation("EmployeeCustomer", fields: [employee_id], references: [id])
-  non_employee NonEmployee? @relation("NonEmployeeCustomer", fields: [non_employee_id], references: [id])
-  business     Business?    @relation("BusinessCustomer", fields: [business_id], references: [id])
+    // Approval info
+    approvedById String? // Admin yang approve/reject
+    approvedAt   DateTime? // Waktu approval
+    rejectReason String? // Alasan penolakan (jika ditolak)
 
-  update_logs  CustomerUpdateLog[] @relation("CustomerUpdateLog")
-  report Report[] @relation("CustomerReport")
+    employeeId String
 
-  @@map("customers")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+    approvedBy Admin?   @relation("ApprovedBy", fields: [approvedById], references: [id])
+
+    @@index([employeeId])
+    @@index([status])
+    @@index([startDate, endDate])
+    @@map("leave_requests")
 }
 
-model CustomerUpdateLog {
-  id          String   @id @default(uuid())
-  customer_id String
-  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
-  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
-  changes     String   // Deskripsi perubahan yang dilakukan
-  
-  customer Customer @relation("CustomerUpdateLog", fields: [customer_id], references: [id]) // Menambahkan nama relasi yang sama
+/// Rekaman poin kehadiran (detail/log)
+model PointRecord {
+    id          String   @id @default(cuid())
+    date        DateTime @db.Date // Tanggal
+    points      Float // Jumlah poin (1, 0.5, atau 0)
+    checkInTime DateTime?// Waktu check-in (e.g. "07:55")
+    type        String // tepat | setengah | terlambat | alpha
 
+    employeeId String
 
-  @@map("customer_update_logs")
+    createdAt DateTime @default(now())
+
+    // Relations
+    employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+    @@unique([employeeId, date])
+    @@index([employeeId])
+    @@index([date])
+    @@map("point_records")
 }
 
+/// Notifikasi ke karyawan atau admin
+model Notification {
+    id      String           @id @default(cuid())
+    type    NotificationType
+    title   String // Judul notifikasi
+    message String // Isi notifikasi
+    isRead  Boolean          @default(false)
+    data    Json? // Data tambahan (e.g. leaveRequestId)
 
-model Report {
-  id                    String  @id @default(uuid())
-  status                Status
-  
-  process               Process
-  customer_id           String?
-  lo_id                 String?
-  slo_id                String?
-  am_id                 String?
-  customer_snapshot     Json
-  employee_snapshot     Json?
-  non_employee_snapshot Json?
-  business_snapshot     Json?
-  review_by_slo         DateTime?
-  review_by_am          DateTime?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+    employeeId String? // Target karyawan (null jika broadcast)
 
-  lo              User?            @relation("UserReportLO", fields: [lo_id], references: [id])
-  slo             User?            @relation("UserReportSLO", fields: [slo_id], references: [id])
-  am              User?            @relation("UserReportAM", fields: [am_id], references: [id])
-  customer        Customer?        @relation("CustomerReport", fields: [customer_id], references: [id])
-  report_photo    ReportPhoto[]    @relation("ReportPhoto")
-  review_customer ReviewCustomer? @relation("ReportReviewCustomer")
-  evaluation      Evaluation?     @relation("ReportEvaluation")
+    createdAt DateTime @default(now())
 
-  @@map("reports")
+    // Relations
+    employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+    @@index([employeeId])
+    @@index([isRead])
+    @@index([createdAt])
+    @@map("notifications")
 }
 
-model ReportPhoto {
-  id         String    @id @default(uuid())
-  report_id  String
-  url        String // public URL / signed URL
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+/// Pengaturan aplikasi (global settings)
+model AppSettings {
+    id String @id @default("default")
 
-  report Report @relation("ReportPhoto", fields: [report_id], references: [id])
+    // Pengaturan Absensi
+    defaultCheckIn String @default("08:00") // Batas waktu hadir (≤ = 1 poin)
+    halfPointEnd   String @default("08:30") // Batas setengah poin (08:01 - ini = 0.5 poin)
+    defaultRadius  Int    @default(50) // Radius geofencing default (meter)
 
-  @@map("report_photos")
+    // Pengaturan Umum
+    companyName String  @default("BPR Sahabat Sejati")
+    companyLogo String? // URL logo (S3)
+    timezone    String  @default("Asia/Jakarta")
+
+    // S3 / Storage Configuration
+    s3Endpoint String? // S3 endpoint URL
+    s3Bucket   String? // Nama bucket
+
+    updatedAt DateTime @updatedAt
+
+    @@map("app_settings")
 }
 
-model ReviewCustomer {
-  id              String    @id @default(uuid())
-  status_review   Status_Review
-  report_id       String    @unique
-  review_identity Boolean?
-  review_domicile Boolean?
-  review_work     Boolean?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  deleted_at      DateTime?
+/// Audit log untuk melacak perubahan penting
+model AuditLog {
+    id          String  @id @default(cuid())
+    action      String // e.g. "EMPLOYEE_CREATED", "LEAVE_APPROVED"
+    entity      String // e.g. "Employee", "LeaveRequest"
+    entityId    String // ID entitas terkait
+    performedBy String // Admin ID atau "system"
+    details     Json? // Detail perubahan
+    ipAddress   String? // IP address
 
-  report Report @relation("ReportReviewCustomer", fields: [report_id], references: [id])
-  update_logs ReviewCustomerUpdateLog[] @relation("ReviewCustomerUpdateLog")
+    createdAt DateTime @default(now())
 
-  @@map("review_customers")
-}
-
-model ReviewCustomerUpdateLog {
-  id          String   @id @default(uuid())
-  review_customer_id String
-  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
-  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
-  changes     String   // Deskripsi perubahan yang dilakukan
-  
-  review_customer ReviewCustomer @relation("ReviewCustomerUpdateLog", fields: [review_customer_id], references: [id]) // Menambahkan nama relasi yang sama
-
-
-  @@map("review_customer_update_logs")
-}
-
-model Evaluation {
-  id               String    @id @default(uuid())
-  status_review    Status_Review
-  report_id        String    @unique
-  character        String?
-  status_character Status?
-  capacity         String?
-  status_capacity  Status?
-  condition        String?
-  status_condition Status?
-  capital          String?
-  status_capital   Status?
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
-  deleted_at       DateTime?
-
-  report            Report             @relation("ReportEvaluation", fields: [report_id], references: [id])
-  review_evaluation ReviewEvaluation? @relation("EvaluationReviewEvaluation")
-  update_logs       EvaluationUpdateLog[] @relation("EvaluationUpdateLog")
-
-  @@map("evaluations")
-}
-
-model EvaluationUpdateLog {
-  id          String   @id @default(uuid())
-  evaluation_id String
-  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
-  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
-  changes     String   // Deskripsi perubahan yang dilakukan
-  
-  evaluation Evaluation @relation("EvaluationUpdateLog", fields: [evaluation_id], references: [id]) // Menambahkan nama relasi yang sama
-
-
-  @@map("evaluation_update_logs")
-}
-
-model ReviewEvaluation {
-  id               String    @id @default(uuid())
-  status_review    Status_Review
-  evaluation_id    String    @unique
-  review_character Boolean?
-  review_capacity  Boolean?
-  review_condition Boolean?
-  review_capital   Boolean?
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
-  deleted_at       DateTime?
-
-  evaluation Evaluation @relation("EvaluationReviewEvaluation", fields: [evaluation_id], references: [id])
-  update_logs ReviewEvaluationUpdateLog[] @relation("ReviewEvaluationUpdateLog")
-
-  @@map("review_evaluations")
-}
-
-model ReviewEvaluationUpdateLog {
-  id          String   @id @default(uuid())
-  review_evaluation_id String
-  updated_by  String   // Bisa disesuaikan dengan ID user atau admin yang melakukan update
-  updated_at  DateTime @default(now()) // Waktu ketika update terjadi
-  changes     String   // Deskripsi perubahan yang dilakukan
-  
-  evaluation ReviewEvaluation @relation("ReviewEvaluationUpdateLog", fields: [review_evaluation_id], references: [id]) // Menambahkan nama relasi yang sama
-
-
-  @@map("review_evaluation_update_logs")
-}
-
-enum Status {
-  GOOD
-  BAD
-}
-
-enum Process {
-  DECLINE_LO
-  REVIEW_SLO
-  DECLINE_REVIEW_SLO
-  EVALUATION_SLO
-  DECLINE_EVALUATION_SLO
-  REVIEW_AM
-  APPROVE_AM
-  DECLINE_AM
-}
-
-enum Status_Review {
-  DRAFT
-  COMPLETED
+    @@index([entity, entityId])
+    @@index([performedBy])
+    @@index([createdAt])
+    @@map("audit_logs")
 }

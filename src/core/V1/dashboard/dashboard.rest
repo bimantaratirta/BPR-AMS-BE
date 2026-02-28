@@ -1,8 +1,0 @@
-### getAllProductStats
-GET http://localhost:3016/api/v1/dashboard/products-stats
-
-### getDailyProductsTraffic
-GET http://localhost:3016/api/v1/dashboard/daily-products
-
-### getCountProducts
-GET http://localhost:3016/api/v1/dashboard/products-total-report

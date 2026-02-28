@@ -145,7 +145,7 @@ export function buildQueryOptions(modelConfig, query = {}, fixedWhere = {}) {
     orderBy = order_by
       .filter(
         ({ field }) =>
-          orderableFields.length === 0 || orderableFields.includes(field)
+          orderableFields.length === 0 || orderableFields.includes(field),
       )
       .map(({ field, direction = "asc" }) => ({
         [field]: direction.toLowerCase() === "desc" ? "desc" : "asc",

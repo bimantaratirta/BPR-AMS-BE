@@ -11,37 +11,15 @@ export class PrismaService extends PrismaClient {
     this.$use(
       createSoftDeleteMiddleware({
         models: {
-          User: true,
-          KSSM: true,
-          KSS: true,
-          PINEK: true,
-          FLEKSI: true,
-          PROCIM: true,
-          KSM: true,
-          KMSM: true,
-          KRS: true,
-          KMM: true,
-          KMS: true,
-          KEF: true,
-          KAR: true,
-          FleksiBarangElektronik: true,
-          FleksiBarangFurniture: true,
-          FleksiBarangJaminanLainnya: true,
-          ProcimBarangElektronik: true,
-          ProcimBarangFurniture: true,
-          ProcimBarangJaminanLainnya: true,
-          Region: true,
           Branch: true,
           Employee: true,
-          NonEmployee: true,
-          Business: true,
-          Customer: true,
-          Report: true,
-          ReportPhoto: true,
-          ReviewCustomer: true,
-          Evaluation: true,
-          ReviewEvaluation: true,
-          SystemLog: true,
+          Admin: true,
+          Attendance: true,
+          leaveRequest: true,
+          PointRecord: true,
+          Notification: true,
+          AppSettings: true,
+          AuditLog: true,
         },
         defaultConfig: {
           field: "deleted_at",
@@ -50,7 +28,7 @@ export class PrismaService extends PrismaClient {
             return null;
           },
         },
-      })
+      }),
     );
 
     await this.$connect();

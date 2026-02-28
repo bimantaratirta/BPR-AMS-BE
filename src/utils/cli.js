@@ -7,7 +7,9 @@ import capitalize from "capitalize";
 
 program
   .command("make:domain <name>")
-  .description("Generate a new domain folder with controller, service, routes, and schema")
+  .description(
+    "Generate a new domain folder with controller, service, routes, and schema",
+  )
   .action((name) => {
     const domainParts = name.split("/");
     const domainPath = path.join(__filename, "/src/domains", ...domainParts);
@@ -23,9 +25,11 @@ program
     name = domainParts[domainParts.length - 1];
 
     // Template file
-    const controllerTemplate = `class ${capitalize(name)}Controller {
+    const controllerTemplate = `import ${capitalize(name)}Service from "./${name}-service.js";
+    
+    class ${capitalize(name)}Controller {
 
-    async index() {
+    async list() {
         throw new Error("Method not implemented");
     }
 
@@ -64,7 +68,7 @@ import validateCredentials from '../../middlewares/validate-credentials-middlewa
 
 class ${capitalize(name)}Routes extends BaseRoutes {
     routes() {
-        this.router.get("/", [tryCatch(${capitalize(name)}Controller.index)]);
+        this.router.get("/", [tryCatch(${capitalize(name)}Controller.list)]);
         this.router.get("/:id", [tryCatch(${capitalize(name)}Controller.show)]);
         this.router.post("/", [tryCatch(${capitalize(name)}Controller.create)]);
         this.router.put("/:id", [tryCatch(${capitalize(name)}Controller.update)]);
@@ -83,10 +87,26 @@ const ${name}Schema = Joi.object({
 export { ${name}Schema };`;
 
     // Buat file di folder domain
-    fs.writeFileSync(path.join(domainPath, `${name}-controller.js`), controllerTemplate, "utf8");
-    fs.writeFileSync(path.join(domainPath, `${name}-service.js`), serviceTemplate, "utf8");
-    fs.writeFileSync(path.join(domainPath, `${name}-routes.js`), routesTemplate, "utf8");
-    fs.writeFileSync(path.join(domainPath, `${name}-schema.js`), schemaTemplate, "utf8");
+    fs.writeFileSync(
+      path.join(domainPath, `${name}-controller.js`),
+      controllerTemplate,
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(domainPath, `${name}-service.js`),
+      serviceTemplate,
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(domainPath, `${name}-routes.js`),
+      routesTemplate,
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(domainPath, `${name}-schema.js`),
+      schemaTemplate,
+      "utf8",
+    );
 
     console.log(`✅ Domain '${name}' created successfully!`);
   });
