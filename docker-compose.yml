@@ -4,15 +4,15 @@ services:
     container_name: bpr_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER:-bpr}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-bprpassword}
-      POSTGRES_DB: ${DB_NAME:-bprdb}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-bpr_ams}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-bpr} -d ${DB_NAME:-bprdb}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-bpr_ams}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,17 +28,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
-      PORT: ${PORT:-3000}
-      DATABASE_URL: postgresql://${DB_USER:-bpr}:${DB_PASSWORD:-bprpassword}@db:5432/${DB_NAME:-bprdb}?schema=public
-      JWT_SECRET: ${JWT_SECRET}
-      # S3 / Storage (opsional)
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
-      S3_BUCKET: ${S3_BUCKET:-}
-      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      DATABASE_URL: ${DATABASE_URL}
     ports:
       - "${PORT:-3000}:3000"
     volumes:
