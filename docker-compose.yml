@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bpr_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-bpr}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-bprpassword}
+      POSTGRES_DB: ${DB_NAME:-bprdb}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-bpr} -d ${DB_NAME:-bprdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bpr_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bpr_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3000}
+      DATABASE_URL: postgresql://${DB_USER:-bpr}:${DB_PASSWORD:-bprpassword}@db:5432/${DB_NAME:-bprdb}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      # S3 / Storage (opsional)
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./output:/app/output
+      - ./public:/app/public
+    networks:
+      - bpr_network
+
+volumes:
+  postgres_data:
+
+networks:
+  bpr_network:
+    driver: bridge
