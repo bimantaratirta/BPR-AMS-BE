@@ -15,4 +15,3 @@ dist
 # prisma/migrations
 
 # Local development
-package-lock.json
