@@ -21,7 +21,8 @@ class AdminRoutes extends BaseRoutes {
     ]);
     this.router.post("/", [
       AuthMiddleware.authenticate,
-      AuthMiddleware.authorize(["SUPER_ADMIN", "ADMIN", "VIEWER"]),
+      AuthMiddleware.authorize(["SUPER_ADMIN"]),
+      validateCredentials(adminSchema.create),
       tryCatch(AdminController.create),
     ]);
     this.router.put("/:id", [
@@ -32,7 +33,7 @@ class AdminRoutes extends BaseRoutes {
     ]);
     this.router.delete("/:id", [
       AuthMiddleware.authenticate,
-      AuthMiddleware.authorize(["SUPER_ADMIN", "ADMIN", "VIEWER"]),
+      AuthMiddleware.authorize(["SUPER_ADMIN"]),
       tryCatch(AdminController.delete),
     ]);
   }

@@ -65,6 +65,14 @@ const adminSchema = {
       .optional(),
   }),
 
+  create: Joi.object({
+    name: Joi.string().min(1).max(100).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).max(100).required(),
+    role: Joi.string().valid("SUPER_ADMIN", "ADMIN", "VIEWER").default("ADMIN"),
+    status: Joi.string().valid("ACTIVE", "INACTIVE").default("ACTIVE"),
+  }),
+
   update: Joi.object({
     name: Joi.string().min(1).max(100).optional(),
     email: Joi.string().email().optional(),
