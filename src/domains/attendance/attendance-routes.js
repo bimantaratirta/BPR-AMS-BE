@@ -15,6 +15,11 @@ class AttendanceRoutes extends BaseRoutes {
       validateCredentials(attendanceSchema.query),
       tryCatch(AttendanceController.list),
     ]);
+    this.router.get("/export-xlsx", [
+      AuthMiddleware.authenticate,
+      AuthMiddleware.authorize(["SUPER_ADMIN", "ADMIN"]),
+      tryCatch(AttendanceController.exportXlsx),
+    ]);
     this.router.get("/:id", [
       AuthMiddleware.authenticate,
       tryCatch(AttendanceController.show),
@@ -41,6 +46,7 @@ class AttendanceRoutes extends BaseRoutes {
 
     this.router.put("/:id", [
       AuthMiddleware.authenticate,
+      AuthMiddleware.authorize(["SUPER_ADMIN", "ADMIN"]),
       tryCatch(AttendanceController.update),
     ]);
     this.router.delete("/:id", [

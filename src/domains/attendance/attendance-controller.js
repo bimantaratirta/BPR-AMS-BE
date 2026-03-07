@@ -7,8 +7,10 @@ class AttendanceController {
     return successResponse(res, result.data, "Success", result.meta);
   };
 
-  async show() {
-    throw new Error("Method not implemented");
+  async show(req, res) {
+    const { id } = req.params;
+    const result = await AttendanceService.getById(id);
+    return successResponse(res, result, "Success");
   }
 
   async checkIn(req, res) {
@@ -29,8 +31,20 @@ class AttendanceController {
     );
   }
 
-  async update() {
-    throw new Error("Method not implemented");
+  async exportXlsx(req, res) {
+    const { startDate, endDate, branchId } = req.query;
+    const buffer = await AttendanceService.exportXlsx({ startDate, endDate, branchId });
+    res.set({
+      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Disposition": `attachment; filename="laporan-absensi-${startDate || "all"}_${endDate || "all"}.xlsx"`,
+    });
+    res.send(Buffer.from(buffer));
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+    const updated = await AttendanceService.update(id, req.body);
+    return successResponse(res, updated, "Attendance updated successfully");
   }
 
   async delete(req, res) {
