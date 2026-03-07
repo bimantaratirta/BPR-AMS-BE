@@ -21,6 +21,7 @@ class EmployeeRoutes extends BaseRoutes {
     ]);
     this.router.post("/", [
       AuthMiddleware.authenticate,
+      validateCredentials(employeeSchema.create),
       tryCatch(EmployeeController.create),
     ]);
     this.router.put("/:id", [

@@ -39,22 +39,48 @@ const employeeSchema = {
       .optional(),
   }),
 
-  update: Joi.object({
-    password: Joi.string().min(6).optional(),
-    email: Joi.string().email().optional(),
-    name: Joi.string().min(3).max(100).optional(),
-    isActive: Joi.boolean().optional(),
-    branchId: Joi.string().uuid().optional(),
-    nik: Joi.string().min(16).max(16).optional(),
-    deviceId: Joi.string().optional(),
+  create: Joi.object({
+    nik: Joi.string().min(16).max(16).required().messages({
+      "string.min": "NIK harus 16 digit",
+      "string.max": "NIK harus 16 digit",
+      "any.required": "NIK wajib diisi",
+    }),
+    name: Joi.string().min(3).max(100).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
+    branchId: Joi.string().required(),
     phone: Joi.string()
       .pattern(/^08[0-9]{8,11}$/)
       .optional()
+      .allow("", null)
       .messages({
         "string.pattern.base":
-          "phone number must start with '08' and be 10 to 13 digits long",
+          "Nomor HP harus diawali '08' dan terdiri dari 10-13 digit",
       }),
-    role: Joi.string().optional(),
+    role: Joi.string().optional().allow("", null),
+    isActive: Joi.boolean().optional().default(true),
+  }),
+
+  update: Joi.object({
+    nik: Joi.string().min(16).max(16).optional().messages({
+      "string.min": "NIK harus 16 digit",
+      "string.max": "NIK harus 16 digit",
+    }),
+    name: Joi.string().min(3).max(100).optional(),
+    email: Joi.string().email().optional(),
+    password: Joi.string().min(6).optional(),
+    isActive: Joi.boolean().optional(),
+    branchId: Joi.string().optional(),
+    deviceId: Joi.string().optional().allow("", null),
+    phone: Joi.string()
+      .pattern(/^08[0-9]{8,11}$/)
+      .optional()
+      .allow("", null)
+      .messages({
+        "string.pattern.base":
+          "Nomor HP harus diawali '08' dan terdiri dari 10-13 digit",
+      }),
+    role: Joi.string().optional().allow("", null),
     avatar: Joi.string().optional(),
     deviceModel: Joi.string().optional(),
     deviceOs: Joi.string().optional(),
