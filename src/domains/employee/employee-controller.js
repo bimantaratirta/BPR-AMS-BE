@@ -26,7 +26,9 @@ class EmployeeController {
   }
 
   async delete(req, res) {
-    throw new Error("Method not implemented");
+    const { id } = req.params;
+    const deleted = await EmployeeService.delete(id);
+    return successResponse(res, deleted, "Employee deleted successfully");
   }
 }
 

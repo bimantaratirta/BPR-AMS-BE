@@ -3,6 +3,7 @@ import { PrismaService } from "../../common/service/prisma.service.js";
 import S3Service from "../../common/service/s3.service.js";
 import { buildQueryOptions } from "../../utils/buildQueryOptions.js";
 import employeeQueryConfig from "./employee-query-config.js";
+import { hashPassword } from "../../utils/passwordConfig.js";
 
 class EmployeeService {
   constructor() {
@@ -61,7 +62,21 @@ class EmployeeService {
   }
 
   async create(data) {
-    return this.prisma.employee.create({ data });
+    const hashedPassword = await hashPassword(data.password);
+    const employee = await this.prisma.employee.create({
+      data: {
+        nik: data.nik,
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        phone: data.phone,
+        role: data.role,
+        branchId: data.branchId,
+        isActive: data.isActive ?? true,
+      },
+    });
+    const { password, ...result } = employee;
+    return result;
   }
 
   async update(id, file = [], data) {
