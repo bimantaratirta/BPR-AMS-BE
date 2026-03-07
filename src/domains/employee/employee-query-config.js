@@ -1,5 +1,5 @@
 const employeeQueryConfig = {
-  searchableFields: ["name"],
+  searchableFields: ["name", "nik", "email", "role", "branch.name"],
   filterableFields: ["isActive", "branchId"],
   orderableFields: ["createdAt", "updatedAt"],
   relations: { branch: true },
