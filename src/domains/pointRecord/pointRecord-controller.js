@@ -13,6 +13,12 @@ class PointrecordController {
     return successResponse(res, result.data, "Success");
   }
 
+  async summary(req, res) {
+    const { startDate, endDate, branchId } = req.query;
+    const result = await PointrecordService.getSummary({ startDate, endDate, branchId });
+    return successResponse(res, result, "Success");
+  }
+
   // async create() {
   //     throw new Error("Method not implemented");
   // }

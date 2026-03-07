@@ -56,6 +56,67 @@ class PointRecordService {
 
     return pointRecord;
   }
+  async getSummary({ startDate, endDate, branchId } = {}) {
+    const where = {};
+
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) where.date.gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setUTCDate(end.getUTCDate() + 1);
+        where.date.lt = end;
+      }
+    }
+
+    if (branchId) {
+      where.employee = { branchId };
+    }
+
+    const records = await this.prisma.pointRecord.findMany({
+      where,
+      include: {
+        employee: {
+          select: {
+            id: true,
+            name: true,
+            nik: true,
+            branchId: true,
+            branch: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+
+    // Aggregate per employee
+    const employeeMap = {};
+    for (const rec of records) {
+      const empId = rec.employeeId;
+      if (!employeeMap[empId]) {
+        employeeMap[empId] = {
+          employeeId: empId,
+          name: rec.employee?.name ?? "-",
+          nik: rec.employee?.nik ?? "-",
+          branch: rec.employee?.branch?.name ?? "-",
+          hadir: 0,
+          terlambat05: 0,
+          terlambat0: 0,
+          alpha: 0,
+          totalPoin: 0,
+        };
+      }
+
+      const emp = employeeMap[empId];
+      emp.totalPoin += rec.points;
+
+      if (rec.type === "HADIR") emp.hadir++;
+      else if (rec.type === "TERLAMBAT" && rec.points === 0.5) emp.terlambat05++;
+      else if (rec.type === "TERLAMBAT" && rec.points === 0) emp.terlambat0++;
+      else if (rec.type === "ALPHA") emp.alpha++;
+    }
+
+    return Object.values(employeeMap);
+  }
 }
 
 export default new PointRecordService();

@@ -12,6 +12,10 @@ class PointrecordRoutes extends BaseRoutes {
       AuthMiddleware.authenticate,
       tryCatch(PointrecordController.list),
     ]);
+    this.router.get("/summary", [
+      AuthMiddleware.authenticate,
+      tryCatch(PointrecordController.summary),
+    ]);
     this.router.get("/:id", [
       AuthMiddleware.authenticate,
       tryCatch(PointrecordController.show),
