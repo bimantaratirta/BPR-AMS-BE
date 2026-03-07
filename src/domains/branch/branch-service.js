@@ -11,6 +11,10 @@ class BranchService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(branchQueryConfig, query);
+    options.include = {
+      ...options.include,
+      _count: { select: { employees: true } },
+    };
 
     const [data, count] = await Promise.all([
       this.prisma.branch.findMany(options),

@@ -2,7 +2,7 @@ const branchQueryConfig = {
   searchableFields: ["name"],
   filterableFields: ["isActive"],
   orderableFields: ["createdAt", "updatedAt"],
-  relations: { _count: { select: { employees: true } } },
+  relations: {},
   dateFields: { createdAt: "createdAt", updatedAt: "updatedAt" },
 };
 
