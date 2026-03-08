@@ -39,6 +39,11 @@ const attendanceSchema = {
         )
         .optional(),
 
+      month: Joi.string()
+        .pattern(/^\d{4}-(0[1-9]|1[0-2])$/)
+        .message("month must be format YYYY-MM")
+        .optional(),
+
       employeeId: Joi.string().uuid().optional(),
     }),
 
