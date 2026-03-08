@@ -56,66 +56,118 @@ class PointRecordService {
 
     return pointRecord;
   }
-  async getSummary({ startDate, endDate, branchId } = {}) {
-    const where = {};
+  async getSummary({ startDate, endDate, branchId, search, page = 1, limit = 20 } = {}) {
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const offset = (pageNum - 1) * limitNum;
 
-    if (startDate || endDate) {
-      where.date = {};
-      if (startDate) where.date.gte = new Date(startDate);
-      if (endDate) {
-        const end = new Date(endDate);
-        end.setUTCDate(end.getUTCDate() + 1);
-        where.date.lt = end;
-      }
+    // Build WHERE conditions
+    const conditions = [];
+    const params = [];
+    let idx = 1;
+
+    if (startDate) {
+      conditions.push(`pr."date" >= $${idx++}`);
+      params.push(new Date(startDate));
     }
-
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setUTCDate(end.getUTCDate() + 1);
+      conditions.push(`pr."date" < $${idx++}`);
+      params.push(end);
+    }
     if (branchId) {
-      where.employee = { branchId };
+      conditions.push(`e."branchId" = $${idx++}`);
+      params.push(branchId);
+    }
+    if (search) {
+      conditions.push(`(LOWER(e."name") LIKE $${idx} OR e."nik" LIKE $${idx})`);
+      params.push(`%${search.toLowerCase()}%`);
+      idx++;
     }
 
-    const records = await this.prisma.pointRecord.findMany({
-      where,
-      include: {
-        employee: {
-          select: {
-            id: true,
-            name: true,
-            nik: true,
-            branchId: true,
-            branch: { select: { id: true, name: true } },
-          },
-        },
+    const where = conditions.length > 0 ? conditions.join(" AND ") : "TRUE";
+
+    const dataQuery = `
+      SELECT
+        pr."employeeId",
+        e."name",
+        e."nik",
+        COALESCE(b."name", '-') as branch,
+        COALESCE(SUM(pr."points"), 0) as "totalPoin",
+        COUNT(*) FILTER (WHERE pr."type" = 'HADIR') as hadir,
+        COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0.5) as terlambat05,
+        COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0) as terlambat0,
+        COUNT(*) FILTER (WHERE pr."type" = 'ALPHA') as alpha
+      FROM point_records pr
+      JOIN employees e ON e."id" = pr."employeeId"
+      LEFT JOIN branches b ON b."id" = e."branchId"
+      WHERE ${where}
+      GROUP BY pr."employeeId", e."name", e."nik", b."name"
+      ORDER BY "totalPoin" DESC
+      LIMIT $${idx++} OFFSET $${idx++}
+    `;
+
+    const metricsQuery = `
+      WITH agg AS (
+        SELECT
+          pr."employeeId",
+          COALESCE(SUM(pr."points"), 0) as poin,
+          COUNT(*) FILTER (WHERE pr."type" = 'HADIR') as hadir,
+          COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT') as terlambat
+        FROM point_records pr
+        JOIN employees e ON e."id" = pr."employeeId"
+        WHERE ${where}
+        GROUP BY pr."employeeId"
+      )
+      SELECT
+        COUNT(*) as "totalEmployees",
+        COALESCE(SUM(poin), 0) as "totalPoin",
+        CASE WHEN COUNT(*) > 0 THEN ROUND(SUM(poin)::numeric / COUNT(*), 1) ELSE 0 END as "avgPoin",
+        COALESCE(SUM(hadir), 0) as "totalHadir",
+        COALESCE(SUM(terlambat), 0) as "totalTerlambat"
+      FROM agg
+    `;
+
+    const [data, metricsResult, branches] = await Promise.all([
+      this.prisma.$queryRawUnsafe(dataQuery, ...params, limitNum, offset),
+      this.prisma.$queryRawUnsafe(metricsQuery, ...params),
+      this.prisma.branch.findMany({ select: { id: true, name: true } }),
+    ]);
+
+    const met = metricsResult[0] ?? {};
+    const totalItems = Number(met.totalEmployees ?? 0);
+    const totalPages = Math.ceil(totalItems / limitNum) || 1;
+
+    // Convert BigInt from raw query to Number
+    const formattedData = data.map((row) => ({
+      employeeId: row.employeeId,
+      name: row.name,
+      nik: row.nik,
+      branch: row.branch,
+      hadir: Number(row.hadir),
+      terlambat05: Number(row.terlambat05),
+      terlambat0: Number(row.terlambat0),
+      alpha: Number(row.alpha),
+      totalPoin: Number(row.totalPoin),
+    }));
+
+    return {
+      data: formattedData,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: pageNum,
+        itemsPerPage: limitNum,
       },
-    });
-
-    // Aggregate per employee
-    const employeeMap = {};
-    for (const rec of records) {
-      const empId = rec.employeeId;
-      if (!employeeMap[empId]) {
-        employeeMap[empId] = {
-          employeeId: empId,
-          name: rec.employee?.name ?? "-",
-          nik: rec.employee?.nik ?? "-",
-          branch: rec.employee?.branch?.name ?? "-",
-          hadir: 0,
-          terlambat05: 0,
-          terlambat0: 0,
-          alpha: 0,
-          totalPoin: 0,
-        };
-      }
-
-      const emp = employeeMap[empId];
-      emp.totalPoin += rec.points;
-
-      if (rec.type === "HADIR") emp.hadir++;
-      else if (rec.type === "TERLAMBAT" && rec.points === 0.5) emp.terlambat05++;
-      else if (rec.type === "TERLAMBAT" && rec.points === 0) emp.terlambat0++;
-      else if (rec.type === "ALPHA") emp.alpha++;
-    }
-
-    return Object.values(employeeMap);
+      metrics: {
+        totalPoin: Number(met.totalPoin ?? 0),
+        avgPoin: Number(met.avgPoin ?? 0),
+        totalHadir: Number(met.totalHadir ?? 0),
+        totalTerlambat: Number(met.totalTerlambat ?? 0),
+      },
+      branches,
+    };
   }
 }
 

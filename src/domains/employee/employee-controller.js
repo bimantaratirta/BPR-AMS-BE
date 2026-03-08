@@ -4,7 +4,10 @@ import EmployeeService from "./employee-service.js";
 class EmployeeController {
   async list(req, res) {
     const result = await EmployeeService.getAll({ query: req.query });
-    return successResponse(res, result.data, "Success", result.meta);
+    return successResponse(res, result.data, "Success", result.meta, {
+      stats: result.stats,
+      branches: result.branches,
+    });
   }
 
   async show(req, res) {

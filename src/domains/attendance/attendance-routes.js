@@ -15,6 +15,10 @@ class AttendanceRoutes extends BaseRoutes {
       validateCredentials(attendanceSchema.query),
       tryCatch(AttendanceController.list),
     ]);
+    this.router.get("/report-summary", [
+      AuthMiddleware.authenticate,
+      tryCatch(AttendanceController.reportSummary),
+    ]);
     this.router.get("/export-xlsx", [
       AuthMiddleware.authenticate,
       AuthMiddleware.authorize(["SUPER_ADMIN", "ADMIN"]),

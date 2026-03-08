@@ -13,9 +13,19 @@ class EmployeeService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(employeeQueryConfig, query);
-    const [data, count] = await Promise.all([
+    // Always include branch relation
+    if (!options.include?.branch) {
+      options.include = {
+        ...options.include,
+        branch: { select: { id: true, name: true, address: true, latitude: true, longitude: true, radius: true, isActive: true } },
+      };
+    }
+    const [data, count, registeredCount, totalAll, branches] = await Promise.all([
       this.prisma.employee.findMany(options),
       this.prisma.employee.count({ where: options.where }),
+      this.prisma.employee.count({ where: { deviceId: { not: null } } }),
+      this.prisma.employee.count(),
+      this.prisma.branch.findMany({ select: { id: true, name: true } }),
     ]);
 
     const page = query?.pagination?.page ?? 1;
@@ -33,6 +43,12 @@ class EmployeeService {
             itemsPerPage: Number(limit),
           }
         : null,
+      stats: {
+        total: totalAll,
+        registered: registeredCount,
+        unregistered: totalAll - registeredCount,
+      },
+      branches,
     };
   }
 

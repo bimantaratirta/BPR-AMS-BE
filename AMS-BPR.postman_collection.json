@@ -1,0 +1,1021 @@
+{
+	"info": {
+		"_postman_id": "ams-bpr-v3-collection",
+		"name": "AMS BPR Sahabat Sejati",
+		"description": "Attendance Management System - BPR Sahabat Sejati\n\nBase URL: {{baseUrl}}/api/v1\n\nAuth: JWT Bearer Token",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "employeeId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "branchId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "attendanceId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "leaveRequestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "pointRecordId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "notificationId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "appSettingsId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reportId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.data?.access_token) {",
+									"    pm.collectionVariables.set('accessToken', res.data.access_token);",
+									"    pm.collectionVariables.set('refreshToken', res.data.refresh_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@bpr.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/admin/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "admin", "login"]
+						}
+					}
+				},
+				{
+					"name": "Admin Register",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Admin Baru\",\n  \"email\": \"admin.baru@bpr.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"ADMIN\",\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/admin/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "admin", "register"]
+						}
+					}
+				},
+				{
+					"name": "Admin Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.data?.access_token) {",
+									"    pm.collectionVariables.set('accessToken', res.data.access_token);",
+									"    pm.collectionVariables.set('refreshToken', res.data.refresh_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/admin/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "admin", "refresh-token"]
+						}
+					}
+				},
+				{
+					"name": "Employee Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.data?.access_token) {",
+									"    pm.collectionVariables.set('accessToken', res.data.access_token);",
+									"    pm.collectionVariables.set('refreshToken', res.data.refresh_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"employee@bpr.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/employee/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "employee", "login"]
+						}
+					}
+				},
+				{
+					"name": "Employee Register",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nik\": \"1234567890123456\",\n  \"name\": \"Karyawan Baru\",\n  \"email\": \"karyawan.baru@bpr.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"EMPLOYEE\",\n  \"branchId\": \"{{branchId}}\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/employee/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "employee", "register"]
+						}
+					}
+				},
+				{
+					"name": "Employee Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.data?.access_token) {",
+									"    pm.collectionVariables.set('accessToken', res.data.access_token);",
+									"    pm.collectionVariables.set('refreshToken', res.data.refresh_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/employee/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "employee", "refresh-token"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Summary",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dashboard/summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dashboard", "summary"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Branch",
+			"item": [
+				{
+					"name": "List Branches",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/branch?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "branch"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "get_all", "value": "true", "disabled": true },
+								{ "key": "filter[isActive]", "value": "true", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Branch",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/branch/{{branchId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "branch", "{{branchId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Branch",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Kantor Cabang Baru\",\n  \"address\": \"Jl. Contoh No. 123, Jakarta\",\n  \"latitude\": -6.2088,\n  \"longitude\": 106.8456,\n  \"radius\": 100,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/branch",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "branch"]
+						}
+					}
+				},
+				{
+					"name": "Update Branch",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Kantor Cabang Updated\",\n  \"address\": \"Jl. Update No. 456, Jakarta\",\n  \"radius\": 150\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/branch/{{branchId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "branch", "{{branchId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Branch",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/branch/{{branchId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "branch", "{{branchId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "List Employees",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/employees?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "employees"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "get_all", "value": "true", "disabled": true },
+								{ "key": "filter[isActive]", "value": "true", "disabled": true },
+								{ "key": "filter[branchId]", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Employee",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "employees", "{{employeeId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nik\": \"1234567890123456\",\n  \"name\": \"Karyawan Baru\",\n  \"email\": \"karyawan.baru@bpr.com\",\n  \"password\": \"password123\",\n  \"branchId\": \"{{branchId}}\",\n  \"phone\": \"081234567890\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "employees"]
+						}
+					}
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "name", "value": "Nama Updated", "type": "text" },
+								{ "key": "phone", "value": "081234567891", "type": "text" },
+								{ "key": "isActive", "value": "true", "type": "text" },
+								{ "key": "avatar", "type": "file", "src": "", "disabled": true }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "employees", "{{employeeId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "employees", "{{employeeId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "List Admins",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admins?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "admins"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "get_all", "value": "true", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Admin",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admins/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "admins", "{{adminId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Admin Baru\",\n  \"email\": \"admin.baru@bpr.com\",\n  \"password\": \"password123\",\n  \"role\": \"ADMIN\",\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admins",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "admins"]
+						}
+					}
+				},
+				{
+					"name": "Update Admin",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Admin Updated\",\n  \"status\": \"ACTIVE\",\n  \"role\": \"ADMIN\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admins/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "admins", "{{adminId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Admin",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admins/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "admins", "{{adminId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Attendance",
+			"item": [
+				{
+					"name": "List Attendances",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "get_all", "value": "true", "disabled": true },
+								{ "key": "filter[status]", "value": "HADIR", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Attendance",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/{{attendanceId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "{{attendanceId}}"]
+						}
+					}
+				},
+				{
+					"name": "Check In",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "date", "value": "2026-03-09T00:00:00.000Z", "type": "text" },
+								{ "key": "checkInTime", "value": "2026-03-09T01:00:00.000Z", "type": "text" },
+								{ "key": "checkInLat", "value": "-6.2088", "type": "text" },
+								{ "key": "checkInLong", "value": "106.8456", "type": "text" },
+								{ "key": "checkInInsideRadius", "value": "true", "type": "text" },
+								{ "key": "status", "value": "HADIR", "type": "text" },
+								{ "key": "points", "value": "1", "type": "text" },
+								{ "key": "isAutoGenerated", "value": "false", "type": "text" },
+								{ "key": "employeeId", "value": "{{employeeId}}", "type": "text" },
+								{ "key": "branchId", "value": "{{branchId}}", "type": "text" },
+								{ "key": "checkInPhoto", "type": "file", "src": "" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/checkin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "checkin"]
+						}
+					}
+				},
+				{
+					"name": "Check Out",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"checkOutTime\": \"2026-03-09T10:00:00.000Z\",\n  \"checkOutLat\": -6.2088,\n  \"checkOutLong\": 106.8456,\n  \"durationMinutes\": 480\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/checkout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "checkout"]
+						}
+					}
+				},
+				{
+					"name": "Auto Generate Absent",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/auto-generate-absent-employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "auto-generate-absent-employees"]
+						}
+					}
+				},
+				{
+					"name": "Report Summary",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/report-summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "report-summary"]
+						}
+					}
+				},
+				{
+					"name": "Export XLSX",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/export-xlsx",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "export-xlsx"]
+						}
+					}
+				},
+				{
+					"name": "Update Attendance",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"HADIR\",\n  \"points\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/{{attendanceId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "{{attendanceId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Attendance",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attendances/{{attendanceId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "attendances", "{{attendanceId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Leave Request",
+			"item": [
+				{
+					"name": "List Leave Requests",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "get_all", "value": "true", "disabled": true },
+								{ "key": "filter[status]", "value": "PENDING", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Leave Request",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests/{{leaveRequestId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests", "{{leaveRequestId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Leave Request",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "startDate", "value": "2026-03-10T00:00:00.000Z", "type": "text" },
+								{ "key": "endDate", "value": "2026-03-11T00:00:00.000Z", "type": "text" },
+								{ "key": "reason", "value": "Keperluan keluarga yang mendesak", "type": "text" },
+								{ "key": "type", "value": "IZIN_CUTI", "type": "text" },
+								{ "key": "employeeId", "value": "{{employeeId}}", "type": "text" },
+								{ "key": "attachment", "type": "file", "src": "" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests"]
+						}
+					}
+				},
+				{
+					"name": "Approve Leave Request",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"APPROVED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests/{{leaveRequestId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests", "{{leaveRequestId}}"]
+						}
+					}
+				},
+				{
+					"name": "Reject Leave Request",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"REJECTED\",\n  \"rejectReason\": \"Tidak memenuhi syarat pengajuan cuti\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests/{{leaveRequestId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests", "{{leaveRequestId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Leave Request",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/leave-requests/{{leaveRequestId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "leave-requests", "{{leaveRequestId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Point Record",
+			"item": [
+				{
+					"name": "List Point Records",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/point-records",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "point-records"]
+						}
+					}
+				},
+				{
+					"name": "Point Summary",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/point-records/summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "point-records", "summary"]
+						}
+					}
+				},
+				{
+					"name": "Get Point Record",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/point-records/{{pointRecordId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "point-records", "{{pointRecordId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "List Notifications",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "notifications"]
+						}
+					}
+				},
+				{
+					"name": "Unread Count",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/unread-count",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "notifications", "unread-count"]
+						}
+					}
+				},
+				{
+					"name": "Mark As Read",
+					"request": {
+						"method": "PUT",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/{{notificationId}}/read",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "notifications", "{{notificationId}}", "read"]
+						}
+					}
+				},
+				{
+					"name": "Mark All As Read",
+					"request": {
+						"method": "PUT",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/read-all",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "notifications", "read-all"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "App Settings",
+			"item": [
+				{
+					"name": "List Settings",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/app-settings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "app-settings"]
+						}
+					}
+				},
+				{
+					"name": "Get Setting",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/app-settings/{{appSettingsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "app-settings", "{{appSettingsId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Setting",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "defaultCheckIn", "value": "08:00", "type": "text" },
+								{ "key": "halfPointEnd", "value": "08:30", "type": "text" },
+								{ "key": "defaultRadius", "value": "100", "type": "text" },
+								{ "key": "companyLogo", "type": "file", "src": "", "disabled": true }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/app-settings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "app-settings"]
+						}
+					}
+				},
+				{
+					"name": "Update Setting",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "defaultCheckIn", "value": "08:00", "type": "text" },
+								{ "key": "halfPointEnd", "value": "08:30", "type": "text" },
+								{ "key": "defaultRadius", "value": "100", "type": "text" },
+								{ "key": "companyLogo", "type": "file", "src": "", "disabled": true }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/app-settings/{{appSettingsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "app-settings", "{{appSettingsId}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Setting",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/app-settings/{{appSettingsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "app-settings", "{{appSettingsId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "List Reports",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/report?pagination[page]=1&pagination[limit]=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "report"],
+							"query": [
+								{ "key": "pagination[page]", "value": "1" },
+								{ "key": "pagination[limit]", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Report",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/report/{{reportId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "report", "{{reportId}}"]
+						}
+					}
+				},
+				{
+					"name": "Create Report",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "customer_id", "value": "", "type": "text" },
+								{ "key": "status", "value": "GOOD", "type": "text" },
+								{ "key": "images", "type": "file", "src": "", "disabled": true }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/report",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "report"]
+						}
+					}
+				},
+				{
+					"name": "Delete Report",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/report/{{reportId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "report", "{{reportId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Generate Report",
+			"item": [
+				{
+					"name": "Generate XLSX",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/generate-report/generate-xlsx",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "generate-report", "generate-xlsx"]
+						}
+					}
+				},
+				{
+					"name": "Generate XLSX Direksi",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/generate-report/generate-xlsx-direksi",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "generate-report", "generate-xlsx-direksi"]
+						}
+					}
+				},
+				{
+					"name": "List All Reports (Direksi)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/generate-report/list-dereksi",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "generate-report", "list-dereksi"]
+						}
+					}
+				},
+				{
+					"name": "List Reports By Role",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/generate-report/list",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "generate-report", "list"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

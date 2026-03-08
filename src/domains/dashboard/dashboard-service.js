@@ -32,12 +32,12 @@ class DashboardService {
     const monday = new Date(todayStart);
     monday.setUTCDate(monday.getUTCDate() + mondayOffset);
 
-    const saturday = new Date(monday);
-    saturday.setUTCDate(saturday.getUTCDate() + 6);
+    const sunday = new Date(monday);
+    sunday.setUTCDate(sunday.getUTCDate() + 6);
 
     const weekAttendances = await this.prisma.attendance.findMany({
       where: {
-        date: { gte: monday, lt: saturday },
+        date: { gte: monday, lt: sunday },
       },
       select: { date: true, status: true },
     });

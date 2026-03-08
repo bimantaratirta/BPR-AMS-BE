@@ -4,7 +4,10 @@ import AttendanceService from "./attendance-service.js";
 class AttendanceController {
   list = async (req, res) => {
     const result = await AttendanceService.getAll({ query: req.query });
-    return successResponse(res, result.data, "Success", result.meta);
+    return successResponse(res, result.data, "Success", result.meta, {
+      stats: result.stats,
+      branches: result.branches,
+    });
   };
 
   async show(req, res) {
@@ -29,6 +32,14 @@ class AttendanceController {
       checkOut,
       "Attendance checked out successfully",
     );
+  }
+
+  async reportSummary(req, res) {
+    const { startDate, endDate, branchId } = req.query;
+    const result = await AttendanceService.getReportSummary({ startDate, endDate, branchId });
+    return successResponse(res, result.data, "Success", null, {
+      branches: result.branches,
+    });
   }
 
   async exportXlsx(req, res) {
