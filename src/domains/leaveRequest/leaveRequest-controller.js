@@ -8,7 +8,9 @@ import {
 class LeaveRequestController {
   list = async (req, res) => {
     const result = await LeaveRequestService.getAll({ query: req.query });
-    return successResponse(res, result.data, "Success", result.meta);
+    return successResponse(res, result.data, "Success", result.meta, {
+      counts: result.counts,
+    });
   };
 
   show = async (req, res) => {

@@ -65,16 +65,6 @@ const leaveRequestSchema = {
 
   update: Joi.object({
     status: Joi.string().valid("APPROVED", "REJECTED").required(),
-    approveById: Joi.string().uuid().required().messages({
-      "string.base": "approveById must be a string",
-      "string.guid": "approveById must be a valid UUID",
-      "any.required": "approveById is required",
-    }),
-    approveAt: Joi.date().iso().required().messages({
-      "date.base": "approveAt must be a valid date",
-      "date.format": "approveAt must be in ISO 8601 format",
-      "any.required": "approveAt is required",
-    }),
     rejectReason: Joi.string().min(5).max(255).optional(),
   }),
 };

@@ -13,9 +13,19 @@ class LeaveRequestService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(leaveRequestQueryConfig, query);
-    const [data, count] = await Promise.all([
+    // Always include employee relation
+    if (!options.include?.employee) {
+      options.include = {
+        ...options.include,
+        employee: { select: { id: true, name: true, nik: true, phone: true, role: true, avatar: true } },
+      };
+    }
+    const [data, count, pendingCount, approvedCount, rejectedCount] = await Promise.all([
       this.prisma.leaveRequest.findMany(options),
       this.prisma.leaveRequest.count({ where: options.where }),
+      this.prisma.leaveRequest.count({ where: { status: "PENDING" } }),
+      this.prisma.leaveRequest.count({ where: { status: "APPROVED" } }),
+      this.prisma.leaveRequest.count({ where: { status: "REJECTED" } }),
     ]);
 
     const page = query?.pagination?.page ?? 1;
@@ -33,6 +43,11 @@ class LeaveRequestService {
             itemsPerPage: Number(limit),
           }
         : null,
+      counts: {
+        PENDING: pendingCount,
+        APPROVED: approvedCount,
+        REJECTED: rejectedCount,
+      },
     };
   }
 
@@ -171,7 +186,7 @@ class LeaveRequestService {
     };
 
     // 1️⃣ Cek Role
-    if (currentUser.userType !== "ADMIN") {
+    if (!["ADMIN", "SUPER_ADMIN"].includes(currentUser.userType)) {
       throw BaseError.forbidden(
         "Only admin can approve or reject leave request",
       );
