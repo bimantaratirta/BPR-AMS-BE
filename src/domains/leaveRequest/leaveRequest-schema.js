@@ -25,6 +25,11 @@ const leaveRequestSchema = {
 
     filter: Joi.object({
       status: Joi.string().valid("PENDING", "APPROVED", "REJECTED").optional(),
+      type: Joi.string()
+        .valid("IZIN_CUTI", "IZIN_SAKIT", "IZIN_SETENGAH_HARI")
+        .optional(),
+      employeeId: Joi.string().uuid().optional(),
+      approvedById: Joi.string().uuid().optional(),
     }),
 
     order_by: Joi.array()

@@ -1,6 +1,6 @@
 const leaveRequestQueryConfig = {
   searchableFields: ["employee.name", "employee.nik", "approvedBy.name"],
-  filterableFields: ["status", "type"],
+  filterableFields: ["status", "type", "employeeId", "approvedById"],
   orderableFields: ["createdAt", "updatedAt"],
   relations: { employee: true, approvedBy: true },
   dateFields: { createdAt: "createdAt", updatedAt: "updatedAt" },
