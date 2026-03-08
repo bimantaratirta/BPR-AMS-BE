@@ -85,6 +85,8 @@ class AttendanceService {
   async getAll({ query } = {}) {
     const options = buildQueryOptions(attendanceQueryConfig, query);
 
+    console.log(query);
+
     // Convert date string filter to DateTime range (Prisma DateTime requires ISO-8601)
     if (options.where.date && typeof options.where.date === "string") {
       const dateStart = new Date(options.where.date + "T00:00:00.000Z");
@@ -93,10 +95,30 @@ class AttendanceService {
       options.where.date = { gte: dateStart, lt: dateEnd };
     }
 
+    if (query?.filter?.month) {
+      const [year, month] = query.filter.month.split("-").map(Number);
+
+      const startDate = new Date(Date.UTC(year, month - 1, 1));
+      const endDate = new Date(Date.UTC(year, month, 1));
+
+      options.where.date = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
     // Always include employee and branch relations
     options.include = {
       employee: {
-        select: { id: true, name: true, nik: true, phone: true, role: true, avatar: true, branch: { select: { id: true, name: true } } },
+        select: {
+          id: true,
+          name: true,
+          nik: true,
+          phone: true,
+          role: true,
+          avatar: true,
+          branch: { select: { id: true, name: true } },
+        },
       },
       branch: { select: { id: true, name: true } },
     };
@@ -115,7 +137,7 @@ class AttendanceService {
       this.prisma.branch.findMany({ select: { id: true, name: true } }),
     ]);
 
-    console.log(options);
+    // console.log(options);
 
     const page = query?.pagination?.page ?? 1;
     const limit = query?.pagination?.limit ?? 10;
@@ -130,7 +152,13 @@ class AttendanceService {
     const stats = {
       hadir: statsMap["HADIR"] ?? 0,
       terlambat: statsMap["TERLAMBAT"] ?? 0,
-      izin: (statsMap["IZIN_CUTI"] ?? 0) + (statsMap["IZIN_SAKIT"] ?? 0) + (statsMap["IZIN_SETENGAH_HARI"] ?? 0) + (statsMap["CUTI"] ?? 0) + (statsMap["SAKIT"] ?? 0) + (statsMap["SETENGAH_HARI"] ?? 0),
+      izin:
+        (statsMap["IZIN_CUTI"] ?? 0) +
+        (statsMap["IZIN_SAKIT"] ?? 0) +
+        (statsMap["IZIN_SETENGAH_HARI"] ?? 0) +
+        (statsMap["CUTI"] ?? 0) +
+        (statsMap["SAKIT"] ?? 0) +
+        (statsMap["SETENGAH_HARI"] ?? 0),
       alpha: statsMap["ALPHA"] ?? 0,
     };
 
@@ -563,7 +591,11 @@ class AttendanceService {
         where,
         include: {
           employee: {
-            select: { name: true, nik: true, branch: { select: { name: true } } },
+            select: {
+              name: true,
+              nik: true,
+              branch: { select: { name: true } },
+            },
           },
         },
         orderBy: [{ employee: { name: "asc" } }, { date: "asc" }],
@@ -579,7 +611,11 @@ class AttendanceService {
           name: att.employee?.name ?? "-",
           nik: att.employee?.nik ?? "-",
           branch: att.employee?.branch?.name ?? "-",
-          hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0,
+          hadir: 0,
+          terlambat: 0,
+          izin: 0,
+          alpha: 0,
+          poin: 0,
         };
       }
       const row = empMap[empId];
@@ -627,7 +663,11 @@ class AttendanceService {
           name: att.employee?.name ?? "-",
           nik: att.employee?.nik ?? "-",
           branch: att.employee?.branch?.name ?? "-",
-          hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0,
+          hadir: 0,
+          terlambat: 0,
+          izin: 0,
+          alpha: 0,
+          poin: 0,
         };
       }
       const row = empMap[empId];
@@ -656,7 +696,11 @@ class AttendanceService {
 
     // Style header
     sheet.getRow(1).font = { bold: true };
-    sheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE2E8F0" } };
+    sheet.getRow(1).fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFE2E8F0" },
+    };
 
     for (const row of rows) {
       sheet.addRow(row);
@@ -664,10 +708,21 @@ class AttendanceService {
 
     // Totals
     const totals = rows.reduce(
-      (acc, r) => ({ hadir: acc.hadir + r.hadir, terlambat: acc.terlambat + r.terlambat, izin: acc.izin + r.izin, alpha: acc.alpha + r.alpha, poin: acc.poin + r.poin }),
+      (acc, r) => ({
+        hadir: acc.hadir + r.hadir,
+        terlambat: acc.terlambat + r.terlambat,
+        izin: acc.izin + r.izin,
+        alpha: acc.alpha + r.alpha,
+        poin: acc.poin + r.poin,
+      }),
       { hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0 },
     );
-    const totalRow = sheet.addRow({ name: "TOTAL", nik: "", branch: "", ...totals });
+    const totalRow = sheet.addRow({
+      name: "TOTAL",
+      nik: "",
+      branch: "",
+      ...totals,
+    });
     totalRow.font = { bold: true };
 
     return workbook.xlsx.writeBuffer();
