@@ -17,7 +17,7 @@ class BranchRoutes extends BaseRoutes {
       tryCatch(BranchController.show),
     ]);
     this.router.post("/", [
-      AuthMiddleware.authenticate,
+      // AuthMiddleware.authenticate,
       validateCredentials(branchSchema.create),
       tryCatch(BranchController.create),
     ]);

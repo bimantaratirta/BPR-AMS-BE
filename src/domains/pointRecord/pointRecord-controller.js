@@ -21,9 +21,11 @@ class PointrecordController {
   //     throw new Error("Method not implemented");
   // }
 
-  // async delete() {
-  //     throw new Error("Method not implemented");
-  // }
+  async delete(req, res) {
+    const { id } = req.params;
+    const result = await PointrecordService.delete(id);
+    return successResponse(res, result, "Point record deleted successfully");
+  }
 }
 
 export default new PointrecordController();

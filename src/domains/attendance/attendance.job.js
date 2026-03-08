@@ -7,7 +7,6 @@ class AttendanceJob {
       "0 16 * * *",
       async () => {
         console.log("Running auto absent generation...");
-
         try {
           await attendanceService.generateAutoAbsent();
           console.log("Auto absent success");
@@ -19,12 +18,10 @@ class AttendanceJob {
         timezone: "UTC",
       },
     );
-
     cron.schedule(
       "0 16 * * *",
       async () => {
         console.log("Running auto checkout...");
-
         try {
           await attendanceService.generateAutoCheckout();
           console.log("Auto checkout success");

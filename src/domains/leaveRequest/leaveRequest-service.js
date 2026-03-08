@@ -88,43 +88,11 @@ class LeaveRequestService {
     }
 
     return this.prisma.$transaction(async (tx) => {
-      // 1) Cek: sudah pernah membuat leave request hari ini?
-      // Pakai WIB: Asia/Jakarta (paling aman pakai luxon/date-fns-tz)
-      // Kalau kamu belum pakai library timezone, minimal bikin boundary "today" dari server timezone.
-      const now = new Date();
-
-      // Boundary start/end hari ini (berdasarkan timezone server).
-      // Jika server kamu UTC, ini akan salah untuk WIB.
-      const startOfToday = new Date(now);
-      startOfToday.setHours(0, 0, 0, 0);
-
-      const endOfToday = new Date(now);
-      endOfToday.setHours(23, 59, 59, 999);
-
-      const alreadyCreatedToday = await tx.leaveRequest.findFirst({
-        where: {
-          employeeId: data.employeeId,
-          createdAt: {
-            gte: startOfToday,
-            lte: endOfToday,
-          },
-        },
-        select: { id: true },
-      });
-
-      if (alreadyCreatedToday) {
-        fail(
-          "You already created a leave request today. Please try again tomorrow.",
-          "leaveRequest",
-        );
-        throw new Joi.ValidationError(validation, stack);
-      }
-
       // 2) Cek: overlap tanggal (yang kamu sudah punya)
       const existingLeaveRequest = await tx.leaveRequest.findFirst({
         where: {
-          employeeId: data.employeeId,
-          OR: [
+          employeeId: currentUser.id,
+          AND: [
             {
               startDate: { lte: data.endDate },
               endDate: { gte: data.startDate },
@@ -148,7 +116,7 @@ class LeaveRequestService {
           endDate: data.endDate,
           reason: data.reason,
           attachment: uploaded[0], // atau pakai uploaded?.key/url kalau itu yang kamu mau
-          employeeId: data.employeeId,
+          employeeId: currentUser.id,
         },
       });
 

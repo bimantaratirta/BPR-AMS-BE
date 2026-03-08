@@ -56,6 +56,22 @@ class PointRecordService {
 
     return pointRecord;
   }
+
+  async delete(id) {
+    const pointRecord = await this.prisma.pointRecord.findUnique({
+      where: { id },
+    });
+
+    if (!pointRecord) {
+      throw BaseError.notFound("Point record not found");
+    }
+
+    await this.prisma.pointRecord.delete({
+      where: { id },
+    });
+
+    return { id };
+  }
 }
 
 export default new PointRecordService();

@@ -18,7 +18,10 @@ class PointrecordRoutes extends BaseRoutes {
     ]);
     // this.router.post("/", [tryCatch(PointrecordController.create)]);
     // this.router.put("/:id", [tryCatch(PointrecordController.update)]);
-    // this.router.delete("/:id", [tryCatch(PointrecordController.delete)]);
+    this.router.delete("/:id", [
+      AuthMiddleware.authenticate,
+      tryCatch(PointrecordController.delete),
+    ]);
   }
 }
 
