@@ -1,1 +1,12 @@
-git
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+dist
+output
+.DS_Store
+*.log
+.idea
+.vscode

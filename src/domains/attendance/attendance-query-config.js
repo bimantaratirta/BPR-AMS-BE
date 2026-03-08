@@ -1,7 +1,7 @@
 const attendanceQueryConfig = {
-  searchableFields: ["name"],
-  filterableFields: ["isActive", "status"],
-  orderableFields: ["createdAt", "updatedAt"],
+  searchableFields: ["employee.name", "employee.nik"],
+  filterableFields: ["isActive", "status", "date", "branchId"],
+  orderableFields: ["createdAt", "updatedAt", "date"],
   relations: { employee: true, branch: true },
   dateFields: { createdAt: "createdAt", updatedAt: "updatedAt" },
   select: {

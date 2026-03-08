@@ -12,11 +12,13 @@ import logger from "./utils/logger.js";
 import multer from "multer";
 import path from "path";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 
 import BaseError from "./base_classes/base-error.js";
 import router from "./routes.js";
 import corsMiddleware from "./middlewares/cors-middleware.js";
 import attendanceJob from "./domains/attendance/attendance.job.js";
+import swaggerSpec from "./swagger.js";
 
 class ExpressApplication {
   app;
@@ -112,6 +114,15 @@ class ExpressApplication {
         message: "Hello World",
       });
     });
+
+    this.app.use(
+      "/api-docs",
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerSpec, {
+        customSiteTitle: "AMS API Docs",
+        swaggerOptions: { persistAuthorization: true },
+      }),
+    );
 
     this.app.use("/api/", router);
 

@@ -10,7 +10,8 @@ export function successResponse(
   res,
   data = "Request successful",
   message = "Success",
-  pagination = null
+  pagination = null,
+  extras = null
 ) {
   return res.status(statusCodes.OK.code).json({
     code: statusCodes.OK.code,
@@ -19,6 +20,7 @@ export function successResponse(
     pagination: pagination,
     data: data,
     errors: null,
+    ...(extras && typeof extras === "object" ? extras : {}),
   });
 }
 

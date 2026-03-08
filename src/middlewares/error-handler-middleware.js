@@ -60,16 +60,34 @@ export const errorHandler = (err, req, res, _next) => {
     });
   }
 
-  if (err instanceof BaseError) {
-    return res.status(err.statusCode).json({
-      code: err.statusCode, // e.g. "BAD_REQUEST"
-      status: err.errorCode, // e.g. 400
-      message: err.message, // e.g. "Bad Request"
+  if (err.code === 'P2002') {
+    const field = err.meta?.target?.[0] ?? 'field';
+    const labels = { nik: 'NIK', email: 'Email', name: 'Nama' };
+    const label = labels[field] ?? field;
+    return res.status(409).json({
+      code: 409,
+      status: 'CONFLICT',
+      message: `${label} sudah terdaftar.`,
       pagination: null,
       data: null,
       errors: {
-        name: err.errorName, // e.g. "Bad Request"
-        message: err.message, // custom message
+        name: 'DuplicateError',
+        message: `${label} sudah terdaftar.`,
+        validation: { [field]: [`${label} sudah terdaftar.`] },
+      },
+    });
+  }
+
+  if (err instanceof BaseError) {
+    return res.status(err.statusCode).json({
+      code: err.statusCode,
+      status: err.errorCode,
+      message: err.message,
+      pagination: null,
+      data: null,
+      errors: {
+        name: err.errorName,
+        message: err.message,
         validation: null,
       },
     });

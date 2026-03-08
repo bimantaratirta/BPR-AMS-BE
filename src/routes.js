@@ -9,6 +9,8 @@ import AttandeceRoutes from "./domains/attendance/attendance-routes.js";
 import PointRecordRoutes from "./domains/pointRecord/pointRecord-routes.js";
 import EmployeeRoutes from "./domains/employee/employee-routes.js";
 import AdminRoutes from "./domains/admin/admin-routes.js";
+import DashboardRoutes from "./domains/dashboard/dashboard-routes.js";
+import NotificationRoutes from "./domains/notification/notification-routes.js";
 
 const router = express.Router();
 
@@ -44,6 +46,14 @@ const appsRoutesV1 = [
   {
     path: "/admins",
     route: AdminRoutes,
+  },
+  {
+    path: "/dashboard",
+    route: DashboardRoutes,
+  },
+  {
+    path: "/notifications",
+    route: NotificationRoutes,
   },
 ];
 

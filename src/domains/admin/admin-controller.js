@@ -14,7 +14,8 @@ class AdminController {
   }
 
   async create(req, res) {
-    throw new Error("Method not implemented");
+    const created = await AdminService.create(req.body);
+    return successResponse(res, created, "Admin created successfully");
   }
 
   async update(req, res) {
@@ -24,7 +25,9 @@ class AdminController {
   }
 
   async delete(req, res) {
-    throw new Error("Method not implemented");
+    const { id } = req.params;
+    const deleted = await AdminService.delete(id);
+    return successResponse(res, deleted, "Admin deleted successfully");
   }
 }
 

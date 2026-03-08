@@ -4,7 +4,10 @@ import EmployeeService from "./employee-service.js";
 class EmployeeController {
   async list(req, res) {
     const result = await EmployeeService.getAll({ query: req.query });
-    return successResponse(res, result.data, "Success", result.meta);
+    return successResponse(res, result.data, "Success", result.meta, {
+      stats: result.stats,
+      branches: result.branches,
+    });
   }
 
   async show(req, res) {
@@ -26,7 +29,9 @@ class EmployeeController {
   }
 
   async delete(req, res) {
-    throw new Error("Method not implemented");
+    const { id } = req.params;
+    const deleted = await EmployeeService.delete(id);
+    return successResponse(res, deleted, "Employee deleted successfully");
   }
 }
 

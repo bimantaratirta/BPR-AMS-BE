@@ -45,6 +45,45 @@ class AdminService {
     return admin;
   }
 
+  async create(data) {
+    const existingEmail = await this.prisma.admin.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingEmail) {
+      throw BaseError.badRequest("Email already in use");
+    }
+
+    const hashedPassword = await hashPassword(data.password);
+
+    return this.prisma.admin.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        role: data.role || "ADMIN",
+        status: data.status || "ACTIVE",
+      },
+    });
+  }
+
+  async delete(id) {
+    return this.prisma.$transaction(async (tx) => {
+      const admin = await tx.admin.findUnique({ where: { id } });
+
+      if (!admin) {
+        throw BaseError.notFound("Admin not found");
+      }
+
+      if (admin.role === "SUPER_ADMIN") {
+        throw BaseError.forbidden("Cannot delete SUPER_ADMIN account");
+      }
+
+      const deleted = await tx.admin.delete({ where: { id } });
+      return deleted;
+    });
+  }
+
   async update(id, data) {
     return this.prisma.$transaction(async (tx) => {
       const admin = await tx.admin.findUnique({

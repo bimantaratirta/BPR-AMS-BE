@@ -2,7 +2,8 @@ import cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://laskara.dev.cciunitel.com",
+  "http://localhost:3001",
+  "https://bpr.ashakita.net",
 ];
 
 const corsMiddleware = cors({

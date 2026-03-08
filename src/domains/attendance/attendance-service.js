@@ -83,11 +83,36 @@ class AttendanceService {
   }
 
   async getAll({ query } = {}) {
-    // Implement logic to retrieve all attendance records based on query parameters
     const options = buildQueryOptions(attendanceQueryConfig, query);
-    const [data, count] = await Promise.all([
+
+    // Convert date string filter to DateTime range (Prisma DateTime requires ISO-8601)
+    if (options.where.date && typeof options.where.date === "string") {
+      const dateStart = new Date(options.where.date + "T00:00:00.000Z");
+      const dateEnd = new Date(options.where.date + "T00:00:00.000Z");
+      dateEnd.setUTCDate(dateEnd.getUTCDate() + 1);
+      options.where.date = { gte: dateStart, lt: dateEnd };
+    }
+
+    // Always include employee and branch relations
+    options.include = {
+      employee: {
+        select: { id: true, name: true, nik: true, phone: true, role: true, avatar: true, branch: { select: { id: true, name: true } } },
+      },
+      branch: { select: { id: true, name: true } },
+    };
+
+    // Build status count where clause (same filters minus pagination)
+    const statusWhere = { ...options.where };
+
+    const [data, count, statusCounts, branches] = await Promise.all([
       this.prisma.attendance.findMany(options),
       this.prisma.attendance.count({ where: options.where }),
+      this.prisma.attendance.groupBy({
+        by: ["status"],
+        where: statusWhere,
+        _count: true,
+      }),
+      this.prisma.branch.findMany({ select: { id: true, name: true } }),
     ]);
 
     console.log(options);
@@ -96,6 +121,18 @@ class AttendanceService {
     const limit = query?.pagination?.limit ?? 10;
     const hasPagination = !!(query?.pagination && !query?.get_all);
     const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
+
+    // Build stats from groupBy
+    const statsMap = {};
+    for (const row of statusCounts) {
+      statsMap[row.status] = row._count;
+    }
+    const stats = {
+      hadir: statsMap["HADIR"] ?? 0,
+      terlambat: statsMap["TERLAMBAT"] ?? 0,
+      izin: (statsMap["IZIN_CUTI"] ?? 0) + (statsMap["IZIN_SAKIT"] ?? 0) + (statsMap["IZIN_SETENGAH_HARI"] ?? 0) + (statsMap["CUTI"] ?? 0) + (statsMap["SAKIT"] ?? 0) + (statsMap["SETENGAH_HARI"] ?? 0),
+      alpha: statsMap["ALPHA"] ?? 0,
+    };
 
     return {
       data,
@@ -107,6 +144,8 @@ class AttendanceService {
             itemsPerPage: Number(limit),
           }
         : null,
+      stats,
+      branches,
     };
   }
 
@@ -504,6 +543,167 @@ class AttendanceService {
         },
       });
     }
+  }
+
+  async getReportSummary({ startDate, endDate, branchId } = {}) {
+    const where = {};
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) where.date.gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setUTCDate(end.getUTCDate() + 1);
+        where.date.lt = end;
+      }
+    }
+    if (branchId) where.branchId = branchId;
+
+    const [attendances, branches] = await Promise.all([
+      this.prisma.attendance.findMany({
+        where,
+        include: {
+          employee: {
+            select: { name: true, nik: true, branch: { select: { name: true } } },
+          },
+        },
+        orderBy: [{ employee: { name: "asc" } }, { date: "asc" }],
+      }),
+      this.prisma.branch.findMany({ select: { id: true, name: true } }),
+    ]);
+
+    const empMap = {};
+    for (const att of attendances) {
+      const empId = att.employeeId;
+      if (!empMap[empId]) {
+        empMap[empId] = {
+          name: att.employee?.name ?? "-",
+          nik: att.employee?.nik ?? "-",
+          branch: att.employee?.branch?.name ?? "-",
+          hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0,
+        };
+      }
+      const row = empMap[empId];
+      row.poin += att.points ?? 0;
+      if (att.status === "HADIR") row.hadir++;
+      else if (att.status === "TERLAMBAT") row.terlambat++;
+      else if (att.status === "ALPHA") row.alpha++;
+      else row.izin++;
+    }
+
+    return { data: Object.values(empMap), branches };
+  }
+
+  async exportXlsx({ startDate, endDate, branchId } = {}) {
+    const ExcelJS = (await import("exceljs")).default;
+
+    const where = {};
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) where.date.gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setUTCDate(end.getUTCDate() + 1);
+        where.date.lt = end;
+      }
+    }
+    if (branchId) where.branchId = branchId;
+
+    const attendances = await this.prisma.attendance.findMany({
+      where,
+      include: {
+        employee: {
+          select: { name: true, nik: true, branch: { select: { name: true } } },
+        },
+      },
+      orderBy: [{ employee: { name: "asc" } }, { date: "asc" }],
+    });
+
+    // Aggregate per employee
+    const empMap = {};
+    for (const att of attendances) {
+      const empId = att.employeeId;
+      if (!empMap[empId]) {
+        empMap[empId] = {
+          name: att.employee?.name ?? "-",
+          nik: att.employee?.nik ?? "-",
+          branch: att.employee?.branch?.name ?? "-",
+          hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0,
+        };
+      }
+      const row = empMap[empId];
+      row.poin += att.points ?? 0;
+      if (att.status === "HADIR") row.hadir++;
+      else if (att.status === "TERLAMBAT") row.terlambat++;
+      else if (att.status === "ALPHA") row.alpha++;
+      else row.izin++;
+    }
+
+    const rows = Object.values(empMap);
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Laporan Absensi");
+
+    sheet.columns = [
+      { header: "Nama Karyawan", key: "name", width: 25 },
+      { header: "NIK", key: "nik", width: 15 },
+      { header: "Cabang", key: "branch", width: 20 },
+      { header: "Hadir", key: "hadir", width: 10 },
+      { header: "Terlambat", key: "terlambat", width: 12 },
+      { header: "Izin", key: "izin", width: 10 },
+      { header: "Alpha", key: "alpha", width: 10 },
+      { header: "Total Poin", key: "poin", width: 12 },
+    ];
+
+    // Style header
+    sheet.getRow(1).font = { bold: true };
+    sheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE2E8F0" } };
+
+    for (const row of rows) {
+      sheet.addRow(row);
+    }
+
+    // Totals
+    const totals = rows.reduce(
+      (acc, r) => ({ hadir: acc.hadir + r.hadir, terlambat: acc.terlambat + r.terlambat, izin: acc.izin + r.izin, alpha: acc.alpha + r.alpha, poin: acc.poin + r.poin }),
+      { hadir: 0, terlambat: 0, izin: 0, alpha: 0, poin: 0 },
+    );
+    const totalRow = sheet.addRow({ name: "TOTAL", nik: "", branch: "", ...totals });
+    totalRow.font = { bold: true };
+
+    return workbook.xlsx.writeBuffer();
+  }
+
+  async update(id, data) {
+    const allowedFields = ["status", "points", "checkInTime", "checkOutTime"];
+    const updateData = {};
+
+    for (const key of allowedFields) {
+      if (data[key] !== undefined) {
+        updateData[key] = data[key];
+      }
+    }
+
+    if (updateData.checkInTime) {
+      updateData.checkInTime = new Date(updateData.checkInTime);
+    }
+    if (updateData.checkOutTime) {
+      updateData.checkOutTime = new Date(updateData.checkOutTime);
+    }
+    if (updateData.points !== undefined) {
+      updateData.points = parseFloat(updateData.points);
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const attendance = await tx.attendance.findUnique({ where: { id } });
+      if (!attendance) {
+        throw BaseError.notFound("Attendance record not found");
+      }
+
+      return tx.attendance.update({
+        where: { id },
+        data: updateData,
+      });
+    });
   }
 
   async delete(id) {
