@@ -38,6 +38,8 @@ const attendanceSchema = {
           "IZIN_SETENGAH_HARI",
         )
         .optional(),
+
+      employeeId: Joi.string().uuid().optional(),
     }),
 
     order_by: Joi.array()
