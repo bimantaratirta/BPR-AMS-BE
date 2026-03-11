@@ -14,8 +14,8 @@ class PointrecordController {
   }
 
   async summary(req, res) {
-    const { startDate, endDate, branchId, search, page, limit } = req.query;
-    const result = await PointrecordService.getSummary({ startDate, endDate, branchId, search, page, limit });
+    const { startDate, endDate, branchId, search, page, limit, filterType } = req.query;
+    const result = await PointrecordService.getSummary({ startDate, endDate, branchId, search, page, limit, filterType });
     return successResponse(res, result.data, "Success", result.meta, {
       branches: result.branches,
       metrics: result.metrics,

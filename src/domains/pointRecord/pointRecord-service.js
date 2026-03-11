@@ -77,6 +77,7 @@ class PointRecordService {
     endDate,
     branchId,
     search,
+    filterType,
     page = 1,
     limit = 20,
   } = {}) {
@@ -111,6 +112,16 @@ class PointRecordService {
 
     const where = conditions.length > 0 ? conditions.join(" AND ") : "TRUE";
 
+    // Build HAVING clause for type filter
+    let having = "";
+    if (filterType === "HADIR") {
+      having = `HAVING COUNT(*) FILTER (WHERE pr."type" = 'HADIR') > 0`;
+    } else if (filterType === "SETENGAH_POIN") {
+      having = `HAVING COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0.5) > 0`;
+    } else if (filterType === "TERLAMBAT_ALPHA") {
+      having = `HAVING (COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0) + COUNT(*) FILTER (WHERE pr."type" = 'ALPHA')) > 0`;
+    }
+
     const dataQuery = `
       SELECT
         pr."employeeId",
@@ -127,8 +138,20 @@ class PointRecordService {
       LEFT JOIN branches b ON b."id" = e."branchId"
       WHERE ${where}
       GROUP BY pr."employeeId", e."name", e."nik", b."name"
+      ${having}
       ORDER BY "totalPoin" DESC
       LIMIT $${idx++} OFFSET $${idx++}
+    `;
+
+    const countQuery = `
+      SELECT COUNT(*) as total FROM (
+        SELECT pr."employeeId"
+        FROM point_records pr
+        JOIN employees e ON e."id" = pr."employeeId"
+        WHERE ${where}
+        GROUP BY pr."employeeId"
+        ${having}
+      ) sub
     `;
 
     const metricsQuery = `
@@ -137,29 +160,31 @@ class PointRecordService {
           pr."employeeId",
           COALESCE(SUM(pr."points"), 0) as poin,
           COUNT(*) FILTER (WHERE pr."type" = 'HADIR') as hadir,
-          COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT') as terlambat
+          COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0.5) as "setengahPoin",
+          COUNT(*) FILTER (WHERE pr."type" = 'TERLAMBAT' AND pr."points" = 0) as terlambat0,
+          COUNT(*) FILTER (WHERE pr."type" = 'ALPHA') as alpha
         FROM point_records pr
         JOIN employees e ON e."id" = pr."employeeId"
         WHERE ${where}
         GROUP BY pr."employeeId"
       )
       SELECT
-        COUNT(*) as "totalEmployees",
         COALESCE(SUM(poin), 0) as "totalPoin",
-        CASE WHEN COUNT(*) > 0 THEN ROUND(SUM(poin)::numeric / COUNT(*), 1) ELSE 0 END as "avgPoin",
         COALESCE(SUM(hadir), 0) as "totalHadir",
-        COALESCE(SUM(terlambat), 0) as "totalTerlambat"
+        COALESCE(SUM("setengahPoin"), 0) as "totalSetengahPoin",
+        COALESCE(SUM(terlambat0) + SUM(alpha), 0) as "totalTerlambatAlpha"
       FROM agg
     `;
 
-    const [data, metricsResult, branches] = await Promise.all([
+    const [data, countResult, metricsResult, branches] = await Promise.all([
       this.prisma.$queryRawUnsafe(dataQuery, ...params, limitNum, offset),
+      this.prisma.$queryRawUnsafe(countQuery, ...params),
       this.prisma.$queryRawUnsafe(metricsQuery, ...params),
       this.prisma.branch.findMany({ select: { id: true, name: true } }),
     ]);
 
     const met = metricsResult[0] ?? {};
-    const totalItems = Number(met.totalEmployees ?? 0);
+    const totalItems = Number(countResult[0]?.total ?? 0);
     const totalPages = Math.ceil(totalItems / limitNum) || 1;
 
     // Convert BigInt from raw query to Number
@@ -185,9 +210,9 @@ class PointRecordService {
       },
       metrics: {
         totalPoin: Number(met.totalPoin ?? 0),
-        avgPoin: Number(met.avgPoin ?? 0),
         totalHadir: Number(met.totalHadir ?? 0),
-        totalTerlambat: Number(met.totalTerlambat ?? 0),
+        totalSetengahPoin: Number(met.totalSetengahPoin ?? 0),
+        totalTerlambatAlpha: Number(met.totalTerlambatAlpha ?? 0),
       },
       branches,
     };
