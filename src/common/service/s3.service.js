@@ -40,7 +40,7 @@ class S3Service {
 
     try {
       await this.s3.send(new PutObjectCommand(params));
-      return `https://${this.endpoint}/${this.bucket}/${key}`;
+      return `/${key}`;
     } catch (err) {
       console.error('❌ Failed to upload to S3:', err);
 
