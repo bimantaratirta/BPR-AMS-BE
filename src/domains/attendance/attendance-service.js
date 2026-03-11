@@ -107,6 +107,13 @@ class AttendanceService {
       };
     }
 
+    // Handle special "IZIN" status group filter
+    if (query?.filter?.status === "IZIN") {
+      options.where.status = {
+        in: ["IZIN_CUTI", "IZIN_SAKIT", "IZIN_SETENGAH_HARI"],
+      };
+    }
+
     // Always include employee and branch relations
     options.include = {
       employee: {
@@ -123,8 +130,8 @@ class AttendanceService {
       branch: { select: { id: true, name: true } },
     };
 
-    // Build status count where clause (same filters minus pagination)
-    const statusWhere = { ...options.where };
+    // Build status count where clause (same filters minus status & pagination)
+    const { status: _status, ...statusWhere } = options.where;
 
     const [data, count, statusCounts, branches] = await Promise.all([
       this.prisma.attendance.findMany(options),
