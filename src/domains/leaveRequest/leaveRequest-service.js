@@ -13,6 +13,20 @@ class LeaveRequestService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(leaveRequestQueryConfig, query);
+
+    // Filter by month (format: "YYYY-MM")
+    if (query?.filter?.month) {
+      const [year, month] = query.filter.month.split("-").map(Number);
+
+      const startDate = new Date(Date.UTC(year, month - 1, 1));
+      const endDate = new Date(Date.UTC(year, month, 1));
+
+      options.where.startDate = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
     // Always include employee relation
     if (!options.include?.employee) {
       options.include = {
