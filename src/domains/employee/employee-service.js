@@ -13,20 +13,64 @@ class EmployeeService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(employeeQueryConfig, query);
-    // Always include branch relation
+
+    // Include branch
     if (!options.include?.branch) {
       options.include = {
         ...options.include,
-        branch: { select: { id: true, name: true, address: true, latitude: true, longitude: true, radius: true, isActive: true } },
+        branch: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+            latitude: true,
+            longitude: true,
+            radius: true,
+            isActive: true,
+          },
+        },
       };
     }
-    const [data, count, registeredCount, totalAll, branches] = await Promise.all([
-      this.prisma.employee.findMany(options),
-      this.prisma.employee.count({ where: options.where }),
-      this.prisma.employee.count({ where: { deviceId: { not: null } } }),
-      this.prisma.employee.count(),
-      this.prisma.branch.findMany({ select: { id: true, name: true } }),
-    ]);
+
+    const [data, count, registeredCount, totalAll, branches] =
+      await Promise.all([
+        this.prisma.employee.findMany(options),
+        this.prisma.employee.count({ where: options.where }),
+        this.prisma.employee.count({ where: { deviceId: { not: null } } }),
+        this.prisma.employee.count(),
+        this.prisma.branch.findMany({ select: { id: true, name: true } }),
+      ]);
+
+    // Hitung cuti IZIN_CUTI yang approved
+    const employeeIds = data.map((e) => e.id);
+    const currentYear = new Date().getFullYear();
+
+    const leaveRecords = await this.prisma.leaveRequest.findMany({
+      where: {
+        employeeId: { in: employeeIds },
+        type: "IZIN_CUTI",
+        status: "APPROVED",
+        startDate: { gte: new Date(`${currentYear}-01-01`) },
+        endDate: { lte: new Date(`${currentYear}-12-31`) },
+      },
+      select: { employeeId: true, startDate: true, endDate: true },
+    });
+
+    // Hitung jumlah hari cuti per employee
+    const leaveStats = leaveRecords.reduce((acc, lr) => {
+      const days =
+        (new Date(lr.endDate).getTime() - new Date(lr.startDate).getTime()) /
+          (1000 * 60 * 60 * 24) +
+        1;
+      acc[lr.employeeId] = (acc[lr.employeeId] || 0) + days;
+      return acc;
+    }, {});
+
+    // Tambahkan usedAnnualLeave ke data employee
+    const enrichedData = data.map((emp) => ({
+      ...emp,
+      usedAnnualLeave: Math.min(leaveStats[emp.id] || 0, 12), // maksimal 12 hari
+    }));
 
     const page = query?.pagination?.page ?? 1;
     const limit = query?.pagination?.limit ?? 10;
@@ -34,7 +78,7 @@ class EmployeeService {
     const totalPages = hasPagination ? Math.ceil(count / limit) : 1;
 
     return {
-      data,
+      data: enrichedData,
       meta: hasPagination
         ? {
             totalItems: count,
@@ -74,9 +118,31 @@ class EmployeeService {
       throw BaseError.notFound("Employee not found");
     }
 
-    return employee;
-  }
+    const currentYear = new Date().getFullYear();
+    const leaveRecords = await this.prisma.leaveRequest.findMany({
+      where: {
+        employeeId: id,
+        type: "IZIN_CUTI",
+        status: "APPROVED",
+        startDate: { gte: new Date(`${currentYear}-01-01`) },
+        endDate: { lte: new Date(`${currentYear}-12-31`) },
+      },
+      select: { startDate: true, endDate: true },
+    });
 
+    const usedAnnualLeave = leaveRecords.reduce((sum, lr) => {
+      const days =
+        (new Date(lr.endDate).getTime() - new Date(lr.startDate).getTime()) /
+          (1000 * 60 * 60 * 24) +
+        1;
+      return sum + days;
+    }, 0);
+
+    return {
+      ...employee,
+      usedAnnualLeave: Math.min(usedAnnualLeave, 12), // maksimal 12 hari
+    };
+  }
   async create(data) {
     const hashedPassword = await hashPassword(data.password);
     try {

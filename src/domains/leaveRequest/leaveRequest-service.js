@@ -17,16 +17,26 @@ class LeaveRequestService {
     if (!options.include?.employee) {
       options.include = {
         ...options.include,
-        employee: { select: { id: true, name: true, nik: true, phone: true, role: true, avatar: true } },
+        employee: {
+          select: {
+            id: true,
+            name: true,
+            nik: true,
+            phone: true,
+            role: true,
+            avatar: true,
+          },
+        },
       };
     }
-    const [data, count, pendingCount, approvedCount, rejectedCount] = await Promise.all([
-      this.prisma.leaveRequest.findMany(options),
-      this.prisma.leaveRequest.count({ where: options.where }),
-      this.prisma.leaveRequest.count({ where: { status: "PENDING" } }),
-      this.prisma.leaveRequest.count({ where: { status: "APPROVED" } }),
-      this.prisma.leaveRequest.count({ where: { status: "REJECTED" } }),
-    ]);
+    const [data, count, pendingCount, approvedCount, rejectedCount] =
+      await Promise.all([
+        this.prisma.leaveRequest.findMany(options),
+        this.prisma.leaveRequest.count({ where: options.where }),
+        this.prisma.leaveRequest.count({ where: { status: "PENDING" } }),
+        this.prisma.leaveRequest.count({ where: { status: "APPROVED" } }),
+        this.prisma.leaveRequest.count({ where: { status: "REJECTED" } }),
+      ]);
 
     const page = query?.pagination?.page ?? 1;
     const limit = query?.pagination?.limit ?? 10;
@@ -87,31 +97,85 @@ class LeaveRequestService {
       stack.push({ message, path: [path] });
     };
 
-    if (!file) {
+    if (!file || file.length === 0) {
       throw BaseError.badRequest("File wajib diupload");
     }
 
-    let uploaded = [];
-    if (file.length) {
-      uploaded = await Promise.all(
-        file.map((f) => this.s3Service.uploadFile(f, "attachments")),
-      );
-    }
+    const uploaded = file.length
+      ? await Promise.all(
+          file.map((f) => this.s3Service.uploadFile(f, "attachments")),
+        )
+      : [];
 
     if (currentUser.userType !== "EMPLOYEE") {
       throw BaseError.forbidden("Only employee can create leave request");
     }
 
     return this.prisma.$transaction(async (tx) => {
-      // 2) Cek: overlap tanggal (yang kamu sudah punya)
+      const startDate = new Date(data.startDate);
+      const endDate = new Date(data.endDate);
+      const dayCount =
+        Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+      // VALIDASI KHUSUS UNTUK IZIN_CUTI
+      if (data.type === "IZIN_CUTI") {
+        const currentYear = startDate.getFullYear();
+
+        // Hitung total cuti IZIN_CUTI yang sudah diambil tahun ini
+        const leaveRecords = await tx.leaveRequest.findMany({
+          where: {
+            employeeId: currentUser.id,
+            type: "IZIN_CUTI",
+            status: "APPROVED",
+            startDate: { gte: new Date(`${currentYear}-01-01`) },
+            endDate: { lte: new Date(`${currentYear}-12-31`) },
+          },
+          select: { startDate: true, endDate: true },
+        });
+
+        const usedDays = leaveRecords.reduce((sum, lr) => {
+          return (
+            sum +
+            Math.floor(
+              (new Date(lr.endDate) - new Date(lr.startDate)) /
+                (1000 * 60 * 60 * 24),
+            ) +
+            1
+          );
+        }, 0);
+
+        if (usedDays >= 12) {
+          fail(
+            "You have already used your 12 days of annual leave",
+            "leaveRequest",
+          );
+          throw new Joi.ValidationError(validation, stack);
+        }
+
+        if (dayCount > 3) {
+          fail(
+            "IZIN_CUTI can only be requested for a maximum of 3 days at a time",
+            "leaveRequest",
+          );
+          throw new Joi.ValidationError(validation, stack);
+        }
+
+        if (usedDays + dayCount > 12) {
+          fail(
+            `You can only take ${12 - usedDays} more days of IZIN_CUTI this year`,
+            "leaveRequest",
+          );
+          throw new Joi.ValidationError(validation, stack);
+        }
+      }
+
+      // VALIDASI OVERLAP UNTUK SEMUA TYPE LEAVE
       const existingLeaveRequest = await tx.leaveRequest.findFirst({
         where: {
           employeeId: currentUser.id,
           AND: [
-            {
-              startDate: { lte: data.endDate },
-              endDate: { gte: data.startDate },
-            },
+            { startDate: { lte: endDate } },
+            { endDate: { gte: startDate } },
           ],
         },
       });
@@ -124,13 +188,14 @@ class LeaveRequestService {
         throw new Joi.ValidationError(validation, stack);
       }
 
+      // CREATE LEAVE REQUEST
       const created = await tx.leaveRequest.create({
         data: {
           type: data.type,
           startDate: data.startDate,
           endDate: data.endDate,
           reason: data.reason,
-          attachment: uploaded[0], // atau pakai uploaded?.key/url kalau itu yang kamu mau
+          attachment: uploaded[0] || null,
           employeeId: currentUser.id,
         },
       });
