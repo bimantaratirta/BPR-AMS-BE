@@ -40,9 +40,7 @@ const employeeSchema = {
   }),
 
   create: Joi.object({
-    nik: Joi.string().min(16).max(16).required().messages({
-      "string.min": "NIK harus 16 digit",
-      "string.max": "NIK harus 16 digit",
+    nik: Joi.string().min(1).max(50).required().messages({
       "any.required": "NIK wajib diisi",
     }),
     name: Joi.string().min(3).max(100).required(),
@@ -62,10 +60,7 @@ const employeeSchema = {
   }),
 
   update: Joi.object({
-    nik: Joi.string().min(16).max(16).optional().messages({
-      "string.min": "NIK harus 16 digit",
-      "string.max": "NIK harus 16 digit",
-    }),
+    nik: Joi.string().min(1).max(50).optional(),
     name: Joi.string().min(3).max(100).optional(),
     email: Joi.string().email().optional(),
     password: Joi.string().min(6).optional(),
