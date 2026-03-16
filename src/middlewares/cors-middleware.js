@@ -3,7 +3,8 @@ import cors from "cors";
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://bpr.ashakita.net",
+  "https://api-ams.bprss.com",
+  "https://ams.bprss.com",
 ];
 
 const corsMiddleware = cors({
