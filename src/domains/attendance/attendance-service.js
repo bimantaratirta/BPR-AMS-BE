@@ -22,7 +22,8 @@ function getDistanceInMeters(lat1, lon1, lat2, lon2) {
 }
 
 function getAttendanceStatusAndPoint(checkInTime) {
-  const totalMinutes = checkInTime.getHours() * 60 + checkInTime.getMinutes();
+  const wibHours = (checkInTime.getUTCHours() + 7) % 24;
+  const totalMinutes = wibHours * 60 + checkInTime.getUTCMinutes();
 
   const eightAM = 8 * 60;
   const eightThirty = 8 * 60 + 30;
@@ -62,7 +63,8 @@ function getAttendanceDate(now) {
 }
 
 function ensureCheckInBeforeCutoff(checkInTime) {
-  const totalMinutes = checkInTime.getHours() * 60 + checkInTime.getMinutes();
+  const wibHours = (checkInTime.getUTCHours() + 7) % 24;
+  const totalMinutes = wibHours * 60 + checkInTime.getUTCMinutes();
 
   const start = 6 * 60; // 06:00
   const end = 17 * 60; // 23:59
