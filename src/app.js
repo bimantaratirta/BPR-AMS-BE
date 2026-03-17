@@ -5,7 +5,7 @@ import { __dirname, __filename } from "./utils/path.js";
 import apicache from "apicache";
 import compression from "compression";
 import cors from "cors";
-import errorHandler from "./middlewares/error-handler-middleware.js";
+import { errorHandler } from "./middlewares/error-handler-middleware.js";
 import express from "express";
 import helmet from "helmet";
 import logger from "./utils/logger.js";
