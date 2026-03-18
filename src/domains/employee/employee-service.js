@@ -203,6 +203,10 @@ class EmployeeService {
           data.isActive = data.isActive === "true";
         }
 
+        if (data.password) {
+          data.password = await hashPassword(data.password);
+        }
+
         const updatedEmployee = await tx.employee.update({
           where: { id },
           data,
