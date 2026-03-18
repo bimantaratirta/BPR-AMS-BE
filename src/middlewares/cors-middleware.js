@@ -5,6 +5,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://api-ams.bprss.com",
   "https://ams.bprss.com",
+  "https://employee-ams.bprss.com",
 ];
 
 const corsMiddleware = cors({
