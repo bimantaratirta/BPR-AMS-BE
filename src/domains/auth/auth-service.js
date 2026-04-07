@@ -29,7 +29,7 @@ class AuthService {
 
     const accessToken = generateToken(
       { id: admin.id, role: admin.role, type: "access", userType: admin.role },
-      "1d",
+      "365d",
     );
     const refreshToken = generateToken(
       { id: admin.id, role: admin.role, type: "refresh", userType: admin.role },
@@ -94,7 +94,7 @@ class AuthService {
           type: "access",
           userType: admin.role,
         },
-        "1d",
+        "365d",
       );
       const refreshToken = generateToken(
         {
@@ -136,7 +136,7 @@ class AuthService {
         type: "access",
         userType: "EMPLOYEE",
       },
-      "1d",
+      "365d",
     );
     const refreshToken = generateToken(
       {
@@ -208,7 +208,7 @@ class AuthService {
           type: "access",
           userType: "EMPLOYEE",
         },
-        "1d",
+        "365d",
       );
       const refreshToken = generateToken(
         {
