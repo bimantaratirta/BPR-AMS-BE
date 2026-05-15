@@ -10,6 +10,19 @@ class PointRecordService {
 
   async getAll({ query } = {}) {
     const options = buildQueryOptions(pointRecordQueryConfig, query);
+
+    if (query?.filter?.month) {
+      const [year, month] = query.filter.month.split("-").map(Number);
+
+      const startDate = new Date(Date.UTC(year, month - 1, 1));
+      const endDate = new Date(Date.UTC(year, month, 1));
+
+      options.where.date = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
     const [data, count] = await Promise.all([
       this.prisma.pointRecord.findMany(options),
       this.prisma.pointRecord.count({ where: options.where }),
