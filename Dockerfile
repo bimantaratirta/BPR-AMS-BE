@@ -24,6 +24,9 @@ RUN fc-cache -f -v
 COPY package*.json ./
 RUN npm ci
 
+# Process manager for cluster mode
+RUN npm install -g pm2
+
 COPY . .
 
 RUN npx prisma generate
@@ -32,5 +35,5 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["pm2-runtime", "start", "dist/server.js", "-i", "max"]
 

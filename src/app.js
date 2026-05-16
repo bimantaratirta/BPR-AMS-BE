@@ -80,7 +80,14 @@ class ExpressApplication {
       ]),
     );
 
-    attendanceJob.start();
+    // PM2 cluster: only worker 0 owns scheduled jobs to prevent duplicate runs.
+    // NODE_APP_INSTANCE is undefined when not running under PM2 (dev/test).
+    if (
+      process.env.NODE_APP_INSTANCE === "0" ||
+      process.env.NODE_APP_INSTANCE === undefined
+    ) {
+      attendanceJob.start();
+    }
   }
 
   setupMiddlewares(middlewaresArr) {
