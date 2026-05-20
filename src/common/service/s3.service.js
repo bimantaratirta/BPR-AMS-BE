@@ -1,4 +1,5 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { extname } from 'path';
 import { randomUUID } from 'crypto';
 import s3Config from '../../config/s3.config.js';
@@ -57,6 +58,21 @@ class S3Service {
       }
 
       throw BaseError.badGateway('S3', 'Failed to upload to S3');
+    }
+  }
+
+  async getSignedUrl(key, { expiresIn = 600 } = {}) {
+    const normalizedKey = key.startsWith('/') ? key.slice(1) : key;
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: normalizedKey,
+    });
+
+    try {
+      return await getSignedUrl(this.s3, command, { expiresIn });
+    } catch (err) {
+      console.error('❌ Failed to generate signed URL:', err);
+      throw BaseError.badGateway('S3', 'Failed to generate signed URL');
     }
   }
 }

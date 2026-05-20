@@ -16,6 +16,10 @@ class LeaveRequestRoutes extends BaseRoutes {
       validateCredentials(leaveRequestSchema.query),
       tryCatch(LeaveRequestController.list),
     ]);
+    this.router.get("/:id/attachment-url", [
+      AuthMiddleware.authenticate,
+      tryCatch(LeaveRequestController.attachmentUrl),
+    ]);
     this.router.get("/:id", [
       AuthMiddleware.authenticate,
       tryCatch(LeaveRequestController.show),

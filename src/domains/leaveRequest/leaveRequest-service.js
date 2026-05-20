@@ -103,6 +103,20 @@ class LeaveRequestService {
     return { data: leaveRequest };
   }
 
+  async getAttachmentUrl(id) {
+    const leave = await this.prisma.leaveRequest.findUnique({
+      where: { id },
+      select: { attachment: true },
+    });
+    if (!leave) throw BaseError.notFound("Leave request not found");
+    if (!leave.attachment) throw BaseError.notFound("Attachment not found");
+
+    const url = await this.s3Service.getSignedUrl(leave.attachment, {
+      expiresIn: 600,
+    });
+    return { url };
+  }
+
   async create(currentUser, file = [], data) {
     let validation = "";
     let stack = [];

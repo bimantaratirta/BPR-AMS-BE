@@ -19,6 +19,12 @@ class LeaveRequestController {
     return successResponse(res, result.data, "Success");
   };
 
+  attachmentUrl = async (req, res) => {
+    const { id } = req.params;
+    const result = await LeaveRequestService.getAttachmentUrl(id);
+    return successResponse(res, result, "Success");
+  };
+
   create = async (req, res) => {
     const created = await LeaveRequestService.create(
       req.user,
